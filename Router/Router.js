@@ -2,14 +2,14 @@ import Route from "./Route.js";
 import { allRoutes, websiteName } from "./allRoutes.js";
 
 // Page 404's route creation
-const page404 = new Route("/404", "Page introuvable", "/public/pages/404/html");
+const page404 = new Route("/404", "Page introuvable", "/pages/404.html");
 
 // Function to get the route from the URL
 const getRouteByUrl = (url) => {
   let currentRoute = null;
   // browse all routes
   allRoutes.forEach((element) => {
-    if (element.url === url) {
+    if (element.url == url) {
       currentRoute = element;
     }
   });
@@ -43,7 +43,7 @@ const loadPageContent = async () => {
   }
 
   // set the title of the page
-  document.title = `${actualRoute.title} - ${websiteName}`;
+  document.title = actualRoute.title + " - " + websiteName;
 };
 
 // Function to handle the navigation (link click)
