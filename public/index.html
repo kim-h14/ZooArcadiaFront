@@ -10,15 +10,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
 
   <!-- Bootstrap -->
-  <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap-grid.min.css">
-  <link rel="stylesheet" href="/node_modules/bootstrap-icons/font/bootstrap-icons.css">
-  
+  <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/node_modules/bootstrap-icons/font/bootstrap-icons.css">  
 
   <title>Zoo Arcadia</title>
 </head>
 <body>
 
-  <header>L'acceuil</header>
+  <header class="video-background">
+    <!-- First header weather / opening times / login -->
+    <video autoplay muted loop>
+      <source src="/assets/videos/otterVideo.mp4" type="video/mp4">
+
+
+    <img src="/assets/images/about/arcadiaZoo.svg" alt="Logo Zoo Arcadia">
+  </header>
 
   <main id="main-page">
     <!-- INSERT_HOME_CONTENT -->
@@ -29,11 +35,13 @@
   <footer> le footer de mon site</footer>
 
 
+  
+  <!-- Router script -->
+  <script type="module" src="Router/router.js"></script>
+
   <!-- Boostrap script -->
   <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"> </script>
 
-  <!-- Router script -->
-  <script type="module" src="Router/router.js"></script>
   
 </body>
 </html>
