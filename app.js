@@ -14,6 +14,9 @@ app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 // Serve static files from the assets directory
 app.use('/Assets', express.static(path.join(__dirname, 'assets')));
 
+// Serve static files from the styles directory
+app.use('/styles', express.static(path.join(__dirname, 'styles')));
+
 // Set the correct MIME type for CSS files
 app.use((req, res, next) => {
   if (req.url.endsWith('.css')) {
