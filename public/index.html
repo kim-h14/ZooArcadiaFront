@@ -16,13 +16,61 @@
 </head>
 <body>
 
-  <header class="video-background">
-    <!-- First header weather / opening times / login -->
-    <video autoplay muted loop>
-      <source src="/assets/videos/otterVideo.mp4" type="video/mp4">
+  <header>
+    <!-- Secondary NavBar will be completed at a later time -->
+    <!-- <div class="container-fluid">
+    <div class="row"> 
+      <div class="col-lg-12">
+        <div class="header-navbar-secondary bg-dark">
+          <div class="top-home-box weather-info d-none d-lg-block">Actuellement au parc</div>
+          <div class="top-home-box opening-hours d-none d-lg-block">Horaires d'ouverture</div>
+          <div class="top-home-box login d-none d-lg-block"><i class="bi bi-person-fill"></i>Connexion</div>
+        </div>
+      </div>
+      </div>
+    </div> -->
+    <nav class="navbar header-navbar-primary navbar-expand-lg bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#"><img src="../assets/images/about/arcadiaZoo.png"></a>
+        <div class="row header-navbar-primary">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/">Acceuil</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Préparer votre visite
+                </a>
+                <ul class="dropdown-menu bg-dark">
+                  <li><a class="dropdown-item" href="#">Plan du parc</a></li>
+                  <li><a class="dropdown-item" href="#">Nos Habitats</a></li>
+                  <li><a class="dropdown-item" href="#">Nos Animaux</a></li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Activités</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Notre éthique</a>
+              </li>
+              <li class="nav-item">
+                <a class="btn btn-primary" href="#"><i class="bi bi-envelope"></i> Contact</a>
+              </li>
+              <li class="nav-item login d-lg-none">
+                <a class="nav-link" href="#">Connexion</a>
+            </ul>
+          </div>
+          </div>
+        </div>
+        </div>
+        
+    </nav>
+    
 
-
-    <img src="/assets/images/about/arcadiaZoo.svg" alt="Logo Zoo Arcadia">
   </header>
 
   <main id="main-page">
@@ -31,7 +79,36 @@
     <button class="btn btn-primary">Cliquez ici  <i class="bi bi-airplane-engines"></i></button>
   </main>
 
-  <footer> le footer de mon site</footer>
+  <footer class="bg-dark text-white text-center">
+    <div class="row">
+      <div class="col-4">
+        <h3>NOUS RENDRE VISITE</h3>
+        <p>1 rue Brocéliande <br>
+            35880 Paimpont <br>
+            Bretagne, France <br>
+            02.01.01.01.01 <br>
+        </p>
+      </div>
+  
+      <div class="col-4">
+        <h3>INFOS PRATIQUES</h3>
+        <p href="#">Actualité</p>
+        <p href="#">Contactez nous</p>
+      </div>
+  
+      <div class="col-4">
+        <h3>PRÉPARER VOTRE VISITE</h3>
+        <p href="#">Horaires</p>
+        <p href="#">Plan du parc</p>
+        <p href="#">Nos animaux</p>
+        <p href="#">Activités</p>
+      <div>
+          <a href="https://www.facebook.com/"><i class="bi bi-facebook"></i></a>
+          <a href="https://www.instagram.com/"><i class="bi bi-instagram"></i></a>
+          <a href="https://www.twitter.com/"><i class="bi bi-twitter-x"></i></a>
+      </div>
+    </div>
+  </footer>
 
 
   
