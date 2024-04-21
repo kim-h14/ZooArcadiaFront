@@ -15,3 +15,27 @@ $font-family-serif: "Hind Madurai", serif !default;
 @import "../node_modules/bootstrap/scss/bootstrap";
 
 // Then add additional custom code here
+
+.savana-btn {
+  background-image: url(/assets/images/skins/cheetah-skin.jpeg);
+  background-size: 90%;
+  opacity: 0.5;
+  font-size: large;
+  color: white;
+}
+
+.jungle-btn {
+  background-image: url(/assets/images/skins/tiger-skin.jpeg);
+  background-size: 90%;
+  opacity: 0.5;
+  font-size: bold;
+  color: white;
+}
+
+.bayou-btn {
+  background-image: url(/assets/images/skins/crocodile-skin.jpeg);
+  background-size: 90%;
+  opacity: 0.5;
+  font-size: bold;
+  color: white;
+}
