@@ -16,76 +16,98 @@
 <article>
   <div>
     <h1 class="homeTitles">NOS ACTIVITÉS</h1>
-    <div id="carouselWithInterval" class="carousel slide" data-ride="carousel">
+    <div id="carouselExampleIndicators" class="carousel slide">
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+      </div>
       <div class="carousel-inner">
-        <div class="carousel-item active" data-bs-interval="10000">
+        <div class="carousel-item active">
           <div class="card">
-            <img src="/assets/images/about/tour-guide.jpeg" class="card-img-top" alt="Visite guidée">
+            <div class="image-wrapper">
+              <img src="/assets/images/about/tour-guide.jpeg" class="card-img-top" alt="Tour guidé">
+            </div>
             <div class="card-body">
               <h5 class="card-title">Visite guidée avec soigneur</h5>
               <p class="card-text">Nous vous offrons la possibilité de découvrir le parc et nos 
                 animaux avec l’un de nos soigneur, et ce gratuitement.</p>
-                <button type="button" class="btn btn-primary">En savoir plus</button>
+              <a href="#" class="btn btn-primary btn-activity-card">En savoir plus</a>
             </div>
           </div>
         </div>
-        <div class="carousel-item" data-bs-interval="10000">
+        <div class="carousel-item">
           <div class="card">
-            <img src="/assets/images/about/safari-train.jpeg" class="card-img-top" alt="Mini train">
+            <div class="image-wrapper">
+              <img src="/assets/images/about/safari-train.jpeg" class="card-img-top" alt="Petit train">
+            </div>
             <div class="card-body">
               <h5 class="card-title">Visiter le parc en petit train</h5>
               <p class="card-text">Cette activité vous permet de vous balader dans le parc tout en 
                 ayant la possibilité de monter et descendre à toutes les gares.</p>
-                <button type="button" class="btn btn-primary">En savoir plus</button>
+              <a href="#" class="btn btn-primary btn-activity-card">En savoir plus</a>
             </div>
           </div>
         </div>
-        <div class="carousel-item" data-bs-interval="10000">
+        <div class="carousel-item">
           <div class="card">
-            <img src="/assets/images/animals/savanna/pencil.jpg" class="card-img-top" alt="Otruche">
+            <div class="image-wrapper">
+              <img src="/assets/images/animals/savanna/pencil.jpg" class="card-img-top" alt="Nos animaux">
+            </div>
             <div class="card-body">
               <h5 class="card-title">Rencontrez nos animaux</h5>
               <p class="card-text">Avant votre visite découvrez nos animaux: leurs noms, ages et 
                 plus encore.</p>
-                <button type="button" class="btn btn-primary">En savoir plus</button>
+              <a href="#" class="btn btn-primary btn-activity-card">En savoir plus</a>
             </div>
           </div>
-        </div><div class="carousel-item" data-bs-interval="10000">
+        </div>
+        <div class="carousel-item">
           <div class="card">
-            <!-- Add picture of map when map has been created -->
-            <img src="/" class="card-img-top" alt="Carte du zoo">
+            <!-- Replace this image by image of the Map -->
+            <div class="image-wrapper">
+              <img src="/assets/images/habitats/jungle.jpeg" class="card-img-top" alt="Plan du parc">
+            </div>
             <div class="card-body">
               <h5 class="card-title">Découvrez nos habitats</h5>
               <p class="card-text">Avant votre visite découvrez nos habitats: un espace jungle, un 
                 espace savanne et un espace marais. Vous pourrez aussi visualiser la carte du Zoo.</p>
-                <button type="button" class="btn btn-primary">En savoir plus</button>
+              <a href="#" class="btn btn-primary btn-activity-card">En savoir plus</a>
             </div>
           </div>
         </div>
       </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
     </div>
+    
   </div>
 </article>
 
-<article>
-  <div class="container">
+<article class="review-background">
+  <div class="container review-section">
     <h1 class="homeTitles">AVIS</h1>
-    <p class="reviewSection">
-      <i class="bi bi-quote">
+    <p class="review-para">
+      <i class="bi bi-quote"></i>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. 
         Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis 
         sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. 
         Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per 
         conubia nostra, per inceptos himenaeos.
-      </i>
     </p>
   </div>
 </article>
 
-<article>
+<article class="backgroundEthics">
   <div class="container homeEthics">
-    <img class="col-6" src="/assets/images/about/green-energy.jpeg" alt="logo pour l'énergie verte">
-    <p class="col-6"> Au Zoo Arcadia, nous sommes fiers d'être entièrement indépendants sur le plan 
+    <img class="col-6 img-ethics" src="/assets/images/about/green-energy.jpeg" alt="logo pour l'énergie verte">
+    <p class="col-6 para-ethics"> Au Zoo Arcadia, nous sommes fiers d'être entièrement indépendants sur le plan 
       énergétique. Nous avons pris des mesures significatives pour minimiser notre empreinte 
       environnementale en utilisant des sources d'énergie renouvelables et durables. 
 
@@ -100,18 +122,27 @@
 </article>
 
 <article>
-  <div class="container newletterSignUp">
-    <h2 class="animailTitle">Rejoignez la famille Animail!</h2>
-    <p class="animail">
-      Êtes-vous prêts à plonger dans le monde fascinant de la faune et de la nature ? Ne manquez plus 
-      aucune nouvelle passionnante du Zoo Arcadia en vous inscrivant à notre newsletter, Animail !
-
-      En tant que membre de la famille Animail, vous bénéficierez également d'avantages exclusifs, 
-      comme des offres spéciales sur nos billets d'entrée, des réductions dans nos boutiques de 
-      souvenirs, et même des invitations à des événements privés réservés aux membres.
-
-      Rejoignez-nous dès aujourd'hui et laissez-vous emporter par la magie de la nature au Zoo Arcadia !
-    </p>
-    <button class="btn btn-primary">S'inscrire</button>
+  <div class="container newletterSignUp p-4">
+    <h2 class="animailTitle text-center text-primary mb-4">Rejoignez la famille Animail!</h2>
+    <div class="row align-items-center animail-content-wrapper">
+      <div class="col-md-6">
+        <p class="text-justify animail">
+        Êtes-vous prêts à plonger dans le monde fascinant de la faune et de la nature ? Ne manquez plus 
+        aucune nouvelle passionnante du Zoo Arcadia en vous inscrivant à notre newsletter, Animail !
+  
+        En tant que membre de la famille Animail, vous bénéficierez également d'avantages exclusifs, 
+        comme des offres spéciales sur nos billets d'entrée, des réductions dans nos boutiques de 
+        souvenirs, et même des invitations à des événements privés réservés aux membres.
+  
+        Rejoignez-nous dès aujourd'hui et laissez-vous emporter par la magie de la nature au Zoo Arcadia !
+        </p>
+      </div>
+      <div class="col-md-6">
+        <img class="img-fluid img-animail" src="/assets/images/animals/savanna/sophie.jpg" alt="Sophie la girafe">
+      </div>
+    </div>
+    <div class="text-center pt-4">
+      <button class="btn btn-primary animail-btn">S'inscrire</button>
+    </div>
   </div>
 </article>
