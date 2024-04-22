@@ -33,7 +33,7 @@
         </ul>
       </div>
     </nav>
-    <nav class="navbar header-navbar-primary navbar-expand-lg">
+    <nav class="navbar header-navbar-primary navbar-expand-lg" aria-label="primary navbar">
       <div class="container-fluid">
         <a class="navbar-brand" href="#"><img src="../assets/images/about/arcadiaZoo.png" alt="Logo du Zoo"></a>
         <div class="row header-navbar-primary">
@@ -50,22 +50,22 @@
                   Préparer votre visite
                 </a>
                 <ul class="dropdown-menu bg-dark">
-                  <li><a class="dropdown-item" href="/habitat">Plan du parc</a></li>
-                  <li><a class="dropdown-item" href="/habitat">Nos Habitats</a></li>
-                  <li><a class="dropdown-item" href="#">Nos Animaux</a></li>
+                  <li><a class="dropdown-item" href="/public/pages/habitats.html">Plan du parc</a></li>
+                  <li><a class="dropdown-item" href="/public/pages/habitats.html">Nos Habitats</a></li>
+                  <li><a class="dropdown-item" href="/public/pages/animals.html">Nos Animaux</a></li>
                 </ul>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Activités</a>
+                <a class="nav-link" href="/public/pages/services.html">Activités</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#">Notre éthique</a>
               </li>
               <li class="nav-item">
-                <a class="btn btn-primary" href="#"><i class="bi bi-envelope"></i> Contact</a>
+                <a class="btn btn-primary" href="/public/pages/contact.html"><i class="bi bi-envelope"></i> Contact</a>
               </li>
               <li class="nav-item login d-lg-none">
-                <a class="nav-link" href="#">Connexion</a>
+                <a class="nav-link" href="/public/pages/login.html">Connexion</a>
             </ul>
           </div>
           </div>
@@ -117,11 +117,10 @@
 
   
   <!-- Router script -->
-  <script type="module" src="Router/router.js"></script>
+  <script type="module" src="/Router/Router.js"></script>
 
   <!-- Boostrap script -->
   <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"> </script>
 
-  
 </body>
 </html>
