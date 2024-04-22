@@ -16,6 +16,21 @@ $font-family-serif: "Hind Madurai", serif !default;
 
 // Then add additional custom code here
 
+// Secondary navbar styles
+.top-home-box {
+  background-color: #E1ECC8;
+  color: $black;
+  border-radius: 5px;
+  padding: 10px;
+  margin-right: 10px;
+}
+
+.navbar-secondary-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
 // Footer styles
 footer {
   padding-top: 2%;

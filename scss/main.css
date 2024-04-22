@@ -11966,6 +11966,25 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.top-home-box {
+  background-color: #E1ECC8;
+  color: #609966;
+  border-radius: 5px;
+  padding: 10px;
+  margin-right: 10px;
+}
+
+.navbar-secondary-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
 footer {
   padding-top: 2%;
 }
