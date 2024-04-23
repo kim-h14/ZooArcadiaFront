@@ -34,7 +34,7 @@ app.get('/', (req, res) => {
     }
 
     // Read the content of index.html
-    fs.readFile(path.join(__dirname, '/public', '/index.html'), 'utf8', (err, indexContent) => {
+    fs.readFile(path.join(__dirname, '/index.html'), 'utf8', (err, indexContent) => {
       if (err) {
         return res.status(500).send('Error reading index.html');
       }

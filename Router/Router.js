@@ -2,7 +2,7 @@ import Route from "./Route.js";
 import { allRoutes, websiteName } from "./allRoutes.js";
 
 // Page 404's route creation
-const page404 = new Route("/404", "Page introuvable", "/pages/404.html");
+const page404 = new Route("/404", "Page introuvable", "/public/pages/404.html");
 
 // Function to get the route from the URL
 const getRouteByUrl = (url) => {
@@ -25,9 +25,9 @@ const getRouteByUrl = (url) => {
 const loadPageContent = async () => {
   const path = window.location.pathname;
   // get the route from the URL
-  const actualRoute = getRouteByUrl(path);
+  const actualRoute = window.location.hostname;
   // load the HTML content of the page
-  const html = await fetch(actualRoute.pathHtml).then((data) => data.text());
+  const html = await fetch(path.actualRoute).then((data) => data.text());
   // load html content to the element with the id "main-page"
   document.getElementById("main-page").innerHTML = html;
 
