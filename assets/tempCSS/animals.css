@@ -11,6 +11,14 @@ img {
   height: auto;
 }
 
+body {
+  margin-left: 12%;
+}
+
+.animal__section__title{
+  color: #609966;
+}
+
 /* Card */
 .container {
   display: grid;

@@ -23,9 +23,9 @@ const getRouteByUrl = (url) => {
 
 // Function to load page content
 const loadPageContent = async () => {
-  const path = window.location.pathname;
+  const path = window.location.hostname;
   // get the route from the URL
-  const actualRoute = window.location.hostname;
+  const actualRoute = getRouteByUrl(path);
   // load the HTML content of the page
   const html = await fetch(path.actualRoute).then((data) => data.text());
   // load html content to the element with the id "main-page"
