@@ -12604,4 +12604,44 @@ article {
   .contact__right {
     display: none;
   }
+}
+.login__container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 15%;
+  padding-bottom: 17%;
+}
+
+.login__title h1, .login__title .h1 {
+  color: #609966;
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.login__input {
+  display: flex;
+  justify-content: center;
+  width: 400px;
+  height: 50px;
+  border: #E1ECC8 2px solid;
+  outline: none;
+  padding-left: 25px;
+  border-radius: 50px;
+}
+
+.login__title hr {
+  border: none;
+  height: 5px;
+  background-color: #609966;
+  border-radius: 10px;
+  margin-bottom: 20px;
 }/*# sourceMappingURL=main.css.map */
