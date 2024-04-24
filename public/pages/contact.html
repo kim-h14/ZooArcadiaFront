@@ -1,18 +1,50 @@
 <article>
-  <h1>NOUS CONTACTER</h1>
-    <form action="#" method="post">
-      <label for="lastName">Nom de famille:</label><br>
-      <input type="text" id="lastName" name="lastName" required><br><br>
-
-      <label for="firstName">Prénom:</label><br>
-      <input type="text" id="firstName" name="firstName" required><br><br>
-    
-      <label for="email">Email:</label><br>
-      <input type="email" id="email" name="email" required><br><br>
-    
-      <label for="message">Message:</label><br>
-      <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
-    
-      <input type="submit" value="Submit">
+  <div class="contact__container">
+    <form action="" class="contact__left">
+      <div class="contact__left__title">
+        <h2>NOUS CONTACTER</h2>
+        <hr>
+      </div>
+      <input type="text" name="name" placeholder="Nom" class="contact__left__input" required>
+      <input type="email" name="email" placeholder="Email" class="contact__left__input" required>
+      <textarea name="message" placeholder="Votre message" class="contact__left__input" required></textarea>
+      <button type="submit" class="btn btn-primary contact__left__button">Envoyer</button>
     </form>
+    <div class="contact__right">
+      <div class="">
+        <div class="box">
+          <div class="icon"><i class="bi bi-geo-alt"> </i>
+            <div class="text">
+              <h3>Adresse</h3>
+              <p>
+                1 rue Brocéliande, <br>35880 Paimpont <br>Bretagne, France <br>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="icon"><i class="bi bi-telephone"> </i>
+            <div class="text">
+              <h3>Numéro de téléphone</h3>
+              <p>
+                02.01.01.01.01
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="icon"><i class="bi bi-envelope-at"> </i>
+            <div class="text">
+              <h3>Adresse Email</h3>
+              <p>
+                zoo-arcadia@testemail.fr <br>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </article>

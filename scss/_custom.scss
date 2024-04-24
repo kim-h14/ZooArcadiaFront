@@ -294,12 +294,6 @@ footer {
 // Animals page styles
 
 /* Base */
-img {
-  display: block;
-  max-width: 100%;
-  height: auto;
-}
-
 
 .animal__section__title{
   color: $black;
@@ -327,6 +321,9 @@ img {
 }
 
 .card__animal__img {
+  display: block;
+  max-width: 100%;
+  height: auto;
   width: 328px;
   height: 378px;
   border-radius: 1.5rem;
@@ -431,7 +428,7 @@ img {
 }
 
 
-/*=============== BREAKPOINTS ===============*/
+/*=============== BREAKPOINTS ANIMALS ===============*/
 /* For small devices */
 @media screen and (max-width: 340px) {
   .animals__containers {
@@ -471,3 +468,232 @@ img {
 }
 
 
+// Services page styles
+
+.services__big__title {
+  padding-top: 3%;
+  font-weight: bold;
+  color: $black;
+}
+
+
+.services__title {
+  color: $dark;
+  font-weight: 600;
+  padding-bottom: 2%;
+}
+
+.restaurants__list {
+  justify-content: left;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+    li {
+      padding-left: 1rem;
+      text-indent: -0.7rem;
+    }
+
+      li:nth-child(3n+1)::before {
+        content: "🐯 ";
+      }
+  
+      li:nth-child(3n+2)::before {
+        content: "🐊 ";
+      }
+    
+      li:nth-child(3n)::before {
+        content: "🐘 ";
+      }
+}
+
+.restaurants__data {
+  text-align: initial;
+  padding-bottom: 5%;
+}
+
+.restaurants__container {
+  padding-top: 5%;
+  padding-bottom: 2%;
+}
+
+.restaurants__content {
+  display: flex;
+  justify-content: center;
+  column-gap: 5%;
+  // padding-top: 5%;
+}
+
+.restaurants-col1{
+  display: flex;
+  justify-content: left;
+}
+
+.restaurants-col2 {
+  padding-left: 10%;
+}
+
+.restaurants__card {
+  position: relative;
+  width: 200px;
+  background-image: linear-gradient(to right top, #9dc08b, #afcb99, #c0d6a8, #d1e1b8, #e1ecc8);  padding: 9rem .75rem 1.5rem .75rem;
+  border: $black solid 2px;
+  border-radius: 1.5rem;
+}
+
+.restaurants__img {
+  position: absolute;
+  border-radius: 1.5rem;
+  height: 150px;
+  top: -3rem;
+  left: 0;
+  right: 0;
+  width: 150px;
+  transition: transform .4s;
+}
+
+.restautants__name {
+  font-size: 1.5rem;
+  text-align: center;
+  color: white;
+}
+.restaurants__card:nth-child(odd) {
+  rotate: -5deg;
+}
+.restaurants__card:nth-child(even) {
+  rotate: flex-end;
+  rotate: 5deg;
+}
+.restaurants__card:hover .restaurants__img {
+  transform: translateY(-1rem);
+} 
+
+.img-spare {
+  width: 200px;
+  height: 200px;
+}
+
+.services__img {
+  border-radius: 15%;
+  box-shadow: 10px 5px 5px $secondary;
+}
+
+/*=============== BREAKPOINTS SERVICES ===============*/
+/* For small devices */
+@media screen and (max-width: 340px) {
+  .restaurants__container {
+    margin-inline: 1rem;
+    grid-template-columns: 160px;
+    justify-content: center;
+  }
+}
+
+/* For medium devices */
+@media screen and (min-width:576px){
+  .restaurants__container {
+    grid-template-columns: 400px;
+    justify-content: center;
+    column-gap: 1.5rem;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .restaurants__content {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 412px 490px;
+  }
+  .restaurants__card:nth-child(even) {
+    transform: translateY(10rem);
+  }
+}
+
+/* For large devices */
+
+
+
+
+
+
+// Contact page styles
+article {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.contact__container {
+  padding-top: 10%;
+  padding-bottom: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.contact__left {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 20px;
+}
+
+.contact__left__title h2 {
+  color: $black;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.contact__left__title hr {
+  border: none;
+  width: 150px;
+  height: 5px;
+  background-color: #609966;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.contact__left__input {
+  width: 400px;
+  height: 50px;
+  border: #E1ECC8 2px solid;
+  outline: none;
+  padding-left: 25px;
+  border-radius: 50px;
+}
+
+.contact__left textarea {
+  height: 140px;
+  padding-top: 15px;
+  border-radius: 20px;
+}
+
+.contact__left__input:focus {
+  border: #9DC08B 2px solid;
+}
+
+.contact__left button {
+  display: flex;
+  color: white;
+  font-weight: bold;
+  align-items: center;
+  padding: 15px 30px;
+  border-radius: 20px;
+  background-image: linear-gradient(to right top, #609966, #83ad7b, #a3c293, #c3d6ac, #e1ecc8);
+  cursor: pointer;
+}
+
+.contact__right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/*=============== BREAKPOINTS Contact ===============*/
+@media(max-width:720px){
+  .contact__container {
+    width: 70vw;
+    padding: 5%;
+  }
+  .contact__right {
+    display: none;
+  }
+}
