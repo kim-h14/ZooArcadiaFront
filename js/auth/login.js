@@ -1,1 +1,0 @@
-const loginEmail = document.getElementById('loginEmail');
