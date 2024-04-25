@@ -5,6 +5,12 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Debugging middleware to log requested URLs
+app.use((req, res, next) => {
+  console.log('Requested URL:', req.url);
+  next();
+});
+
 // Serve static files from the root directory
 app.use(express.static(path.join(__dirname, '/public')));
 
@@ -24,6 +30,14 @@ app.use('/scss', express.static(path.join(__dirname, 'scss')));
 app.use((req, res, next) => {
   if (req.url.endsWith('.css')) {
     res.setHeader('Content-Type', 'text/css');
+  }
+  next();
+});
+
+// Set MIME type for JavaScript files
+app.use((req, res, next) => {
+  if (req.url.endsWith('.js')) {
+    res.setHeader('Content-Type', 'text/javascript');
   }
   next();
 });
