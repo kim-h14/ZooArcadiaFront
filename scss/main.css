@@ -12229,6 +12229,7 @@ footer {
 /* Base */
 .animal__section__title {
   color: #609966;
+  font-weight: bold;
   padding-bottom: 3%;
   padding-left: 15%;
 }

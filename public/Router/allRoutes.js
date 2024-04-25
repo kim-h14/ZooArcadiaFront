@@ -9,6 +9,7 @@ export const allRoutes = [
   new Route("/animals", "Nos animaux", "/pages/animals.html"),
   new Route("/contact", "Contactez nous", "/pages/contact.html"),
   new Route("/login", "Connexion", "/pages/login.html"),
+  new Route("/ethics", "Notre éthique", "/pages/ethics.html"),
 ];
 
   // The title is the title of the page that will be displayed in the browser tab
