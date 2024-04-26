@@ -12301,6 +12301,14 @@ footer {
   text-decoration: underline;
 }
 
+.card__details {
+  display: none;
+}
+
+.card__article.expanded .card__details {
+  display: block;
+}
+
 /* Naming animations in hover */
 .card__article:hover .card__data {
   animation: show-data 1s forwards;
