@@ -692,7 +692,7 @@ article {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 15%;
+  padding-top: 10%;
   padding-bottom: 17%;
 }
 
@@ -701,6 +701,16 @@ article {
   font-weight: bold;
   margin-bottom: 5px;
   text-align: center;
+}
+
+.login__img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  margin-bottom: 5%;
 }
 
 .login-form{
