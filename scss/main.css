@@ -12305,7 +12305,7 @@ footer {
   }
   100% {
     opacity: 0;
-    transform: translateY(-100vh) translateX(calc(-50% + 11.9896783172vw)) rotate(1080deg);
+    transform: translateY(-100vh) translateX(calc(-50% + 28.0829795355vw)) rotate(1080deg);
   }
 }
 /* Apply flying animation to heart emojis */
@@ -12691,11 +12691,47 @@ article {
   margin-bottom: 20px;
 }
 
+.employee__reviews__container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 5%;
+  padding-bottom: 9%;
+}
+
+.reviews__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: space-around;
+}
+
+.reviews__item__info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 3%;
+}
+
+.reviews__item__message {
+  padding: 2% 4%;
+  border: solid 2px #609966;
+  border-radius: 10px;
+}
+
+.reviews__item__buttons {
+  padding-top: 5%;
+  display: flex;
+  justify-content: space-between;
+}
+
 .reviews__container {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 15%;
+  padding-top: 10%;
   padding-bottom: 17%;
 }
 
