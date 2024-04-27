@@ -2,7 +2,7 @@ import Route from "./Route.js";
 import { allRoutes, websiteName } from "./allRoutes.js";
 
 // Page 404's route creation
-const page404 = new Route("/404", "Page introuvable", "/pages/404.html");
+const page404 = new Route("/404", "Page introuvable", "/pages/404.html", []);
 
 // Function to get the route from the URL
 const getRouteByUrl = (url) => {
@@ -26,6 +26,24 @@ const loadPageContent = async () => {
   const path = window.location.pathname;
   // get the route from the URL
   const actualRoute = getRouteByUrl(path);
+
+  // Check if the user is authorized to access the page
+  const allRightsArray = actualRoute.authorize;
+  if (allRightsArray.length > 0) {
+    if(allRightsArray.includes("disconnected")){
+      if(isConnected()){
+        window.location.replace("/");
+      }
+    }
+    else {
+      const userRole = getRole();
+      if(!allRightsArray.includes(roleUser)){
+        window.location.replace("/");
+      }
+    }
+  }
+
+
   // load the HTML content of the page
   const html = await fetch(actualRoute.pathHtml).then((data) => data.text());
   // load html content to the element with the id "main-page"
