@@ -30,9 +30,14 @@
           <li class="nav-item">
             <div class="top-home-box opening-hours d-none d-lg-block">Horaires d'ouverture</div>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" data-show="disconnected">
             <div class="top-home-box login d-none d-lg-block">
               <a href="/login"><i class="bi bi-person-fill"></i></a>
+            </i></div>
+          </li>
+          <li class="nav-item" data-show="connected">
+            <div class="top-home-box login d-none d-lg-block">
+              <button class="nav-link btn" id="logout-btn">Déconnexion</button>
             </i></div>
           </li>
         </ul>
@@ -72,8 +77,12 @@
               <li class="nav-item">
                 <a class="btn btn-primary" href="/contact"><i class="bi bi-envelope"></i> Contact</a>
               </li>
-              <li class="nav-item login d-lg-none">
+              <li class="nav-item login d-lg-none" data-show="disconnected">
                 <a class="nav-link" href="/login">Connexion</a>
+              </li>
+              <li class="nav-item login d-lg-none" data-show="connected">
+                <button class="nav-link btn" id="logout-btn-mini">Déconnexion</button>
+              </li>
             </ul>
           </div>
           </div>
@@ -123,7 +132,10 @@
 
 
   <!-- Javascript script -->
-  <!-- <script src="/public/js/script.js"></script> -->
+  <script src="/js/script.js"></script>
+  <!-- <script src="/public/js/auth/login.js"></script>  -->
+
+  
 
   <!-- Router script -->
   <script type="module" src="/Router/router.js"></script>

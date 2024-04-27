@@ -44,6 +44,9 @@ const loadPageContent = async () => {
 
   // set the title of the page
   document.title = actualRoute.title + " - " + websiteName;
+
+  // Show & hide elements based on the role
+  showAndHideElementsForRoles();
 };
 
 // Function to handle the navigation (link click)

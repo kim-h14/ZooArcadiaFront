@@ -6,6 +6,7 @@ const inputPassword = document.getElementById('loginPassword');
 const btnSubmit = document.getElementById('login-btn');
 const loginEmailError = document.getElementById('loginEmailError');
 const loginPasswordError = document.getElementById('loginPasswordError');
+// const logoutBtn = document.getElementById('logout-btn');
 
 
 inputEmail.addEventListener("keyup", function() {
@@ -32,22 +33,20 @@ function validateForm() {
 
 function validateEmail(input){
   console.log("validateEmail function called");
-  // Define a regular expression for email validation
   const emailRegEx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const userEmail = input.value;
   if(userEmail.match(emailRegEx)) {
     // it's valid
+    console.log("Email is valid");
     inputEmail.classList.add("is-valid");
     inputEmail.classList.remove("is-invalid");
-    // loginEmailError.style.display = 'none';
-
     return true;
   }
   else {
     // it's invalid
+    console.log("Email is invalid");
     inputEmail.classList.remove("is-valid");
     inputEmail.classList.add("is-invalid");
-    // loginEmailError.style.display = 'block';
     return false;
   }
 }
@@ -58,19 +57,20 @@ function validatePassword(input){
   const passwordUser = input.value;
   if(passwordUser.match(passwordRegEx)) {
     // it's valid
+    console.log("Password is valid");
     inputPassword.classList.add("is-valid");
     inputPassword.classList.remove("is-invalid");
-    // loginPasswordError.style.display = 'none';
     return true;
   }
   else {
     // it's invalid
+    console.log("Password is invalid");
     inputPassword.classList.remove("is-valid");
     inputPassword.classList.add("is-invalid");
-    // loginPasswordError.style.display = 'block';
     return false;
   }
 }
+
 
 
 function validateRequired(input){
@@ -95,12 +95,25 @@ btnSubmit.addEventListener("click", checkCredentials);
 
 function checkCredentials() {
   console.log("checkCredentials function called");
-  // Here we should call the API to check the credentials in the database
-  // For now we just simulate it
+  // Log the values of inputEmail and inputPassword
+  console.log("Email:", inputEmail.value);
+  console.log("Password:", inputPassword.value);
 
-  if(inputEmail.value == "test@mail.com" && inputPassword.value == "Test1234!") {
+  // Call validateEmail and validatePassword functions
+  const emailValid = validateEmail(inputEmail);
+  const passwordValid = validatePassword(inputPassword);
+
+  if (!emailValid || !passwordValid) {
+    console.log("Invalid email or password format");
+    return; // Exit function if email or password is invalid
+  }
+
+  // Here we should call the API to check the credentials in the database
+  // For now, we just simulate it
+
+  if(inputEmail.value === "test@mail.com" && inputPassword.value === "Test1234!") {
     // Success
-    console.log("Login successful!");
+    alert("Login successful!");
 
     // Get the token from the API
     const token = "lkjsdngfljsqdnglkjsdbglkjqskjgkfjgbqslkfdgbskldfgdfgsdgf";
@@ -108,49 +121,13 @@ function checkCredentials() {
     setToken(token);
     // Save the token in the cookie storage
 
+    setCookie(roleCookieName, "admin", 7);
+
     // Redirect to dashboard
     window.location.replace("/");
-  }
-  else {
+  } else {
     // Error
-    console.log("Invalid credentials!"); 
+    console.log("Invalid credentials!");
   }
-};
-
-
-const tokenCookieName = "accesstoken";
-
-// Set token to cookie
-function setToken(token) {
-  setCookie(tokenCookieName, token, 1);
-}
-
-function getToken() {
-  return getCookie(tokenCookieName);
-}
-
-function setCookie(name,value,days) {
-  var expires = "";
-  if (days) {
-      var date = new Date();
-      date.setTime(date.getTime() + (days*24*60*60*1000));
-      expires = "; expires=" + date.toUTCString();
-  }
-  document.cookie = name + "=" + (value || "")  + expires + "; path=/";
-}
-
-function getCookie(name) {
-  var nameEQ = name + "=";
-  var ca = document.cookie.split(';');
-  for(var i=0;i < ca.length;i++) {
-      var c = ca[i];
-      while (c.charAt(0)==' ') c = c.substring(1,c.length);
-      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-  }
-  return null;
-}
-
-function eraseCookie(name) {   
-  document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
