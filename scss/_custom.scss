@@ -338,12 +338,64 @@ footer {
   margin-bottom: .25rem;
 }
 
+.card__data {
+  width: 280px;
+  background-color: #E1ECC8;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 8px 24px hsla(0, 0%, 0%, .15);
+  border-radius: 1rem;
+  position: absolute;
+  bottom: -9rem;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  opacity: 0;
+  transition: opacity 1s 1s;
+}
+
 .card__animal__title {
   font-size: large;
   font-weight: 500;
   color: #9DC08B;
   margin-bottom: .75rem;
 }
+
+/* Heart emoji style */
+.heart {
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+/* Flying heart animation */
+@keyframes fly {
+  0% {
+    opacity: 1;
+    transform: translateY(0) translateX(0) rotate(0);
+    
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100vh) translateX(calc(-50% + random() * 100vw)) rotate(1080deg);
+
+  }
+}
+
+/* Apply flying animation to heart emojis */
+.flying-heart {
+  position: fixed;
+  color: red;
+  font-size: 24px; /* Adjust font size as needed */
+  z-index: 9999; /* Ensure emojis are above other elements */
+  pointer-events: none; /* Allow clicks to pass through the emojis */
+  animation: fly 5s linear;
+}
+
+.like-counter {
+  display: none;
+  margin-left: 10px;
+  display: inline;
+}
+
 
 .card__animal__btn {
   text-decoration: none;
