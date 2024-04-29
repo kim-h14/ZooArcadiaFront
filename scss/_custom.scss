@@ -517,143 +517,42 @@ footer {
   color: $black;
 }
 
-
 .services__title {
   color: $dark;
   font-weight: 600;
   padding-bottom: 2%;
 }
 
-.restaurants__list {
-  justify-content: left;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-
-    li {
-      padding-left: 1rem;
-      text-indent: -0.7rem;
-    }
-
-      li:nth-child(3n+1)::before {
-        content: "🐯 ";
-      }
-  
-      li:nth-child(3n+2)::before {
-        content: "🐊 ";
-      }
-    
-      li:nth-child(3n)::before {
-        content: "🐘 ";
-      }
-}
-
-.restaurants__data {
-  text-align: initial;
-  padding-bottom: 5%;
-}
-
-.restaurants__container {
-  padding-top: 5%;
-  padding-bottom: 2%;
-}
-
-.restaurants__content {
+.restaurant__section {
   display: flex;
-  justify-content: center;
-  column-gap: 5%;
-  // padding-top: 5%;
+  flex-wrap: wrap;
+  margin-top: 55px;
+  margin-bottom: 70px;
 }
 
-.restaurants-col1{
-  display: flex;
-  justify-content: left;
+.resto__jungle {
+  background-image: url('/assets/images/about/asianFood.jpeg');
+  background-size: cover;
 }
 
-.restaurants-col2 {
-  padding-left: 10%;
+.resto__safari {
+  background-image: url('/assets/images/about/picnicFood.jpeg');
+  background-size: cover;
 }
 
-.restaurants__card {
-  position: relative;
-  width: 200px;
-  background-image: linear-gradient(to right top, #9dc08b, #afcb99, #c0d6a8, #d1e1b8, #e1ecc8);  padding: 9rem .75rem 1.5rem .75rem;
-  border: $black solid 2px;
-  border-radius: 1.5rem;
+.resto__bayou {
+  background-image: url('/assets/images/about/southernFood.jpeg');
+  background-size: cover;
 }
 
-.restaurants__img {
-  position: absolute;
-  border-radius: 1.5rem;
-  height: 150px;
-  top: -3rem;
-  left: 0;
-  right: 0;
-  width: 150px;
-  transition: transform .4s;
-}
-
-.restautants__name {
-  font-size: 1.5rem;
-  text-align: center;
+.resto__name {
   color: white;
-}
-.restaurants__card:nth-child(odd) {
-  rotate: -5deg;
-}
-.restaurants__card:nth-child(even) {
-  rotate: flex-end;
-  rotate: 5deg;
-}
-.restaurants__card:hover .restaurants__img {
-  transform: translateY(-1rem);
-} 
-
-.img-spare {
-  width: 200px;
-  height: 200px;
 }
 
 .services__img {
-  border-radius: 15%;
-  box-shadow: 10px 5px 5px $secondary;
+  border-radius: 30px;
+  width: 100%;
 }
-
-/*=============== BREAKPOINTS SERVICES ===============*/
-/* For small devices */
-@media screen and (max-width: 340px) {
-  .restaurants__container {
-    margin-inline: 1rem;
-    grid-template-columns: 160px;
-    justify-content: center;
-  }
-}
-
-/* For medium devices */
-@media screen and (min-width:576px){
-  .restaurants__container {
-    grid-template-columns: 400px;
-    justify-content: center;
-    column-gap: 1.5rem;
-  }
-}
-
-@media screen and (min-width: 768px) {
-  .restaurants__content {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-columns: 412px 490px;
-  }
-  .restaurants__card:nth-child(even) {
-    transform: translateY(10rem);
-  }
-}
-
-/* For large devices */
-
-
-
-
-
 
 // Contact page styles
 article {
