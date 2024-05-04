@@ -1,65 +1,58 @@
 -- User table
-CREATE TABLE user (
-  id_user INT AUTO_INCREMENT,
-  username VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL,
-  password VARCHAR(255) NOT NULL,
-  type ENUM('admin', 'employee', 'vet') NOT NULL
-)
+CREATE TYPE staff_role AS ENUM ('admin', 'employee', 'vet');
+
+CREATE TABLE staff (
+	id_staff SERIAL PRIMARY KEY,
+	email VARCHAR(255) NOT NULL,
+	password VARCHAR(255) NOT NULL,
+	current_staff staff_role NOT NULL
+);
+
 
 -- Services table
 CREATE TABLE services (
-  id_service INT,
-  name_service VARCHAR(255) NOT NULL,
-  description_service TEXT NOT NULL
-)
+	id_services SERIAL PRIMARY KEY,
+	services_name VARCHAR(255) NOT NULL,
+	services_description VARCHAR(255) NOT NULL,
+	image_services_url VARCHAR(255) NOT NULL
+);
+
 
 -- Habitat table
-CREATE TABLE habitat (
-  id_habitat INT,
-  name_habitat VARCHAR(255) NOT NULL,
-  description_habitat TEXT NOT NULL
-)
+CREATE TABLE habitats (
+	id_habitats SERIAL PRIMARY KEY,
+	habitats_name VARCHAR(255) NOT NULL,
+	habitats_description VARCHAR(255) NOT NULL,
+	image_habitats_url VARCHAR(255) NOT NULL
+);
 
 -- Animal table
-CREATE TABLE animal (
-  id_animal INT,
-  name_animal VARCHAR(255) NOT NULL,
-  species_animal VARCHAR(255) NOT NULL,
-  habitat_id INT REFERENCES habitat(id_habitat) NOT NULL
-)
+CREATE TABLE animals (
+	id_animals SERIAL PRIMARY KEY,
+	animal_name VARCHAR(255) NOT NULL,
+	animal_species VARCHAR(255) NOT NULL,
+	animal_habitat INT REFERENCES habitats(id_habitats),
+	image_animal_url VARCHAR(255) NOT NULL
+);
 
 -- Vet report table
+CREATE TYPE animal_state AS ENUM ('good', 'bad', 'critical');
+
 CREATE TABLE vet_report (
-  id_report INT, 
-  vet_id INT REFERENCES user(id_user) NOT NULL,
-  id_animal INT REFERENCES animal(id_animal) NOT NULL,
-  animal_state ENUM('good', 'bad', 'critical') NOT NULL,
-  food_served VARCHAR(255) NOT NULL,
-  food_quantity INT NOT NULL,
-  date_passage DATE NOT NULL,
-  description_report TEXT
-) 
+	id_report SERIAL PRIMARY KEY,
+	vet_id INT REFERENCES staff(id_staff) NOT NULL,
+	animal_id INT REFERENCES animals(id_animals) NOT NULL,
+	animal_feeling animal_state NOT NULL,
+	food_served VARCHAR(255) NOT NULL,
+	food_quantity INT NOT NULL,
+	date_passage DATE NOT NULL,
+	report_description TEXT
+);
 
 -- Client reviews table
 CREATE TABLE client_reviews (
-  id_review INT,
-  pseudo_client VARCHAR(255) NOT NULL,
-  review TEXT NOT NULL,
-  valid BOOLEAN NOT NULL
-)
-
--- Connextion table
-CREATE TABLE connexion (
-  id_connexion INT,
-  user_id INT REFERENCES user(id_user) NOT NULL,
-  date_connexion TIMESTAMP
-)
-
-
--- Static Consultation table
-CREATE TABLE static_consultation (
-  id_static_consultation INT AUTO_INCREMENT,
-  id_animal INT REFERENCES animal(id_animal) NOT NULL,
-  consultation_count INT NOT NULL,
-)
+	id_review SERIAL PRIMARY KEY,
+	client_pseudo VARCHAR(255) NOT NULL,
+	review TEXT NOT NULL,
+	valid BOOLEAN NOT NULL
+);
