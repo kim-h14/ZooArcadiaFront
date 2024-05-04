@@ -22,7 +22,6 @@ db.connect((err) => {
     callback(err, null);
   } else {
     console.log('Connected to the database');
-    callback(null, db);
   }
 });
 }
