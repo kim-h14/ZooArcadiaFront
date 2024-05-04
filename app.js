@@ -1,9 +1,13 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const bodyParser = require('body-parser');
+const connectDB = require('./databases/pgDB');
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+app.use(bodyParser.json());
 
 // Debugging middleware to log requested URLs
 app.use((req, res, next) => {
@@ -40,6 +44,19 @@ app.use((req, res, next) => {
     res.setHeader('Content-Type', 'text/javascript');
   }
   next();
+});
+
+// Route to connect to the database
+app.get('/connect-db', (req, res) => {
+  connectDB((err, db) => {
+    if (err) {
+      console.error('Error connecting to the database:', err);
+      res.status(500).send('Error connecting to the database');
+    } else {
+      console.log('Successfully connected to the database');
+      res.send('Database connected successfully');
+    }
+  });
 });
 
 // Define a route to serve index.html for all routes
