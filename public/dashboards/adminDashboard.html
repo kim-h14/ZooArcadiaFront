@@ -1,55 +1,269 @@
-<article id="adminDashboard" class="dashboard">
-    <h2>Tableau de bord administrateur</h2>
 
-    
+<div class="container-fluid">
+
+<article id="adminDashboard" class="dashboard">
+    <h2 class="text-center big_title_dash">TABLEAU DE BORD ADMINISTRATEUR</h2>
+
     <section class="dashboard-content">
+      <div class="row">
         <div class=" admin_users">
-            <h3>Utilisateurs</h3>
-            <p>Gestion des utilisateurs</p>
-            <!-- Form to create new employee/vet accounts -->
-            <!-- Table to display existing accounts. Options to modify/delete -->
+          <h3 class="dashboard-content-title">Utilisateurs</h3>
+          <p>Gestion des utilisateurs</p>
+          <!-- Form to create new employee/vet accounts -->
+          <!-- Form container -->
+        <div class="col">
+          <div class="form-container">
+            <h4>Créer un nouvel utilisateur</h4>
+            <form id="createUserForm">
+              <label for="username">Nom d'utilisateur:</label><br>
+              <input type="text" id="username" name="username" required><br>
+              
+              <label for="email">Email:</label><br>
+              <input type="email" id="email" name="email" required><br>
+              
+              <label for="password">Mot de passe:</label><br>
+              <input type="password" id="password" name="password" required><br>
+              
+              <label for="role">Rôle:</label><br>
+              <select id="role" name="role" required>
+                  <option value="employee">Employé</option>
+                  <option value="vet">Vétérinaire</option>
+              </select><br>
+              
+              <button type="submit" class="btn btn-primary btn-block btn-submit">Créer</button>
+            </form>
+          </div> 
         </div>
+
+        <!-- Table to display existing accounts. Options to modify/delete -->
+        <div class="col">
+          <div class="list-container">
+            <h4>Utilisateurs existants</h4>
+          <div class="table-responsive">
+            <table id="userTable" class="table table-striped">
+              <thead>
+                  <tr>
+                      <th>Nom d'utilisateur</th>
+                      <th>Email</th>
+                      <th>Rôle</th>
+                      <th>Actions</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <!-- Rows of existing accounts will be dynamically added here -->
+                  <tr>
+                      <td>JohnDoe</td>
+                      <td>johndoe@example.com</td>
+                      <td>Employé</td>
+                      <td>
+                          <button onclick="editUser()" class="btn btn-primary">Modifier</button>
+                          <button onclick="deleteUser()" class="btn btn-danger">Supprimer</button>
+                      </td>
+                  </tr>
+                  <!-- Additional rows will follow the same structure -->
+              </tbody>
+            </table>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
     </section>
 
     <section class="dashboard-content">
+      <div class="row">
         <div class="admin_services">
-            <h3>Services</h3>
-            <p>Gestion des services</p>
-            <!-- Form to add, update, or delete zoo services -->
-            <!-- List of current zoo services with options to edit or remove -->
+          <h3 class="dashboard-content-title">Services</h3>
+          <p>Gestion des services</p>
+          <!-- Form to add, update, or delete zoo services -->
+          <div class="col">
+            <div class="form-container">
+              <h4>Ajouter un service</h4>
+              <form id="serviceForm">
+                <label for="serviceName">Nom du service:</label><br>
+                <input type="text" id="serviceName" name="serviceName" required><br>
+                
+                <label for="serviceDescription">Description:</label><br>
+                <textarea id="serviceDescription" name="serviceDescription" rows="4" cols="50" required></textarea><br>
+                
+                <label for="serviceAction">Action:</label><br>
+                <select id="serviceAction" name="serviceAction" required>
+                    <option value="add">Ajouter</option>
+                    <option value="update">Mettre à jour</option>
+                    <option value="delete">Supprimer</option>
+                </select><br>
+                
+                <button type="submit" class="btn btn-primary btn-block btn-submit">Soumettre</button>
+            </form>
+          </div>
+
+          <!-- List of current zoo services with options to edit or remove -->
+          <div class="col">
+            <div class="list-container">
+              <h4>Services existants</h4>
+              <ul id="serviceList">
+                <li>
+                    <strong>Nom du service:</strong> Restraurants<br>
+                    <strong>Description:</strong> Description du service 1<br>
+                    <button onclick="editService(1)" class="btn btn-primary">Modifier</button>
+                    <button onclick="deleteService(1)" class="btn btn-danger">Supprimer</button>
+                </li>
+                <!-- Additional service items will follow the same structure -->
+            </ul>
+            </div>
+          </div>
+    </div>
+      </div>
+    </section>
+  
+
+    <section class="dashboard-content">
+      <div class="row">
+        <div class="admin_habitats">
+          <h3>Habitats</h3>
+          <p>Gestion des habitats</p>
+          <!-- Form to add, update, or delete habitats -->
+          <div class="col">
+            <div class="form-container">
+              <h4>Ajouter un habitat</h4>
+              <form id="habitatForm">
+                <label for="habitatName">Nom de l'habitat:</label><br>
+                <input type="text" id="habitatName" name="habitatName" required><br>
+                
+                <label for="habitatDescription">Description:</label><br>
+                <textarea id="habitatDescription" name="habitatDescription" rows="4" cols="50" required></textarea><br>
+                
+                <label for="habitatAction">Action:</label><br>
+                <select id="habitatAction" name="habitatAction" required>
+                    <option value="add">Ajouter</option>
+                    <option value="update">Mettre à jour</option>
+                    <option value="delete">Supprimer</option>
+                </select><br>
+                
+                <button type="submit" class="btn btn-primary btn-block btn-submit">Soumettre</button>
+            </form>
+            </div>
+          </div>
+
+          <!-- List of current habitats with options to edit or remove -->     
+         <div class="col">
+          <div class="list-container">
+            <h4>Habitats existants</h4>
+            <ul id="habitatList">
+              <li>
+                  <strong>Nom de l'habitat:</strong> Jungle<br>
+                  <strong>Description:</strong> Description de l'habitat 1<br>
+                  <button onclick="editHabitat(1)" class="btn btn-primary">Modifier</button>
+                  <button onclick="deleteHabitat(1)" class="btn btn-danger">Supprimer</button>
+              </li>
+              <!-- Additional habitat items will follow the same structure -->
+          </ul>
+          </div>
+         </div>
+        </div>
       </div>
     </section>
 
     <section class="dashboard-content">
-        <div class="admin_habitats">
-            <h3>Habitats</h3>
-            <p>Gestion des habitats</p>
-            <!-- Form to add, update, or delete habitats -->
-            <!-- List of current habitats with options to edit or remove -->     
-       </div>
-    </section>
-
-    <section class="dashboard-content">
+      <div class="row">
         <div class="admin_animals">
           <h3>Animaux</h3>
           <p>Gestion des animaux</p>
           <!-- Form to add, update, or delete animals -->
+          <div class="col">
+            <div class="form-container">
+              <h4>Ajouter un animal</h4>
+              <form id="animalForm">
+                <label for="animalName">Nom de l'animal:</label><br>
+                <input type="text" id="animalName" name="animalName" required><br>
+                
+                <label for="animalSpecies">Espèce:</label><br>
+                <input type="text" id="animalSpecies" name="animalSpecies" required><br>
+                
+                <label for="animalHabitat">Habitat:</label><br>
+                <select id="animalHabitat" name="animalHabitat" required>
+                    <option value="habitat1">Habitat 1</option>
+                    <option value="habitat2">Habitat 2</option>
+                    <!-- Add more habitats as needed -->
+                </select><br>
+                
+                <label for="animalAction">Action:</label><br>
+                <select id="animalAction" name="animalAction" required>
+                    <option value="add">Ajouter</option>
+                    <option value="update">Mettre à jour</option>
+                    <option value="delete">Supprimer</option>
+                </select><br>
+                
+                <button type="submit" class="btn btn-primary btn-block btn-submit">Soumettre</button>
+            </form>
+            </div>
+          </div>
+
           <!-- List of animals within each habitat with options to edit or remove -->
+          <div class="col">
+            <div class="list-container">
+              <h4>Animaux existants</h4>
+              <ul id="animalList">
+                <li>
+                  <strong>Nom de l'animal:</strong> Animal 1<br>
+                  <strong>Espece:</strong> Espece de l'animal 1<br>
+                  <strong>Habitat:</strong> Habitat 1<br>
+                  <button onclick="editAnimal(1)" class="btn btn-primary">Modifier</button>
+                  <button onclick="deleteAnimal(1)" class="btn btn-danger">Supprimer</button>
+                </li>
+              <!-- Additional animal items will follow the same structure -->
+              </ul>
+            </div>
+          </div>
+      </div>
       </div>
     </section>
 
     <section class="dashboard-content">
-      <div class="admin_reports">
-        <h3>Rapports vétérinaires</h3>
-        <!-- Table or list displaying all veterinarian reports with filters -->
+      <div class="row">
+        <div class="admin_reports">
+          <h3>Rapports vétérinaires</h3>
+          <!-- Table or list displaying all veterinarian reports with filters -->
+          <div class="col">
+            <div class="list-container">
+            <div class="table-responsive">
+              <h4>Rapports existants</h4>
+              <table id="vetReportTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Vétérinaire</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2024-05-05</td>
+                        <td>Rapport de santé</td>
+                        <td>Dr. Smith</td>
+                    </tr>
+                    <!-- Additional rows will follow the same structure -->
+                </tbody>
+            </table>
+            </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
     <section class="dashboard-content">
-      <div class="admin_statistics">
-        <h3>Consultation statistiques des animaux</h3>
-        <!-- Graph or table displaying consultation statistics per animal -->
+      <div class="row">
+        <div class="admin_statistics">
+          <h3>Consultation statistiques des animaux</h3>
+          <!-- Graph or table displaying consultation statistics per animal -->
+          <div class="graphs">
+            <canvas id="animalStatisticsChart"></canvas>
+  
+          </div>
+        </div>
       </div>
     </section>
     
 </article>
+</div>
