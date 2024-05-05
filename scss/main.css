@@ -12305,7 +12305,7 @@ footer {
   }
   100% {
     opacity: 0;
-    transform: translateY(-100vh) translateX(calc(-50% + 15.9186581916vw)) rotate(1080deg);
+    transform: translateY(-100vh) translateX(calc(-50% + 47.8945783914vw)) rotate(1080deg);
   }
 }
 /* Apply flying animation to heart emojis */
@@ -12689,7 +12689,6 @@ article {
 
 .dashboard-content {
   margin-bottom: 30px;
-  align-items: center;
 }
 
 .form-container {

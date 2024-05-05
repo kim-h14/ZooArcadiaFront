@@ -14,7 +14,7 @@
         <div class="col">
           <div class="form-container">
             <h4>Créer un nouvel utilisateur</h4>
-            <form id="createUserForm">
+            <form id="createUserForm" action="/create_staff" method="POST">
               <label for="username">Nom d'utilisateur:</label><br>
               <input type="text" id="username" name="username" required><br>
               
@@ -51,13 +51,13 @@
               </thead>
               <tbody>
                   <!-- Rows of existing accounts will be dynamically added here -->
-                  <tr>
+                  <tr id="staff_row">
                       <td>JohnDoe</td>
                       <td>johndoe@example.com</td>
                       <td>Employé</td>
                       <td>
-                          <button onclick="editUser()" class="btn btn-primary">Modifier</button>
-                          <button onclick="deleteUser()" class="btn btn-danger">Supprimer</button>
+                          <button onclick="editStaff()" class="btn btn-primary" id="modify-staff">Modifier</button>
+                          <button onclick="deleteStaff()" class="btn btn-danger">Supprimer</button>
                       </td>
                   </tr>
                   <!-- Additional rows will follow the same structure -->
@@ -86,14 +86,7 @@
                 <label for="serviceDescription">Description:</label><br>
                 <textarea id="serviceDescription" name="serviceDescription" rows="4" cols="50" required></textarea><br>
                 
-                <label for="serviceAction">Action:</label><br>
-                <select id="serviceAction" name="serviceAction" required>
-                    <option value="add">Ajouter</option>
-                    <option value="update">Mettre à jour</option>
-                    <option value="delete">Supprimer</option>
-                </select><br>
-                
-                <button type="submit" class="btn btn-primary btn-block btn-submit">Soumettre</button>
+                <button type="submit" class="btn btn-primary btn-block btn-submit">Ajouter le service</button>
             </form>
           </div>
 
@@ -101,15 +94,27 @@
           <div class="col">
             <div class="list-container">
               <h4>Services existants</h4>
-              <ul id="serviceList">
-                <li>
-                    <strong>Nom du service:</strong> Restraurants<br>
-                    <strong>Description:</strong> Description du service 1<br>
-                    <button onclick="editService(1)" class="btn btn-primary">Modifier</button>
-                    <button onclick="deleteService(1)" class="btn btn-danger">Supprimer</button>
-                </li>
-                <!-- Additional service items will follow the same structure -->
-            </ul>
+              <table id="serviceTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nom du service</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="serviceList">
+                    <tr>
+                        <td>Restaurants</td>
+                        <td>Description du service 1</td>
+                        <td>
+                            <button onclick="editService()" class="btn btn-primary">Modifier</button>
+                            <button onclick="deleteService()" class="btn btn-danger">Supprimer</button>
+                        </td>
+                    </tr>
+                    <!-- Additional service rows will follow the same structure -->
+                </tbody>
+            </table>
+            
             </div>
           </div>
     </div>
