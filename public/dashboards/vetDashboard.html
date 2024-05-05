@@ -1,29 +1,71 @@
-<article id="employeeDashboard" class="dashboard">
-  <h2>Tableau de bord vétérinaire</h2>
+<div class="container-fluid">
+  <article id="employeeDashboard" class="dashboard">
+    <h2 class="text-center big_title_dash">TABLEAU DE BORD VÉTÉRINAIRE</h2>
+  
+    <section class="dashboard-content">
+      <div class="row">
+          <div class="vet_animal-reports">
+              <h3 class="dashboard-content-title">Rapports sur les animaux</h3>
+              <div class="col">
+                <div class="form-container">
+                  <!-- Form to fill out reports for each animal -->
+                  <form id="animalReportForm">
+                    <label for="animalName">Nom de l'animal:</label><br>
+                    <input type="text" id="animalName" name="animalName" required><br>
+                    
+                    <label for="reportDescription">Description du rapport:</label><br>
+                    <textarea id="reportDescription" name="reportDescription" rows="4" cols="50" required></textarea><br>
+                    
+                    <label for="reportDate">Date du rapport:</label><br>
+                    <input type="text" id="reportDate" name="reportDate" placeholder="JJ/MM/AAAA" required>
 
+                   <button type="submit" class="btn btn-primary btn-block">Soumettre</button>
+                </form>
+                </div>
+              </div>
+          </div>
+      </div>
+  </section>
+  
   
   <section class="dashboard-content">
-      <div class="vet_animal-reports">
-          <h3>Animaux</h3>
-          <p>Rapports sur les animaux</p>
-        <!-- Form to fill out reports for each animal -->
+    <div class="row">
+        <div class="vet_food-record">
+            <h3 class="dashboard-content-title">Registre alimentaire</h3>
+            <p>Gestion de l'alimentation des animaux</p>
+            <!-- Table displaying existing food consumption records with options to filter -->
+            <div class="col">
+              <div class="table-responsive">
+                <table id="foodRecordTable" class="table table-striped">
+                  <thead>
+                      <tr>
+                          <th>Date</th>
+                          <th>Nom de l'animal</th>
+                          <th>Type de nourriture</th>
+                          <th>Quantité</th>
+                          <th>Actions</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <!-- Rows of existing food consumption records will be dynamically added here -->
+                      <tr>
+                          <td>2024-05-05</td>
+                          <td>Lion</td>
+                          <td>Viande</td>
+                          <td>2 kg</td>
+                          <td>
+                              <button onclick="editFoodRecord()" class="btn btn-primary">Modifier</button>
+                              <button onclick="deleteFoodRecord()" class="btn btn-danger">Supprimer</button>
+                          </td>
+                      </tr>
+                      <!-- Additional rows will follow the same structure -->
+                  </tbody>
+              </table>
+              </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-      </div>
-  </section>
-
-  <section class="dashboard-content">
-      <div class="vet_habitats">
-          <h3>Habitats</h3>
-          <p>Commentaires sur les habitats</p>
-        <!-- List of habitats with options to leave comments -->
-      </div>
-  </section>
-
-  <section class="dashboard-content">
-      <div class="vet_food-record">
-          <h3>Registre alimentaire</h3>
-          <p>Gestion de l'alimentation des animaux</p>
-        <!-- Table displaying existing food consumption records with options filter -->  
-     </div>
-  </section>
-</article>
+  </article>
+</div>

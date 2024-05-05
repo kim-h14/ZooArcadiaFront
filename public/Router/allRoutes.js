@@ -11,6 +11,9 @@ export const allRoutes = [
   new Route("/login", "Connexion", "/pages/login.html", [], "/js/auth/login.js"),
   new Route("/ethics", "Notre éthique", "/pages/ethics.html", []),
   new Route("/admindashboard", "Tableau de bord de l'administrateur", "/dashboards/adminDashboard.html", []),
+  new Route("/employeeDashboard", "Tableau de bord de l'administrateur", "/dashboards/employeeDashboard.html", []),
+  new Route("/vetDashboard", "Tableau de bord de l'administrateur", "/dashboards/vetDashboard.html", []),
+
 ];
 
   // The title is the title of the page that will be displayed in the browser tab
