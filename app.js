@@ -1,9 +1,14 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
+const bodyParser = require('body-parser');
+
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Debugging middleware to log requested URLs
 app.use((req, res, next) => {
@@ -41,6 +46,24 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+// Define route handler for POST requests to /login
+
+app.post('/login', (req, res) => {
+  const { Email, Password } = req.body;
+
+  // TO BE REPLACED WITH ACTUAL VALIDATION WHEN TESTING IS DONE
+  if (Email === "test@mail.com" && Password === "Test1234!") {
+    // Success
+    const token = jwt.sign({ email: Email }, 'secret_key');
+    res.redirect("/");
+  } else {
+    // Invalid credentials
+    res.status(401).send('Invalid email or password');
+  }
+});
+
+
 
 // Define a route to serve index.html for all routes
 app.get('*', (req, res) => {
