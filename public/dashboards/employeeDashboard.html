@@ -1,8 +1,6 @@
 <div class="container-fluid">
     <article id="employeeDashboard" class="dashboard">
         <h2 class="text-center big_title_dash">TABLEAU DE BORD EMPLOYÉ</h2>
-      
-        
         <section class="dashboard-content">
             <div class="row">
                 <div class="employee_reviews">
@@ -61,14 +59,13 @@
                                 <td>Restraurants</td>
                                 <td>Description du service 1</td>
                                 <td>
-                                    <button onclick="editService(1)" class="btn btn-primary">Modifier</button>
-                                    <button onclick="deleteService(1)" class="btn btn-danger">Supprimer</button>
+                                    <button onclick="editService()" class="btn btn-primary">Modifier</button>
+                                    <button onclick="deleteService()" class="btn btn-danger">Supprimer</button>
                                 </td>
                             </tr>
                             <!-- Additional rows will follow the same structure -->
                         </tbody>
-                    </table>
-                                   
+                    </table>       
                 </div>
             </div>
         </section>
@@ -78,59 +75,29 @@
                 <h3 class="dashboard-content-title">Registre alimentaire</h3>
                 <p>Gestion de l'alimentation des animaux</p>
                <!-- Form to add food consumption records for animals -->
-            <div class="col">
-                <div class="form-container">
-                    <h4>Ajouter un enregistrement alimentaire</h4>
-                    <form id="foodRecordForm">
-                        <label for="animalName">Nom de l'animal:</label><br>
-                        <input type="text" id="animalName" name="animalName" required><br>
-                        
-                        <label for="feedingTime">Heure d'alimentation:</label><br>
-                        <input type="text" id="feedingTime" name="feedingTime" required><br>
-
-                        <label for="foodType">Type d'aliment:</label><br>
-                        <input type="text" id="foodType" name="foodType" required><br>
-                        
-                        <label for="quantity">Quantité:</label><br>
-                        <input type="text" id="quantity" name="quantity" required><br>
-                        
-                        <button type="submit" class="btn btn-primary btn-block btn-submit">Ajouter</button>
-                    </form>
-                </div>
-            </div>
-
-              <!-- Table displaying existing food consumption records with options to edit or remove -->
+                <div class="row">
               <div class="col-12">
-                <div class="list-container">
-                    <h4>Enregistrements alimentaires existants</h4>
-                    <table id="foodRecordTable" class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Nom de l'animal</th>
-                                <th>Type d'aliment</th>
-                                <th>Quantité</th>
-                                <th>Heure d'alimentation</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Rows of existing food consumption records will be dynamically added here -->
-                            <tr>
-                                <td>[Nom de l'animal]</td>
-                                <td>[Type d'aliment]</td>
-                                <td>[Quantité]</td>
-                                <td>[Heure d'alimentation]</td>
-                                <td>
-                                    <button onclick="editFoodRecord()" class="btn btn-primary">Modifier</button>
-                                    <button onclick="deleteFoodRecord()" class="btn btn-danger">Supprimer</button>
-                                </td>
-                            </tr>
-                            <!-- Additional rows will follow the same structure -->
-                        </tbody>
-                    </table>
+                <div class="form-container">
+                    <h4>Consommation de la nourriture</h4>
+                    <form id="foodRecordForm" action="/add_food_record" method="POST">
+                        <label for="animalName">Nom de l'animal:</label>
+                        <input type="text" class="form-control" id="animalName" name="animalName" required>
+                        
+                        <label for="foodType">Type d'aliment:</label>
+                        <input type="text" class="form-control" id="foodType" name="foodType" required>
+                        
+                        <label for="quantity">Quantité:</label>
+                        <input type="text" class="form-control" id="quantity" name="quantity" required>
+                        
+                        <label for="feedingTime">Heure d'alimentation:</label>
+                        <input type="text" class="form-control" id="feedingTime" name="feedingTime" required>
+                        
+                        <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                    </form>
                 </div>
             </div>  
            </div>
         </section>
+        
       </article>
 </div>

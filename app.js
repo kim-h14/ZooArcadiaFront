@@ -139,7 +139,7 @@ app.post('/add_service', async (req, res) => {
   }
 });
 
-// Handle PUT requests to update a service for admin Dashboard
+// Handle PUT requests to update a service for admin & employee Dashboards
 app.put('/update_service', async (req, res) => {
   const idService = req.params.id;
   const {serviceName, serviceDescription} = req.body;
@@ -162,7 +162,7 @@ app.put('/update_service', async (req, res) => {
   }
 });
 
-// Handle DELETE requests to delete a service for admin Dashboard
+// Handle DELETE requests to delete a service for admin & employee Dashboards
 app.delete('/delete_service', async (req, res) => {
   const serviceId = req.query.id;
 
@@ -179,8 +179,6 @@ app.delete('/delete_service', async (req, res) => {
       res.status(500).json({ message: 'Error deleting service' });
   }
 });
-
-
 
 // Handle POST requests to add a new habitat for admin Dashboard
 app.post('/create_habitat', async (req, res) => {
@@ -283,6 +281,42 @@ app.delete('/delete_animal', (req, res) => {
     res.status(500).send('Erreur lors de la suppression de l\'animal.');
   }
 });
+
+// Handle POST requests to approve reviews for employee Dashboard
+app.post('/approve_review', (req, res) => {
+  const reviewID = req.body.reviewID;
+
+  // /!/ UPDATE WHEN DATABASE HAS BEEN IMPLEMENTED
+  res.status(200).send('L\'avis a été approuvé avec succès.');
+});
+
+// Handle POST requests to reject reviews for employee Dashboard
+app.post('/reject_review', (req, res) => {
+  const reviewID = req.body.reviewID;
+
+  // /!/ UPDATE WHEN DATABASE HAS BEEN IMPLEMENTED
+  res.status(200).send('L\'avis a été rejeté avec succès.');
+});
+
+// Handle POST requests to add foor record for employee Dashboard
+// mock database
+// ====== DELETE WHEN DATABASE HAS BEEN IMPLEMENTED ======
+app.post('/add_food_record', (req, res) => {
+  // Extract data from the request body
+  const { animalName, foodType, quantity, feedingTime } = req.body;
+
+//  ADD CODE WHEN DATABASE HAS BEEN IMPLEMENTED
+  console.log('Received data:');
+  console.log('Animal Name:', animalName);
+  console.log('Food Type:', foodType);
+  console.log('Quantity:', quantity);
+  console.log('Feeding Time:', feedingTime);
+
+  // Send a response indicating success
+  res.status(200).json({ message: 'Food record added successfully' });
+});
+
+
 
 // Define a route to serve index.html for all routes
 app.get('*', (req, res) => {
