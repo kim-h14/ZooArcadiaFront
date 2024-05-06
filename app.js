@@ -161,6 +161,7 @@ app.put('/update_service', async (req, res) => {
 });
 
 
+
 // Define a route to serve index.html for all routes
 app.get('*', (req, res) => {
   // Read the content of index.html
