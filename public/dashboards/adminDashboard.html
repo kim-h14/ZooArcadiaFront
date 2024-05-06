@@ -79,7 +79,7 @@
           <div class="col">
             <div class="form-container">
               <h4>Ajouter un service</h4>
-              <form id="serviceForm" action="/update_service">
+              <form id="serviceForm" action="/add_service" method="PUT">
                 <label for="serviceName">Nom du service:</label><br>
                 <input type="text" id="serviceName" name="serviceName" required><br>
                 
@@ -131,7 +131,7 @@
           <div class="col">
             <div class="form-container">
               <h4>Ajouter un habitat</h4>
-              <form id="habitatForm">
+              <form id="habitatForm" action="/create_habitat" method="POST">
                 <label for="habitatName">Nom de l'habitat:</label><br>
                 <input type="text" id="habitatName" name="habitatName" required><br>
                 
@@ -154,15 +154,26 @@
          <div class="col">
           <div class="list-container">
             <h4>Habitats existants</h4>
-            <ul id="habitatList">
-              <li>
-                  <strong>Nom de l'habitat:</strong> Jungle<br>
-                  <strong>Description:</strong> Description de l'habitat 1<br>
-                  <button onclick="editHabitat(1)" class="btn btn-primary">Modifier</button>
-                  <button onclick="deleteHabitat(1)" class="btn btn-danger">Supprimer</button>
-              </li>
-              <!-- Additional habitat items will follow the same structure -->
-          </ul>
+            <table id="habitatTable" class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Nom de l'habitat</th>
+                  <th>Description</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Jungle</td>
+                  <td>Description de l'habitat 1</td>
+                  <td>
+                    <button onclick="editHabitat()" class="btn btn-primary">Modifier</button>
+                    <button onclick="deleteHabitat()" class="btn btn-danger">Supprimer</button>
+                  </td>
+                </tr>
+                <!-- Additional habitat items will follow the same structure -->
+              </tbody>
+            </table>            
           </div>
          </div>
         </div>
@@ -178,7 +189,7 @@
           <div class="col">
             <div class="form-container">
               <h4>Ajouter un animal</h4>
-              <form id="animalForm">
+              <form id="animalForm" action="/create_animal" method="POST">
                 <label for="animalName">Nom de l'animal:</label><br>
                 <input type="text" id="animalName" name="animalName" required><br>
                 
@@ -187,16 +198,9 @@
                 
                 <label for="animalHabitat">Habitat:</label><br>
                 <select id="animalHabitat" name="animalHabitat" required>
-                    <option value="habitat1">Habitat 1</option>
-                    <option value="habitat2">Habitat 2</option>
-                    <!-- Add more habitats as needed -->
-                </select><br>
-                
-                <label for="animalAction">Action:</label><br>
-                <select id="animalAction" name="animalAction" required>
-                    <option value="add">Ajouter</option>
-                    <option value="update">Mettre à jour</option>
-                    <option value="delete">Supprimer</option>
+                    <option value="habitat1">Jungle</option>
+                    <option value="habitat2">Savane</option>
+                    <option value="habitat3">Marais</option>
                 </select><br>
                 
                 <button type="submit" class="btn btn-primary btn-block btn-submit">Soumettre</button>
@@ -208,16 +212,28 @@
           <div class="col">
             <div class="list-container">
               <h4>Animaux existants</h4>
-              <ul id="animalList">
-                <li>
-                  <strong>Nom de l'animal:</strong> Animal 1<br>
-                  <strong>Espece:</strong> Espece de l'animal 1<br>
-                  <strong>Habitat:</strong> Habitat 1<br>
-                  <button onclick="editAnimal(1)" class="btn btn-primary">Modifier</button>
-                  <button onclick="deleteAnimal(1)" class="btn btn-danger">Supprimer</button>
-                </li>
-              <!-- Additional animal items will follow the same structure -->
-              </ul>
+              <table id="animalTable" class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Nom de l'animal</th>
+                    <th>Espece</th>
+                    <th>Habitat</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Animal 1</td>
+                    <td>Espece de l'animal 1</td>
+                    <td>Habitat 1</td>
+                    <td>
+                      <button onclick="editAnimal()" class="btn btn-primary">Modifier</button>
+                      <button onclick="deleteAnimal()" class="btn btn-danger">Supprimer</button>
+                    </td>
+                  </tr>
+                  <!-- Additional animal items will follow the same structure -->
+                </tbody>
+              </table>
             </div>
           </div>
       </div>
@@ -228,8 +244,33 @@
       <div class="row">
         <div class="admin_reports">
           <h3>Rapports vétérinaires</h3>
-          <!-- Table or list displaying all veterinarian reports with filters -->
           <div class="col">
+            <!-- Filter controls -->
+            <div class="filter-controls form-inline mb-3">
+                <label class="mr-2" for="filterDate">Date:</label>
+                <input type="date" class="form-control mr-2" id="filterDate">
+        
+                <label class="mr-2" for="filterVeterinarian">Vétérinaire:</label>
+                <select class="form-control mr-2" id="filterVeterinarian">
+                    <option value="">Tous les vétérinaires</option>
+                    <option value="Dr. Smith">Dr. Smith</option>
+                    <option value="Dr. Johnson">Dr. Johnson</option>
+                    <!-- Add more options for other veterinarians -->
+                </select>
+        
+                <label class="mr-2" for="filterAnimal">Animal:</label>
+                <select class="form-control mr-2" id="filterAnimal">
+                    <option value="">Tous les animaux</option>
+                    <option value="Biscotto">Biscotto</option>
+                    <option value="Flash">Flash</option>
+                    <!-- Add more options for other animals -->
+                </select>
+                
+                <button class="btn btn-primary mr-2" onclick="applyFilters()">Appliquer</button>
+                <button class="btn btn-secondary" onclick="resetFilters()">Réinitialiser</button>
+            </div>
+
+          <!-- Table displaying all veterinarian reports -->
             <div class="list-container">
             <div class="table-responsive">
               <h4>Rapports existants</h4>
@@ -239,6 +280,7 @@
                         <th>Date</th>
                         <th>Description</th>
                         <th>Vétérinaire</th>
+                        <th>Animal</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -246,6 +288,7 @@
                         <td>2024-05-05</td>
                         <td>Rapport de santé</td>
                         <td>Dr. Smith</td>
+                        <td>Biscotto</td>
                     </tr>
                     <!-- Additional rows will follow the same structure -->
                 </tbody>
