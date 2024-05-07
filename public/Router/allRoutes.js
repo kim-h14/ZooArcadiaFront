@@ -12,7 +12,7 @@ export const allRoutes = [
   new Route("/ethics", "Notre éthique", "/pages/ethics.html", []),
   new Route("/admindashboard", "Tableau de bord de l'administrateur", "/dashboards/adminDashboard.html", [], "/js/dashboards/admin.js"),
   new Route("/employeeDashboard", "Tableau de bord de l'administrateur", "/dashboards/employeeDashboard.html", [], '/js/dashboards/employee.js'),
-  new Route("/vetDashboard", "Tableau de bord de l'administrateur", "/dashboards/vetDashboard.html", []),
+  new Route("/vetDashboard", "Tableau de bord de l'administrateur", "/dashboards/vetDashboard.html", [], '/js/dashboards/vet.js'),
 
 ];
 

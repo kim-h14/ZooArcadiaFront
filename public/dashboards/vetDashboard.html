@@ -9,63 +9,109 @@
               <div class="col">
                 <div class="form-container">
                   <!-- Form to fill out reports for each animal -->
-                  <form id="animalReportForm">
-                    <label for="animalName">Nom de l'animal:</label><br>
-                    <input type="text" id="animalName" name="animalName" required><br>
-                    
-                    <label for="reportDescription">Description du rapport:</label><br>
-                    <textarea id="reportDescription" name="reportDescription" rows="4" cols="50" required></textarea><br>
-                    
-                    <label for="reportDate">Date du rapport:</label><br>
-                    <input type="text" id="reportDate" name="reportDate" placeholder="JJ/MM/AAAA" required>
+                  <form id="vet_animal-reports" action="/add_animal_report" method="POST">
+                    <label for="animalName">Nom de l'animal:</label>
+                    <input type="text" class="form-control" id="animalName" name="animalName" required>
 
-                   <button type="submit" class="btn btn-primary btn-block">Soumettre</button>
+                    <label for="animalState">État de l'animal:</label>
+                    <select class="form-control" id="animalState" name="animalState" required>
+                      <option value="">Sélectionner l'état de l'animal</option>
+                      <option value="Sain">Sain</option>
+                      <option value="Malade">Malade</option>
+                      <option value="Blessé">Blessé</option>
+                      <option value="Autre">Autre</option>
+                    </select>     
+
+                    <label for="foodType">Type d'aliment:</label>
+                    <input type="text" class="form-control" id="foodType" name="foodType" required>
+                    
+                    <label for="foodQuantity">Quantité:</label>
+                    <input type="text" class="form-control" id="foodQuantity" name="foodQuantity" required>
+                    
+                    <label for="reportDate">Date de passage:</label>
+                    <input type="text" class="form-control" id="reportDate" name="reportDate" required placeholder="jj/mm/aaaa">
+
+                    <label for="DetailedAnimalState">Détail sur l'état de l'animal:</label>
+                    <input type="text" class="form-control" id="DetailedAnimalState" name="DetailedAnimalState">
+                    
+                    <button type="submit" class="btn btn-primary">Sauvegarder</button>
                 </form>
                 </div>
+              </div>
+          </div>
+      </div>
+    </section>
+
+    <section class="dashboard-content">
+      <div class="row">
+          <div class="vet_food-record">
+              <h3 class="dashboard-content-title">Registre alimentaire</h3>
+              <p>Gestion de l'alimentation des animaux</p>
+              <!-- Select element for choosing the animal -->
+              <label for="animalSelect">Choisir l'animal:</label>
+              <select id="animalSelect" onchange="filterByAnimal()">
+                  <option value="">Tous les animaux</option>
+                  <option value="Lion">Lion</option>
+                  <option value="Tigre">Tigre</option>
+                  <!-- Add more options for other animals -->
+              </select>
+              
+              <!-- Table displaying existing food consumption records with options to filter -->
+              <div class="col">
+                  <div class="table-responsive">
+                      <table id="foodRecordTable" class="table table-striped">
+                          <thead>
+                              <tr>
+                                  <th>Date</th>
+                                  <th>Nom de l'animal</th>
+                                  <th>Type de nourriture</th>
+                                  <th>Quantité</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <!-- Rows of existing food consumption records will be dynamically added here -->
+                              <tr>
+                                  <td>2024-05-05</td>
+                                  <td>Lion</td>
+                                  <td>Viande</td>
+                                  <td>2 kg</td>
+                              </tr>
+                              <!-- Additional rows will follow the same structure -->
+                          </tbody>
+                      </table>
+                  </div>
               </div>
           </div>
       </div>
   </section>
   
   
-  <section class="dashboard-content">
-    <div class="row">
-        <div class="vet_food-record">
-            <h3 class="dashboard-content-title">Registre alimentaire</h3>
-            <p>Gestion de l'alimentation des animaux</p>
-            <!-- Table displaying existing food consumption records with options to filter -->
-            <div class="col">
-              <div class="table-responsive">
-                <table id="foodRecordTable" class="table table-striped">
-                  <thead>
-                      <tr>
-                          <th>Date</th>
-                          <th>Nom de l'animal</th>
-                          <th>Type de nourriture</th>
-                          <th>Quantité</th>
-                          <th>Actions</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <!-- Rows of existing food consumption records will be dynamically added here -->
-                      <tr>
-                          <td>2024-05-05</td>
-                          <td>Lion</td>
-                          <td>Viande</td>
-                          <td>2 kg</td>
-                          <td>
-                              <button onclick="editFoodRecord()" class="btn btn-primary">Modifier</button>
-                              <button onclick="deleteFoodRecord()" class="btn btn-danger">Supprimer</button>
-                          </td>
-                      </tr>
-                      <!-- Additional rows will follow the same structure -->
-                  </tbody>
-              </table>
-              </div>
-            </div>
-        </div>
-    </div>
-</section>
 
+    <section class="dashboard-content">
+      <div class="row">
+          <div class="vet_habitat-comments">
+              <h3 class="dashboard-content-title">Commentaires sur les habitats</h3>
+              <div class="col">
+                <div class="form-container">
+                  <!-- Form to add comments on habitats -->
+                  <form id="vet_habitat-comments" action="/add_habitat_comment" method="POST">
+                    <label for="habitatName">Nom de l'habitat:</label>
+                    <select class="form-control" id="habitatName" name="habitatName" required>
+                      <option value="">Sélectionner le nom de l'habitat</option>
+                      <option value="Jungle">Jungle</option>
+                      <option value="Savanna">Savane</option>
+                      <option value="Bayou">Marais</option>
+                    </select>     
+                    <label for="habitatComment">Commentaire:</label>
+                    <textarea class="form-control" id="habitatComment" name="habitatComment" rows="3" required></textarea>
+                    
+                    <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                  </form>
+                </div>
+              </div>
+          </div>
+      </div>
+    </section>
+    
   </article>
 </div>
