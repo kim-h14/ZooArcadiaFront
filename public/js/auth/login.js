@@ -130,5 +130,3 @@ function checkCredentials() {
     console.log("Invalid credentials!");
   }
 }
-
-// ============== body parser ==============
