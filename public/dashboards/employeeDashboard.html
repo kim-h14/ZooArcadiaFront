@@ -1,0 +1,103 @@
+<div class="container-fluid">
+    <article id="employeeDashboard" class="dashboard">
+        <h2 class="text-center big_title_dash">TABLEAU DE BORD EMPLOYÉ</h2>
+        <section class="dashboard-content">
+            <div class="row">
+                <div class="employee_reviews">
+                    <h3 class="dashboard-content-title">Avis</h3>
+                    <div class="col">
+                        <div classe="list-container">
+                            <h4>Avis en attente d'approbation</h4>
+                            <div class="table table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Pseudo</th>
+                                            <th>Ville</th>
+                                            <th>Email</th>
+                                            <th>Avis</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>John Doe</td>
+                                            <td>Paris</td>
+                                            <td>johndoe@test.com</td>
+                                            <td>Super zoo, j'ai adoré !</td>
+                                            <td>
+                                                <button onclick="approveReview()" class="btn btn-primary">Approuver</button>
+                                                <button onclick="rejectReview()" class="btn btn-danger">Rejeter</button>
+                                            </td>
+                                        </tr>
+                                        <!-- Additional pending reviews will follow the same structure -->
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+            </div>
+        </section>
+      
+        <section class="dashboard-content">
+            <div class="row">
+                <div class="employee_services">
+                    <h3 class="dashboard-content-title">Services</h3>
+                    <p>Gestion des services</p>
+                    <table id="serviceTable" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nom du service</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rows of existing service items will be dynamically added here -->
+                            <tr>
+                                <td>Restraurants</td>
+                                <td>Description du service 1</td>
+                                <td>
+                                    <button onclick="editService()" class="btn btn-primary">Modifier</button>
+                                    <button onclick="deleteService()" class="btn btn-danger">Supprimer</button>
+                                </td>
+                            </tr>
+                            <!-- Additional rows will follow the same structure -->
+                        </tbody>
+                    </table>       
+                </div>
+            </div>
+        </section>
+
+        <section class="dashboard-content">
+            <div class="employee_food-record">
+                <h3 class="dashboard-content-title">Registre alimentaire</h3>
+                <p>Gestion de l'alimentation des animaux</p>
+               <!-- Form to add food consumption records for animals -->
+                <div class="row">
+              <div class="col-12">
+                <div class="form-container">
+                    <h4>Consommation de la nourriture</h4>
+                    <form id="foodRecordForm" action="/add_food_record" method="POST">
+                        <label for="animalName">Nom de l'animal:</label>
+                        <input type="text" class="form-control" id="animalName" name="animalName" required>
+                        
+                        <label for="foodType">Type d'aliment:</label>
+                        <input type="text" class="form-control" id="foodType" name="foodType" required>
+                        
+                        <label for="quantity">Quantité:</label>
+                        <input type="text" class="form-control" id="quantity" name="quantity" required>
+                        
+                        <label for="feedingTime">Heure d'alimentation:</label>
+                        <input type="text" class="form-control" id="feedingTime" name="feedingTime" required>
+                        
+                        <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                    </form>
+                </div>
+            </div>  
+           </div>
+        </section>
+        
+      </article>
+</div>
