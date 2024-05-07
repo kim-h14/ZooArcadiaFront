@@ -780,3 +780,37 @@ article {
   padding-left: 25px;
   border-radius: 20px;
 }
+
+
+// ================== DASHBOARDS STYLES =====================
+
+// Admin Dashboard
+.dashboard-content {
+  margin-bottom: 30px;
+}
+.form-container {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+.list-container {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+}
+
+.big_title_dash {
+  color: $black;
+  padding-top: 2%;
+  padding-bottom: 3%;
+}
+
+.dashboard-content-title {
+  color: $dark;
+}
+
+.btn-submit {
+  margin-top: 15px;
+}
+

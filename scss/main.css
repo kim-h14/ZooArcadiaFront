@@ -12305,7 +12305,7 @@ footer {
   }
   100% {
     opacity: 0;
-    transform: translateY(-100vh) translateX(calc(-50% + 42.374928456vw)) rotate(1080deg);
+    transform: translateY(-100vh) translateX(calc(-50% + 88.2931844316vw)) rotate(1080deg);
   }
 }
 /* Apply flying animation to heart emojis */
@@ -12685,4 +12685,35 @@ article {
   outline: none;
   padding-left: 25px;
   border-radius: 20px;
+}
+
+.dashboard-content {
+  margin-bottom: 30px;
+}
+
+.form-container {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.list-container {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+}
+
+.big_title_dash {
+  color: #609966;
+  padding-top: 2%;
+  padding-bottom: 3%;
+}
+
+.dashboard-content-title {
+  color: #9DC08B;
+}
+
+.btn-submit {
+  margin-top: 15px;
 }/*# sourceMappingURL=main.css.map */

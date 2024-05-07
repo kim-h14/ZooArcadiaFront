@@ -3,6 +3,11 @@ node_modules/
 .DS_Store
 Thumbs.db
 
+<<<<<<< HEAD
 secret.env
+=======
+secret.envsecret.env
+
+>>>>>>> origin/main
 
 
