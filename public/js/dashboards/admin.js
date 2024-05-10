@@ -1,42 +1,70 @@
-// =========== Function to handle staff modifications =========
-document.addEventListener('DOMContentLoaded', () => {
-  // Add event listeners to "Modify" buttons
-  document.querySelectorAll('.modify-staff').forEach(button => {
-      button.addEventListener('click', () => {
-          // Extract the row ID from the button's data-id attribute
-          const rowId = button.dataset.id;
-          editStaff(rowId);
-      });
+// ============== Function to fetch accounts from the server and populate the table ===============
+function fetchAccounts() {
+  $.get('/accounts', function(data) {
+    // Clear existing rows
+    $('#userTable tbody').empty();
+
+    // Iterate through each account and append a row to the table
+    data.forEach(function(account) {
+      $('#userTable tbody').append(`
+        <tr>
+          <td>${account.username}</td>
+          <td>${account.email}</td>
+          <td>${account.role}</td>
+          <td>
+            <button onclick="editStaff()" class="btn btn-primary" id="modify-staff">Modifier</button>
+            <button onclick="deleteStaff()" class="btn btn-danger">Supprimer</button>
+          </td>
+        </tr>
+      `);
+    });
   });
+}
+
+
+// Function to initialize the admin dashboard
+function initializeAdminDashboard() {
+  // Fetch accounts and populate the table
+  fetchAccounts();
+}
+
+// Call the initialize function when the document is ready
+$(document).ready(function() {
+  initializeAdminDashboard();
 });
 
 
-function editStaff() {
-  // Get the row containing the clicked "Modify" button
-  let row = document.getElementById("staff_row");
+// =========== Function to handle staff modifications =========
+function editStaff(button) {
+  // Get the table row by its index
+  const row = document.getElementById("userTable").rows[rowIndex];
 
-  // Extract the stadd information from the row
-  let idStaff = row.cells[0].textContent;
-  let email = row.cells[1].textContent;
-  let currentStaff = row.cells[3].textContent; 
+  // Extract the staff information from the row
+  const user_id = row.cells[0].textContent;
+  const username = row.cells[1].textContent;
+  const email = row.cells[2].textContent;
+  const role = row.cells[3].textContent;
 
   // Prompt the admin to enter the updated information
-  let newIdStaff = prompt("Enter the new staff ID", idStaff);
-  let newEmail = prompt("Enter the new email", email);
-  let newRole = prompt("Enter the new role", currentStaff);
+  const newUsername = prompt("Enter the new username:", username);
+  const newEmail = prompt("Enter the new email:", email);
+  const newRole = prompt("Enter the new role:", role);
 
   // If the admin clicked "Cancel", exit the function
-  if (newIdStaff === null || newEmail === null || newRole === null) {
-    // Create an object to store the updated staff information
-    const updatedStaff = {
-      idStaff: newIdStaff,
-      email: newEmail,
-      current_staff: newRole
-    };
+  if (newUsername === null || newEmail === null || newRole === null) {
+    return;
+  }
+
+  // Create an object to store the updated staff information
+  const updatedStaff = {
+    user_id: user_id,
+    username: newUsername,
+    email: newEmail,
+    role: newRole
   };
-  
-// Send the updated staff information to the server
-  fetch("update_staff", {
+
+  // Send the updated staff information to the server
+  fetch("/update_staff", {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -45,19 +73,53 @@ function editStaff() {
   })
   .then((response) => {
     if (!response.ok) {
-      throw new Error("Erreur lors de la mise à jour du membre du staff.");
-    } 
+      throw new Error("Error updating user.");
+    }
     return response.json();
   })
   .then((data) => {
-    console.log("Les informations ont été mises à jour correctement.", data);
+    console.log("User updated successfully.", data);
     // Refresh the page to display the updated information
     location.reload();
   })
   .catch((error) => {
-    console.error("Il y a eu une erreur lors de la mise à jour du membre du staff.", error);
-    alert("Il y a eu une erreur lors de la mise à jour du membre du staff.");
+    console.error("Error updating user:", error);
+    alert("Error updating user.");
   });
+}
+
+// Add event listeners to "Modifier" buttons after DOM content has loaded
+document.addEventListener('DOMContentLoaded', () => {
+  // Add event listeners to "Modifier" buttons
+  document.querySelectorAll('.modify_staff').forEach(button => {
+      button.addEventListener('click', () => {
+          // Extract the row ID from the button's data-id attribute
+          const rowId = button.dataset.id;
+          editStaff(rowId);
+      });
+  });
+});
+
+// Function to handle staff modifications
+function editStaff(rowIndex) {
+  // Get the editForm element
+  const editForm = document.getElementById("editForm");
+
+  // Set its display property to "block" to make it visible
+  editForm.style.display = "block";
+
+  // Get the table row by its index
+  const row = document.getElementById("userTable").rows[rowIndex];
+
+  // Extract the staff information from the row
+  const username = row.cells[0].textContent;
+  const email = row.cells[1].textContent;
+  const role = row.cells[2].textContent;
+
+  // Populate the editUserForm fields with the extracted information
+  document.getElementById("editUsername").value = username;
+  document.getElementById("editEmail").value = email;
+  document.getElementById("editRole").value = role;
 }
 
 // ============= Function to handle staff deletions ===============

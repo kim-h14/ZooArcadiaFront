@@ -3,10 +3,8 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
 const bodyParser = require('body-parser');
+const { pool, connectDB } = require('./databases/pgDB');
 
-const { Pool } = require('pg');
-// Load environment variables from .env file for sensitive data
-require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -54,21 +52,40 @@ app.use((req, res, next) => {
   next();
 });
 
-// Route to connect to the database
-app.get('/connect-db', (req, res) => {
-  connectDB((err, db) => {
-    if (err) {
-      console.error('Error connecting to the database:', err);
-      res.status(500).send('Error connecting to the database');
-    } else {
-      console.log('Successfully connected to the database');
-      res.send('Database connected successfully');
-    }
+// Call connectDB function to establish database connection
+connectDB()
+  .then(() => {
+    // Database connection successful, continue with defining routes
+    console.log('Database connection successful');
+    
+    // Define route to check database connection
+    app.get('/check-db-connection', (req, res) => {
+      res.status(200).send('Database connection successful');
+    });
+
+    // Define other routes and middleware here...
+  })
+  .catch((error) => {
+    // Database connection failed, log the error
+    console.error('Failed to connect to the database:', error);
+    process.exit(1); // Exit the application with a non-zero exit code
   });
+
+// Route to check database connection
+app.get('/check-db-connection', async (req, res) => {
+  try {
+      // Attempt to connect to the database
+      await connectDB();
+      // If successful, send a success response
+      res.status(200).send('Database connection successful');
+  } catch (error) {
+      // If there's an error, send an error response
+      console.error('Error connecting to the database:', error);
+      res.status(500).send('Error connecting to the database');
+  }
 });
 
 // Define route handler for POST requests to /login
-
 app.post('/login', (req, res) => {
   const { Email, Password } = req.body;
 
@@ -83,58 +100,78 @@ app.post('/login', (req, res) => {
   }
 });
 
-
-// Configure the PostgreSQL connection
-const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'arcadia',
-    password: process.env.DB_PASSWORD,
-    port: 5432, 
-});
-
 // Handle POST requests to create a new staff member for admin Dashboard
 app.post('/create_staff', async (req, res) => {
   try {
-    const {email, password, role} = req.body;
+    const { username, email, password, role } = req.body;
+
+    // Check if required fields are provided
+    if (!username || !email || !password || !role) {
+      return res.status(400).json({ error: 'Username, email, password, and role are required' });
+    }
 
     // Insert the new staff member into the database 
-    // /!/ DECOMMENT ONCE DATABASE HAS BEEN CREATED ======================
-    // const query = 'INSERT INTO staff (email, password, role) VALUES ($1, $2, $3, $4)';
+    const query = 'INSERT INTO account (username, email, password, role) VALUES ($1, $2, $3, $4) RETURNING *';
+    const values = [username, email, password, role];
+    const result = await pool.query(query, values);
 
-    // await pool.query(query, [email, password, role]);
-
-    res.status(201).send('Nouveau membre du staff ajouté correctement.');
+    // Respond with the newly created staff member
+    // res.status(201).json({ message: 'Le nouvel utilisateur a été créé.', data: result.rows[0] });
+    res.send('<script>alert("Le nouvel utilisateur a été créé."); window.location.href = "/admindashboard";</script>');
   } catch (error) {
-    console.error('Il y a eu une erreur à la création du nouveau membre du staff', error);
-    res.status(500).send('Erreur lors de la création du nouveau membre du staff.');
+    console.error('Error creating staff member:', error);
+    res.status(500).json({ error: 'Error creating staff member' });
+  }
+});
+
+// Handle GET requests to fetch all staff members for admin Dashboard
+app.get('/accounts', async (req, res) => {
+  try {
+      // Query to select all accounts from the database
+      const query = 'SELECT * FROM account';
+
+      // Execute the query
+      const { rows } = await pool.query(query);
+
+      // Send the fetched data as JSON response
+      res.status(200).json(rows);
+  } catch (error) {
+      console.error('Error fetching accounts:', error);
+      res.status(500).json({ error: 'Error fetching accounts' });
   }
 });
 
 // Handle PUT requests to update a staff member for admin Dashboard
 app.put('/update_staff', async (req, res) => {
-
-  // /!/ DECOMMENT ONCE DATABASE HAS BEEN CREATED =====================
-  // const idStaff = req.params.idStaff;
-  const {email, password, current_staff} = req.body;
+  const { user_id, username, password, role, email } = req.body;
 
   try {
-    // Update staff member information in the database
-        // /!/ DECOMMENT ONCE DATABASE HAS BEEN CREATED ======================
-    const result = await pool.query('UPDATE users SET email = $1, password = $2, current_staff = $3',
-    [email, password, current_staff]);
+      // Check if all required fields are provided
+      if (!user_id || !username || !password || !role || !email) {
+          return res.status(400).json({ error: 'All fields are required' });
+      }
 
-    // Check if the staff member was found and updated
-    if (result.rowCount === 1) {
-      res.status(200).json({ message: 'User updated successfully' });
-    } else {
-      res.status(404).json({ message: 'User not found' });
-    }
+      // Update staff member information in the database
+      const query = `
+          UPDATE account 
+          SET username = $1, password = $2, role = $3, email = $4 
+          WHERE user_id = $5
+      `;
+      const values = [username, password, role, email, user_id];
+      const result = await pool.query(query, values);
+
+      // Check if the staff member was found and updated
+      if (result.rowCount === 1) {
+          res.status(200).json({ message: 'User updated successfully' });
+      } else {
+          res.status(404).json({ message: 'User not found' });
+      }
   } catch (error) {
-    console.error('Error updating user:', error);
-    res.status(500).json({ message: 'Error updating user' });
+      console.error('Error updating user:', error);
+      res.status(500).json({ message: 'Error updating user' });
   }
 });
+
 
 // Handle DELETE requests to delete a staff member for admin Dashboard
 app.delete('/delete_staff', async (req, res) => {

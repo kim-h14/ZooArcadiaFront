@@ -1,29 +1,26 @@
-const pg = require('pg');
-
+const { Pool } = require('pg');
 require('dotenv').config();
 
-const dbPassword = process.env.DB_PASSWORD;
-
-// Function to establish connectio to the database
-
-function connectDB(callback) {
-  const db = new pg.Client({
+// Configure the PostgreSQL connection
+const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
-    database: 'arcadia',
-    password: dbPassword,
+    database: 'ARCADIA_back',
+    password: process.env.DB_PASSWORD,
     port: 5432,
-  });
-
-db.connect((err) => {
-  if (err) {
-    // If error connecting to the database, log the error to the console
-    console.error('Error connecting to the database');
-    callback(err, null);
-  } else {
-    console.log('Connected to the database');
-  }
 });
-}
 
-module.exports = connectDB();
+// Function to establish database connection
+const connectDB = async () => {
+    try {
+        const client = await pool.connect();
+        console.log('Connected to PostgreSQL database');
+        return client;
+    } catch (error) {
+        console.error('Error connecting to PostgreSQL database:', error);
+        throw error;
+    }
+};
+
+module.exports = { pool, connectDB };
+

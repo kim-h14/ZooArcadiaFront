@@ -26,8 +26,8 @@
               
               <label for="role">Rôle:</label><br>
               <select id="role" name="role" required>
-                  <option value="employee">Employé</option>
-                  <option value="vet">Vétérinaire</option>
+                  <option value="Employé">Employé</option>
+                  <option value="Vétérinaire">Vétérinaire</option>
               </select><br>
               
               <button type="submit" class="btn btn-primary btn-block btn-submit">Créer</button>
@@ -56,8 +56,8 @@
                       <td>johndoe@example.com</td>
                       <td>Employé</td>
                       <td>
-                          <button onclick="editStaff()" class="btn btn-primary" id="modify-staff">Modifier</button>
-                          <button onclick="deleteStaff()" class="btn btn-danger">Supprimer</button>
+                        <button class="btn btn-primary modify_staff">Modifier</button>
+                        <button class="btn btn-danger delete_staff">Supprimer</button>
                       </td>
                   </tr>
                   <!-- Additional rows will follow the same structure -->
@@ -65,6 +65,23 @@
             </table>
           </div>
           </div>
+        </div>
+        <div id="editForm" style="display: none;">
+          <h4>Modifier Utilisateur</h4>
+          <form id="editUserForm">
+            <input type="hidden" id="editUserId" name="userId">
+            <label for="editUsername">Nom d'utilisateur:</label><br>
+            <input type="text" id="editUsername" name="username" required><br>
+            <label for="editEmail">Email:</label><br>
+            <input type="email" id="editEmail" name="email" required><br>
+            <label for="editRole">Rôle:</label><br>
+            <select id="editRole" name="role" required>
+              <option value="employee">Employé</option>
+              <option value="vet">Vétérinaire</option>
+            </select><br>
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Annuler</button>
+          </form>
         </div>
       </div>
     </div>
