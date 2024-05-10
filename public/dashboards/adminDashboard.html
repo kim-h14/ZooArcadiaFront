@@ -96,12 +96,15 @@
           <div class="col">
             <div class="form-container">
               <h4>Ajouter un service</h4>
-              <form id="serviceForm" action="/add_service" method="PUT">
+              <form id="serviceForm" action="/add_service" method="POST">
                 <label for="serviceName">Nom du service:</label><br>
                 <input type="text" id="serviceName" name="serviceName" required><br>
                 
                 <label for="serviceDescription">Description:</label><br>
                 <textarea id="serviceDescription" name="serviceDescription" rows="4" cols="50" required></textarea><br>
+
+                <label for="serviceImage">Image du service:</label><br>
+                <input type="file" id="serviceImage" name="serviceImage" accept="image/*" required><br>
                 
                 <button type="submit" class="btn btn-primary btn-block btn-submit">Ajouter le service</button>
             </form>

@@ -2,6 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
+const multer = require('multer');
 const bodyParser = require('body-parser');
 const { pool, connectDB } = require('./databases/pgDB');
 
@@ -52,6 +53,20 @@ app.use((req, res, next) => {
   next();
 });
 
+// Multer setup for handling file uploads
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    // Save uploaded files to the 'uploads' directory
+    cb(null, 'uploads/');
+  },
+  filename: function(req, file, cb) {
+    // Set the filename to be unique
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname)); 
+  }
+});
+
+const upload = multer({ storage });
+
 // Call connectDB function to establish database connection
 connectDB()
   .then(() => {
@@ -62,8 +77,6 @@ connectDB()
     app.get('/check-db-connection', (req, res) => {
       res.status(200).send('Database connection successful');
     });
-
-    // Define other routes and middleware here...
   })
   .catch((error) => {
     // Database connection failed, log the error
@@ -190,22 +203,51 @@ app.delete('/delete_staff', async (req, res) => {
 });
 
 // Handle POST requests to add a new service for admin Dashboard
-app.post('/add_service', async (req, res) => {
+app.post('/add_service', upload.single('serviceImage'), async (req, res) => {
   try {
-    const { name, description, price } = req.body;
+    // Extract service data from the request body
+    const { serviceName, serviceDescription } = req.body;
+
+    // Check if a file was uploaded
+    if (!req.file) {
+      return res.status(400).send('Aucun fichier image n\'a été téléchargé.');
+    }
+
+    // Assuming Multer middleware is configured to handle file uploads,
+    // the path to the uploaded image is obtained from req.file.path
+    const serviceImage = req.file.path;
 
     // Insert the new service into the database
-         // /!/ DECOMMENT ONCE DATABASE HAS BEEN CREATED ====================
-    // const query = 'INSERT INTO services (name, description, price) VALUES ($1, $2, $3)';
+    const query = 'INSERT INTO service (service_name, service_description, img_service_url) VALUES ($1, $2, $3)';
+    const values = [serviceName, serviceDescription, serviceImage];
+    await pool.query(query, values);
 
-    // await pool.query(query, [name, description, price]);
-
+    // Send a success response
     res.status(201).send('Nouveau service ajouté correctement.');
   } catch (error) {
-    console.error('Il y a eu une erreur lors de l\'ajout du service.', error);
+    // Handle errors
+    console.error('Erreur lors de l\'ajout du service:', error);
     res.status(500).send('Erreur lors de l\'ajout du service.');
   }
 });
+
+// Handle GET requests to fetch all services for admin & employee Dashboards
+app.get('/service', async (req, res) => {
+  try {
+    // Query to select all services from the database
+    const query = 'SELECT * FROM service';
+
+    // Execute the query
+    const { rows } = await pool.query(query);
+
+    // Send the fetched data as JSON response
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error('Error fetching services:', error);
+    res.status(500).json({ error: 'Error fetching services' });
+  }
+});
+
 
 // Handle PUT requests to update a service for admin & employee Dashboards
 app.put('/update_service', async (req, res) => {
@@ -264,6 +306,23 @@ app.post('/create_habitat', async (req, res) => {
   } catch (error) {
     console.error('Erreur lors de l\'ajout de l\'habitat:', error);
     res.status(500).send('Erreur lors de l\'ajout de l\'habitat.');
+  }
+});
+
+// Handle GET requests to fetch all habitats for admin Dashboard
+app.get('/habitats', async (req, res) => {
+  try {
+    // Query to select all habitats from the database
+    const query = 'SELECT * FROM habitat';
+
+    // Execute the query
+    const { rows } = await pool.query(query);
+
+    // Send the fetched data as JSON response
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error('Error fetching habitats:', error);
+    res.status(500).json({ error: 'Error fetching habitats' });
   }
 });
 

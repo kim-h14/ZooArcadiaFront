@@ -272,6 +272,34 @@ function deleteService() {
   }
 }
 
+// ================== Function to fetch habitats and populate the table ==================
+function fetchHabitat() {
+  $.get('/habitats', function(data) {
+    // Clear existing rows
+    $('#habitatTable tbody').empty();
+
+    // Iterate through each habitat and append a row to the table
+    data.forEach(function(habitat) {
+      $('#habitatTable tbody').append(`
+        <tr>
+          <td>${habitat.habitat_name}</td>
+          <td>${habitat.habitat_description}</td>
+          <td>
+            <button onclick="editHabitat()" class="btn btn-primary" id="modify-staff">Modifier</button>
+            <button onclick="deleteHabitat()" class="btn btn-danger">Supprimer</button>
+          </td>
+        </tr>
+      `);
+    });
+  });
+}
+
+// Function to initialize the admin dashboard
+function initializeAdminDashboard() {
+  // Fetch habitats and populate the table
+  fetchHabitat();
+}
+
 
 // ============== Function to handle habitat modification ===============
 function editHabitat() {
