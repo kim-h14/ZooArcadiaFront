@@ -274,7 +274,7 @@ function deleteService() {
 
 // ================== Function to fetch habitats and populate the table ==================
 function fetchHabitat() {
-  $.get('/habitats', function(data) {
+  $.get('/habitat', function(data) {
     // Clear existing rows
     $('#habitatTable tbody').empty();
 

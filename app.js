@@ -310,8 +310,9 @@ app.post('/create_habitat', async (req, res) => {
 });
 
 // Handle GET requests to fetch all habitats for admin Dashboard
-app.get('/habitats', async (req, res) => {
+app.get('/habitat', async (req, res) => {
   try {
+    console.log('Fetching habitats...');
     // Query to select all habitats from the database
     const query = 'SELECT * FROM habitat';
 
@@ -504,6 +505,7 @@ app.post('/add_habitat_comment', async (req, res) => {
     res.status(500).json({ error: 'An error occurred while adding habitat comment' });
   }
 });
+
 
 
 // Define a route to serve index.html for all routes
