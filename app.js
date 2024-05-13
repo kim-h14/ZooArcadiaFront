@@ -146,6 +146,8 @@ app.get('/accounts', async (req, res) => {
       // Execute the query
       const { rows } = await pool.query(query);
 
+      console.log('Fetched accounts:', rows);
+
       // Send the fetched data as JSON response
       res.status(200).json(rows);
   } catch (error) {
@@ -312,7 +314,6 @@ app.post('/create_habitat', async (req, res) => {
 // Handle GET requests to fetch all habitats for admin Dashboard
 app.get('/habitat', async (req, res) => {
   try {
-    console.log('Fetching habitats...');
     // Query to select all habitats from the database
     const query = 'SELECT * FROM habitat';
 
@@ -375,6 +376,24 @@ app.post('/create_animal', (req, res) => {
 console.log('New animal details:', { animalName, animalSpecies, animalHabitat });
 res.status(200).send('Animal added successfully.');
 });
+
+// Handle GET requests to fetch all animals for admin Dashboard
+app.get('/animal', async (req, res) => {
+  try {
+    // Query to select all animals from the database
+    const query = 'SELECT animal_name, animal_species, habitat_name FROM animal';
+
+    // Execute the query
+    const { rows } = await pool.query(query);
+
+    // Send the fetched data as JSON response
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error('Error fetching animals:', error);
+    res.status(500).json({ error: 'Error fetching animals' });
+  }
+});
+
 
 // Handle PUT requests to update an animal for admin Dashboard
 app.put('/update_animal', (req, res) => {

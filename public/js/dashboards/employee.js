@@ -55,6 +55,35 @@ function rejectReview() {
   });
 }
 
+// ===================== function to fetch services and populate table =================
+function fetchServices() {
+    $.get('/service', function(data) {
+      // Clear existing rows
+      $('#serviceTable tbody').empty();
+  
+      // Iterate through each service and append a row to the table
+      data.forEach(function(service) {
+        $('#serviceTable tbody').append(`
+          <tr>
+            <td>${service.service_name}</td>
+            <td>${service.service_description}</td>
+            <td>
+              <button onclick="editService()" class="btn btn-primary" id="modify-service">Modifier</button>
+              <button onclick="deleteService()" class="btn btn-danger">Supprimer</button>
+            </td>
+          </tr>
+        `);
+      });
+    }).fail(function(xhr, status, error) {
+      console.error('Error fetching services:', error);
+    });
+  }
+  
+  // Call fetchServices() when the document is ready
+  $(document).ready(function() {
+    fetchServices();
+  });
+
 // ======================== Function to edit service =================
 function editService(serviceId) {
   // Prompt the admin to enter new information for the service

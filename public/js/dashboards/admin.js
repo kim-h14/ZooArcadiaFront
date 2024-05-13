@@ -20,17 +20,9 @@ function fetchAccounts() {
     });
   });
 }
-
-
-// Function to initialize the admin dashboard
-function initializeAdminDashboard() {
-  // Fetch accounts and populate the table
-  fetchAccounts();
-}
-
-// Call the initialize function when the document is ready
+// Call fetchAccouts() when the document is ready
 $(document).ready(function() {
-  initializeAdminDashboard();
+  fetchAccounts();
 });
 
 
@@ -163,6 +155,34 @@ function deleteStaff() {
   });
 }
 
+// ================== Function to fetch services and populate the table ==================
+function fetchServices() {
+  $.get('/service', function(data) {
+    // Clear existing rows
+    $('#serviceTable tbody').empty();
+
+    // Iterate through each service and append a row to the table
+    data.forEach(function(service) {
+      $('#serviceTable tbody').append(`
+        <tr>
+          <td>${service.service_name}</td>
+          <td>${service.service_description}</td>
+          <td>
+            <button onclick="editService()" class="btn btn-primary" id="modify-service">Modifier</button>
+            <button onclick="deleteService()" class="btn btn-danger">Supprimer</button>
+          </td>
+        </tr>
+      `);
+    });
+  }).fail(function(xhr, status, error) {
+    console.error('Error fetching services:', error);
+  });
+}
+
+// Call fetchServices() when the document is ready
+$(document).ready(function() {
+  fetchServices();
+});
 
 // ============== Handle the modifiction of services in the zoo ===============
 document.addEventListener('DOMContentLoaded', () => { 
@@ -294,11 +314,10 @@ function fetchHabitat() {
   });
 }
 
-// Function to initialize the admin dashboard
-function initializeAdminDashboard() {
-  // Fetch habitats and populate the table
+// Fetch habitats and populate the table
+$(document).ready(function() {
   fetchHabitat();
-}
+});
 
 
 // ============== Function to handle habitat modification ===============
@@ -374,6 +393,38 @@ function deleteHabitat() {
     });
   }
 }
+
+// ============== Function to fetch animals and populate the table ===============
+function fetchAnimals() {
+  $.get('/animal', function(data) {
+    // Clear existing rows
+    $('#animalTable tbody').empty();
+
+    // Iterate through each animal and append a row to the table
+    data.forEach(function(animal) {
+      $('#animalTable tbody').append(`
+        <tr>
+          <td>${animal.animal_name}</td>
+          <td>${animal.animal_species}</td>
+          <td>${animal.habitat_name}</td>
+          <td>
+            <button class="btn btn-primary" onclick="editAnimal()">Modifier</button>
+            <button class="btn btn-danger" onclick="deleteAnimal()">Supprimer</button>
+          </td>
+        </tr>
+      `);
+    });
+  }).fail(function(xhr, status, error) {
+    console.error('Error fetching animals:', error);  });
+}
+
+// Call fetchAnimals() when the document is ready
+$(document).ready(function() {
+  fetchAnimals();
+});
+
+
+
 
 // ============== Function to modify an animal ===============
 function editAnimal() {
