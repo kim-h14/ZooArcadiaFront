@@ -56,7 +56,7 @@
                       <td>johndoe@example.com</td>
                       <td>Employé</td>
                       <td>
-                        <button class="btn btn-primary modify_staff">Modifier</button>
+                        <button id="modify_staff_${uniqueId}" class="btn btn-primary modify_staff" data-id="${uniqueId}">Modifier</button>
                         <button class="btn btn-danger delete_staff">Supprimer</button>
                       </td>
                   </tr>
@@ -66,6 +66,7 @@
           </div>
           </div>
         </div>
+        <!-- Form to edit user after admin clicked on modify btn -->
         <div id="editForm" style="display: none;">
           <h4>Modifier Utilisateur</h4>
           <form id="editUserForm">
@@ -74,6 +75,8 @@
             <input type="text" id="editUsername" name="username" required><br>
             <label for="editEmail">Email:</label><br>
             <input type="email" id="editEmail" name="email" required><br>
+            <label for="editPassword">Nouveau mot de passe:</label><br>
+            <input type="password" id="editPassword" name="password"><br>
             <label for="editRole">Rôle:</label><br>
             <select id="editRole" name="role" required>
               <option value="employee">Employé</option>
@@ -102,9 +105,6 @@
                 
                 <label for="serviceDescription">Description:</label><br>
                 <textarea id="serviceDescription" name="serviceDescription" rows="4" cols="50" required></textarea><br>
-
-                <label for="serviceImage">Image du service:</label><br>
-                <input type="file" id="serviceImage" name="serviceImage" accept="image/*" required><br>
                 
                 <button type="submit" class="btn btn-primary btn-block btn-submit">Ajouter le service</button>
             </form>
@@ -157,13 +157,6 @@
                 
                 <label for="habitatDescription">Description:</label><br>
                 <textarea id="habitatDescription" name="habitatDescription" rows="4" cols="50" required></textarea><br>
-                
-                <label for="habitatAction">Action:</label><br>
-                <select id="habitatAction" name="habitatAction" required>
-                    <option value="add">Ajouter</option>
-                    <option value="update">Mettre à jour</option>
-                    <option value="delete">Supprimer</option>
-                </select><br>
                 
                 <button type="submit" class="btn btn-primary btn-block btn-submit">Soumettre</button>
             </form>
@@ -218,9 +211,9 @@
                 
                 <label for="animalHabitat">Habitat:</label><br>
                 <select id="animalHabitat" name="animalHabitat" required>
-                    <option value="habitat1">Jungle</option>
-                    <option value="habitat2">Savane</option>
-                    <option value="habitat3">Marais</option>
+                    <option value="Jungle">Jungle</option>
+                    <option value="Savane">Savane</option>
+                    <option value="Marais">Marais</option>
                 </select><br>
                 
                 <button type="submit" class="btn btn-primary btn-block btn-submit">Soumettre</button>

@@ -103,16 +103,27 @@ function editStaff(rowIndex) {
   // Get the table row by its index
   const row = document.getElementById("userTable").rows[rowIndex];
 
+  // Extract the user_id from the row
+  const user_id = row.cells[0].textContent;
+
+  // Populate the hidden input field with the user_id
+  document.getElementById("editUserId").value = user_id;
+
   // Extract the staff information from the row
-  const username = row.cells[0].textContent;
-  const email = row.cells[1].textContent;
-  const role = row.cells[2].textContent;
+  const username = row.cells[1].textContent;
+  const email = row.cells[2].textContent;
+  const role = row.cells[3].textContent;
 
   // Populate the editUserForm fields with the extracted information
   document.getElementById("editUsername").value = username;
   document.getElementById("editEmail").value = email;
   document.getElementById("editRole").value = role;
+
+  // Prompt for a new password
+  const newPassword = prompt("Enter the new password (leave blank to keep the current one):");
+  document.getElementById("editPassword").value = newPassword;
 }
+
 
 // ============= Function to handle staff deletions ===============
 function deleteStaff() {

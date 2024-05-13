@@ -161,18 +161,28 @@ app.put('/update_staff', async (req, res) => {
   const { user_id, username, password, role, email } = req.body;
 
   try {
-      // Check if all required fields are provided
-      if (!user_id || !username || !password || !role || !email) {
-          return res.status(400).json({ error: 'All fields are required' });
-      }
-
-      // Update staff member information in the database
-      const query = `
+      // Construct the parameterized SQL query
+      let query;
+      let values;
+      if (password) {
+        // If a new password is provided, include it in the update
+        query = `
           UPDATE account 
           SET username = $1, password = $2, role = $3, email = $4 
           WHERE user_id = $5
-      `;
-      const values = [username, password, role, email, user_id];
+        `;
+        values = [username, password, role, email, user_id];
+      } else {
+        // If no new password is provided, exclude it from the update
+        query = `
+          UPDATE account 
+          SET username = $1, role = $2, email = $3 
+          WHERE user_id = $4
+        `;
+        values = [username, role, email, user_id];
+      }
+
+      // Execute the query
       const result = await pool.query(query, values);
 
       // Check if the staff member was found and updated
@@ -186,7 +196,6 @@ app.put('/update_staff', async (req, res) => {
       res.status(500).json({ message: 'Error updating user' });
   }
 });
-
 
 // Handle DELETE requests to delete a staff member for admin Dashboard
 app.delete('/delete_staff', async (req, res) => {
@@ -205,27 +214,18 @@ app.delete('/delete_staff', async (req, res) => {
 });
 
 // Handle POST requests to add a new service for admin Dashboard
-app.post('/add_service', upload.single('serviceImage'), async (req, res) => {
+app.post('/add_service', async (req, res) => {
   try {
     // Extract service data from the request body
     const { serviceName, serviceDescription } = req.body;
 
-    // Check if a file was uploaded
-    if (!req.file) {
-      return res.status(400).send('Aucun fichier image n\'a été téléchargé.');
-    }
-
-    // Assuming Multer middleware is configured to handle file uploads,
-    // the path to the uploaded image is obtained from req.file.path
-    const serviceImage = req.file.path;
-
     // Insert the new service into the database
-    const query = 'INSERT INTO service (service_name, service_description, img_service_url) VALUES ($1, $2, $3)';
-    const values = [serviceName, serviceDescription, serviceImage];
+    const query = 'INSERT INTO service (service_name, service_description) VALUES ($1, $2)';
+    const values = [serviceName, serviceDescription];
     await pool.query(query, values);
 
     // Send a success response
-    res.status(201).send('Nouveau service ajouté correctement.');
+    res.status(201).redirect('/admindashboard');
   } catch (error) {
     // Handle errors
     console.error('Erreur lors de l\'ajout du service:', error);
@@ -294,17 +294,16 @@ app.delete('/delete_service', async (req, res) => {
 
 // Handle POST requests to add a new habitat for admin Dashboard
 app.post('/create_habitat', async (req, res) => {
-  const { habitatName, habitatDescription, habitatAction } = req.body;
+  const { habitatName, habitatDescription} = req.body;
 
   try {
-    // Log the submitted data for debugging
-    console.log('Submitted habitat data:', { habitatName, habitatDescription, habitatAction });
-
-    // Your logic to handle the form submission goes here
-    // This is where you would typically interact with your database or perform any other necessary operations
+     // Insert the new service into the database
+     const query = 'INSERT INTO habitat (habitat_name, habitat_description) VALUES ($1, $2)';
+     const values = [habitatName, habitatDescription];
+     await pool.query(query, values);
 
     // Respond with a success message
-    res.status(201).send('Habitat ajouté avec succès.');
+    res.status(201).redirect('/admindashboard');
   } catch (error) {
     console.error('Erreur lors de l\'ajout de l\'habitat:', error);
     res.status(500).send('Erreur lors de l\'ajout de l\'habitat.');
@@ -362,19 +361,32 @@ app.delete('/delete_habitat', async (req, res) => {
 });
 
 // Handle POST requests to add a new animal for admin Dashboard
-app.post('/create_animal', (req, res) => {
-  // Extract data from the request body
-  const { animalName, animalSpecies, animalHabitat } = req.body;
+app.post('/create_animal', async (req, res) => {
+  try {
+    // Extract animal data from the request body
+    const { animalName, animalSpecies, animalHabitat } = req.body;
 
-// Perform validation
-  // /!/ DECOMMENT ONCE DATABASE HAS BEEN CREATED =====================
-// if (!animalName || !animalSpecies || !animalHabitat) {
-//   // If any required field is missing, respond with an error
-//   return res.status(400).send('Please provide all required information.');
-// }
-// If all validation checks pass, proceed with adding the animal
-console.log('New animal details:', { animalName, animalSpecies, animalHabitat });
-res.status(200).send('Animal added successfully.');
+    // Check if the provided habitat exists in the habitat table
+    const habitatQuery = 'SELECT habitat_name FROM habitat WHERE habitat_name = $1';
+    const habitatResult = await pool.query(habitatQuery, [animalHabitat]);
+
+    if (habitatResult.rows.length === 0) {
+      // If the habitat doesn't exist, send an error response
+      return res.status(400).json({ error: 'Habitat not found' });
+    }
+
+    // Insert the new animal into the database
+    const insertQuery = 'INSERT INTO animal (animal_name, animal_species, habitat_name) VALUES ($1, $2, $3)';
+    const insertValues = [animalName, animalSpecies, animalHabitat];
+    await pool.query(insertQuery, insertValues);
+
+    // Send a success response
+    res.status(201).redirect('/admindashboard');
+  } catch (error) {
+    // Handle errors
+    console.error('Erreur lors de l\'ajout de l\'animal:', error);
+    res.status(500).json({ error: 'Erreur lors de l\'ajout de l\'animal' });
+  }
 });
 
 // Handle GET requests to fetch all animals for admin Dashboard
