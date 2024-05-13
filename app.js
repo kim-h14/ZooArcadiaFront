@@ -441,6 +441,8 @@ app.delete('/delete_animal', (req, res) => {
   }
 });
 
+// Handle GET requests to receive reviews for employee Dashboard
+
 // Handle POST requests to approve reviews for employee Dashboard
 app.post('/approve_review', (req, res) => {
   const reviewID = req.body.reviewID;
@@ -458,22 +460,30 @@ app.post('/reject_review', (req, res) => {
 });
 
 // Handle POST requests to add foor record for employee Dashboard
-// mock database
-// ====== DELETE WHEN DATABASE HAS BEEN IMPLEMENTED ======
-app.post('/add_food_record', (req, res) => {
-  // Extract data from the request body
-  const { animalName, foodType, quantity, feedingTime } = req.body;
+app.post('/add_food_record', async (req, res) => {
+  try {
+    // Extract food consumption record data from the request body
+    const { animalName, foodType, foodQuantity, username, date } = req.body;
 
-//  ADD CODE WHEN DATABASE HAS BEEN IMPLEMENTED
-  console.log('Received data:');
-  console.log('Animal Name:', animalName);
-  console.log('Food Type:', foodType);
-  console.log('Quantity:', quantity);
-  console.log('Feeding Time:', feedingTime);
+    // UNCOMMENT AFTER HANDLING AUTHENTIFICATION PER USER ===============================
+    // Extract the username from the authenticated user 
+    // const username = req.user.username;
 
-  // Send a response indicating success
-  res.status(200).json({ message: 'Food record added successfully' });
+    // Insert the new food consumption record into the database
+    // WILL NEED TO ADD THE USERNAME TO THE QUERRY ===============================
+    const query = 'INSERT INTO foodrecord (animal_name, username, date,food_type, food_quantity) VALUES ($1, $2, $3, $4, $5)';
+    const values = [animalName, username, date, foodType, foodQuantity,];
+    await pool.query(query, values);
+
+    // Send a success response
+    res.status(201).redirect('/employeeDashboard');
+  } catch (error) {
+    // Handle errors
+    console.error('Erreur lors de l\'ajout de l\'enregistrement alimentaire:', error);
+    res.status(500).json({ error: 'Erreur lors de l\'ajout de l\'enregistrement alimentaire' });
+  }
 });
+
 
 
 // Handle POST request to add report on animals for vet Dashboard

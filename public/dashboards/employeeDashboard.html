@@ -82,15 +82,19 @@
                     <form id="foodRecordForm" action="/add_food_record" method="POST">
                         <label for="animalName">Nom de l'animal:</label>
                         <input type="text" class="form-control" id="animalName" name="animalName" required>
+
+                        <label for="username">Nom utilisateur:</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+
+                        <label for="date">Date d'alimentation:</label>
+                        <input type="text" class="form-control" id="date" name="date" required>
                         
                         <label for="foodType">Type d'aliment:</label>
                         <input type="text" class="form-control" id="foodType" name="foodType" required>
                         
-                        <label for="foodQuantity">Quantité:</label>
+                        <label for="foodQuantity">Quantité en grammes:</label>
                         <input type="text" class="form-control" id="foodQuantity" name="foodQuantity" required>
                         
-                        <label for="feedingTime">Heure d'alimentation:</label>
-                        <input type="text" class="form-control" id="feedingTime" name="feedingTime" required>
                         
                         <button type="submit" class="btn btn-primary">Sauvegarder</button>
                     </form>
