@@ -441,6 +441,23 @@ app.delete('/delete_animal', (req, res) => {
   }
 });
 
+// Handle GET requests to fetch the vet reports
+app.get('/vet_reports', async (req, res) => {
+  try {
+    // Query to select all vet reports from the database
+    const query = 'SELECT * FROM vetreport';
+
+    // Execute the query
+    const { rows } = await pool.query(query);
+
+    // Send the fetched data as JSON response
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error('Error fetching vet reports:', error);
+    res.status(500).json({ error: 'Error fetching vet reports' });
+  }
+});
+
 // Handle POST requests to submit a new review to the employee Dashboard
 app.post('/submit_review', async (req, res) => {
   try {

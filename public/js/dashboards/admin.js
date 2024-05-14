@@ -517,6 +517,38 @@ function deleteAnimal() {
   }
 }
 
+// ============== Function to fetch vet reports and populate the table ===============
+function fetchVetReports() {
+  $.get('/vet_reports', function(data) {
+    // Clear existing rows
+    $('#vetReportTable tbody').empty();
+
+    // Iterate through each vet report and append a row to the table
+    data.forEach(function(vetReport) {
+      // Parse the timestamp to get the date string
+      const date = new Date(vetReport.date);
+      const formattedDate = date.toLocaleDateString('fr-FR');
+
+      $('#vetReportTable tbody').append(`
+        <tr>
+          <td>${formattedDate}</td>
+          <td>${vetReport.username}</td>
+          <td>${vetReport.animal_name}</td>
+          <td>${vetReport.animal_state}</td>
+          <td>${vetReport.detail_animal_state}</td>
+        </tr>
+      `);
+    });
+  }).fail(function(xhr, status, error) {
+    console.error('Error fetching vet reports:', error);
+  });
+}
+
+$(document).ready(function() {
+  fetchVetReports();
+});
+
+
 // ======== Functions for filters inside vet report table =========
 // Function to apply filters
 function applyFilters() {
