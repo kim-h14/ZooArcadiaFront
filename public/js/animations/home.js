@@ -56,3 +56,31 @@ $(document).ready(function() {
 
   
 
+// ========== Fetch reviews on loops from database ==========
+function fetchAndInjectReviews() {
+  $.get('/approved_reviews')
+      .done(function(data) {
+          const reviewSection = $('.review-para');
+          
+          // Clear existing content
+          reviewSection.empty();
+          
+          // Inject reviews into the review section
+          if (data.length > 0) {
+              data.forEach(function(review) {
+                  const reviewParagraph = $('<p>').text(review.review_text);
+                  const reviewAuthor = $('<p>').addClass('review-author').text(`- ${review.client_name}, ${review.city}`);
+                  reviewSection.append(reviewParagraph, reviewAuthor);
+                });
+          } else {
+              // If no reviews are available, display a message
+              const noReviewMessage = $('<p>').text('No reviews available.');
+              reviewSection.append(noReviewMessage);
+          }
+      })
+      .fail(function(jqXHR, textStatus, errorThrown) {
+          console.error('Error fetching and injecting reviews:', errorThrown);
+      });
+}
+
+$(document).ready(fetchAndInjectReviews);

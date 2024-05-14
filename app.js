@@ -613,6 +613,22 @@ app.post('/add_habitat_comment', async (req, res) => {
   }
 });
 
+// Handle GET requests to fetch reviews from the database to appear on the homepage on loop
+app.get('/approved_reviews', async (req, res) => {
+  try {
+      // Query to select approved reviews from the database
+      const query = 'SELECT * FROM review WHERE review_approved = true';
+
+      // Execute the query
+      const { rows } = await pool.query(query);
+
+      // Send the fetched data as JSON response
+      res.status(200).json(rows);
+  } catch (error) {
+      console.error('Error fetching approved reviews:', error);
+      res.status(500).json({ error: 'Error fetching approved reviews' });
+  }
+});
 
 
 // Define a route to serve index.html for all routes
