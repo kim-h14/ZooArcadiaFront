@@ -11,22 +11,25 @@
                 <div class="form-container">
                   <!-- Form to fill out reports for each animal -->
                   <form id="vet_animal-reports" action="/add_animal_report" method="POST">
+                    <label for="username">Nom d'utilisateur:</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+
                     <label for="animalName">Nom de l'animal:</label>
                     <input type="text" class="form-control" id="animalName" name="animalName" required>
 
                     <label for="animalState">État de l'animal:</label>
                     <select class="form-control" id="animalState" name="animalState" required>
                       <option value="">Sélectionner l'état de l'animal</option>
-                      <option value="Sain">Sain</option>
-                      <option value="Malade">Malade</option>
-                      <option value="Blessé">Blessé</option>
-                      <option value="Autre">Autre</option>
+                      <option value="sain">Sain</option>
+                      <option value="malade">Malade</option>
+                      <option value="blessé">Blessé</option>
+                      <option value="autre">Autre</option>
                     </select>     
 
                     <label for="foodType">Type d'aliment:</label>
                     <input type="text" class="form-control" id="foodType" name="foodType" required>
                     
-                    <label for="foodQuantity">Quantité:</label>
+                    <label for="foodQuantity">Quantité en gramme:</label>
                     <input type="text" class="form-control" id="foodQuantity" name="foodQuantity" required>
                     
                     <label for="reportDate">Date de passage:</label>
@@ -43,14 +46,14 @@
       </div>
     </section>
 
-    <section class="dashboard-content">
+    <section class="dashboard-content"> <!-- Vet food record -->
       <div class="row">
           <div class="vet_food-record">
               <h3 class="dashboard-content-title">Registre alimentaire</h3>
               <p>Gestion de l'alimentation des animaux</p>
               <!-- Select element for choosing the animal -->
               <label for="animalSelect">Choisir l'animal:</label>
-              <select id="animalSelect" onchange="filterByAnimal()">
+              <select id="animalSelect" onchange="populateAnimalSelect()">
                   <option value="">Tous les animaux</option>
                   <option value="Lion">Lion</option>
                   <option value="Tigre">Tigre</option>
@@ -88,7 +91,7 @@
   
   
 
-    <section class="dashboard-content">
+    <section class="dashboard-content"> <!-- Vet habitat comments -->
       <div class="row">
           <div class="vet_habitat-comments">
               <h3 class="dashboard-content-title">Commentaires sur les habitats</h3>
@@ -96,15 +99,22 @@
                 <div class="form-container">
                   <!-- Form to add comments on habitats -->
                   <form id="vet_habitat-comments" action="/add_habitat_comment" method="POST">
-                    <label for="habitatName">Nom de l'habitat:</label>
+                  <label for="habitatName">Nom de l'habitat:</label>
                     <select class="form-control" id="habitatName" name="habitatName" required>
                       <option value="">Sélectionner le nom de l'habitat</option>
                       <option value="Jungle">Jungle</option>
-                      <option value="Savanna">Savane</option>
-                      <option value="Bayou">Marais</option>
+                      <option value="Savane">Savane</option>
+                      <option value="Marais">Marais</option>
                     </select>     
-                    <label for="habitatComment">Commentaire:</label>
-                    <textarea class="form-control" id="habitatComment" name="habitatComment" rows="3" required></textarea>
+
+                  <label for="username">Nom d'utilisateur:</label>
+                  <input type="text" class="form-control" id="username" name="username" required>
+
+                  <label for="habitatComment">Commentaire:</label>
+                  <textarea class="form-control" id="habitatComment" name="habitatComment" rows="3" required></textarea>
+
+                  <label for="commentDate">Date de passage:</label>
+                    <input type="text" class="form-control" id="commentDate" name="commentDate" required placeholder="jj/mm/aaaa">
                     
                     <button type="submit" class="btn btn-primary">Sauvegarder</button>
                   </form>

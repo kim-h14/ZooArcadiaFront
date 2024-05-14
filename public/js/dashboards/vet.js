@@ -1,27 +1,22 @@
 // ===================== Function to fetch animals from the database =====================
 function populateAnimalSelect() {
-  // /!/ TO BE MODIFIED ONCE DATABASE IS SET UP
-
-  fetch('/animals')
-        .then(response => response.json())
-        .then(data => {
-            // Get the select element
-            var select = document.getElementById('animalSelect');
-            
-            // Clear existing options
-            select.innerHTML = '<option value="">Tous les animaux</option>';
-            
-            // Add options for each animal from the fetched data
-            data.forEach(animal => {
-                var option = document.createElement('option');
-                option.value = animal.name;
-                option.textContent = animal.name;
-                select.appendChild(option);
-            });
-        })
-        .catch(error => {
-            console.error('Error fetching animal data:', error);
-        });
+  fetch('/animal_names') 
+    .then(response => response.json())
+    .then(data => {
+      const select = document.getElementById('animalSelect');
+      select.innerHTML = '<option value="">Tous les animaux</option>';
+      data.forEach(animalName => {
+        const option = document.createElement('option');
+        option.value = animalName;
+        option.textContent = animalName;
+        select.appendChild(option);
+      });
+      // Once the select is populated, filter the table based on the selected animal
+      filterByAnimal();
+    })
+    .catch(error => {
+      console.error('Error fetching animal data:', error);
+    });
 }
 
 // ===================== Function to filter the table by selected animal =====================
@@ -48,32 +43,35 @@ function filterByAnimal() {
 }
 
 // ===================== Function to fetch food records from the database =====================
-function fetchFoodRecords() {
-  fetch('/food_records')
-    .then(response => response.json())
-    .then(data => {
-      // Get the table body element
-      const tbody = document.querySelector('#foodRecordTable tbody');
+async function fetchFoodRecords() {
+  try {
+    // Fetch food consumption records from the server
+    const response = await fetch('/vet_food_records');
+    const records = await response.json();
 
-      // Clear existing rows
-      tbody.innerHTML = '';
+    // Reference to the table body element
+    const tbody = document.querySelector('#foodRecordTable tbody');
 
-      // Iterate over the fetched data and create table rows
-      data.forEach(record => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${record.date}</td>
-          <td>${record.animalName}</td>
-          <td>${record.foodType}</td>
-          <td>${record.foodQuantity}</td>
-        `;
-        tbody.appendChild(row);
-      });
-    })
-    .catch(error => {
-      console.error('Error fetching food records:', error);
+    // Clear existing table rows
+    tbody.innerHTML = '';
+
+    // Populate the table with fetched records
+    records.forEach(record => {
+      // Extracting only the date portion from the fetched date string
+      const formattedDate = new Date(record.date).toLocaleDateString();
+
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${formattedDate}</td>
+        <td>${record.animal_name}</td>
+        <td>${record.food_type}</td>
+        <td>${record.food_quantity}</td>
+      `;
+      tbody.appendChild(row);
     });
+  } catch (error) {
+    console.error('Error fetching food records:', error);
+  }
 }
-
 // Call the function to fetch food records when the page loads
 fetchFoodRecords();

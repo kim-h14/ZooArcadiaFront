@@ -441,6 +441,8 @@ app.delete('/delete_animal', (req, res) => {
   }
 });
 
+// Handle POST requests to add a new review for employee Dashboard
+
 // Handle GET requests to receive reviews for employee Dashboard
 
 // Handle POST requests to approve reviews for employee Dashboard
@@ -484,66 +486,73 @@ app.post('/add_food_record', async (req, res) => {
   }
 });
 
-
-
 // Handle POST request to add report on animals for vet Dashboard
 app.post('/add_animal_report', async (req, res) => {
   try {
-    const { animalName, animalState, foodType, foodQuantity, reportDate, DetailedAnimalState } = req.body;
-    // ====== DELETE WHEN DATABASE HAS BEEN IMPLEMENTED ======
-    // Log the form data received from POSTMAN
-    console.log('Received form data:');
-    console.log('Animal Name:', animalName);
-    console.log('Animal State:', animalState);
-    console.log('Food Type:', foodType);
-    console.log('Food Quantity:', foodQuantity);
-    console.log('Report Date:', reportDate);
-    console.log('Detailed Animal State:', DetailedAnimalState);
+    // Extract form data from the request body
+    const { animalName, username, animalState, foodType, foodQuantity, reportDate, DetailedAnimalState } = req.body;
 
-    // Insert the form data into the PostgreSQL database =============== UNCOMMENT AFTER DATABASE CREATION
-    // const query = 'INSERT INTO animal_food_records (animal_name, animal_state, food_type, food_quantity, report_date, detailed_animal_state) VALUES ($1, $2, $3, $4, $5, $6)';
-    // const values = [animalName, animalState, foodType, foodQuantity, reportDate, DetailedAnimalState];
+    // Insert the report into the database
+    const query = `
+      INSERT INTO vetreport (animal_name, username, date, animal_state, food_type, food_quantity, detail_animal_state)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+    `;
+    const values = [animalName, username, reportDate, animalState, foodType, foodQuantity, DetailedAnimalState];
+    await pool.query(query, values);
 
-    // await pool.query(query, values);
-    
-    // Send a mock response
-    res.status(200).json({ message: 'Animal food record saved successfully' });
+    // Send a success response
+    res.status(201).redirect('/vetDashboard');
   } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'An error occurred while processing the request' });
+    // Handle errors
+    console.error('Error adding animal report:', error);
+    res.status(500).send('Error adding animal report.');
+  }
+});
+
+// Handle GET requests to fetch food records for vet Dashboard
+app.get('/vet_food_records', async (req, res) => {
+  try {
+    // Fetch food consumption records from the database
+    const query = 'SELECT date, animal_name, food_type, food_quantity FROM foodrecord';
+    const { rows } = await pool.query(query);
+
+    // Send the fetched records as JSON response
+    res.json(rows);
+  } catch (error) {
+    // Handle errors
+    console.error('Error fetching food records:', error);
+    res.status(500).json({ error: 'Error fetching food records' });
+  }
+});
+
+// Handle GET requests to fetch animal names from the server and populate the drop down list in food records for vet Dashboard
+app.get('/animal_names', async (req, res) => {
+  try {
+    const query = 'SELECT animal_name FROM animal';
+    const { rows } = await pool.query(query);
+    const animalNames = rows.map(row => row.animal_name);
+    console.log('Animal names:', animalNames); // Add this line to log animal names
+    res.json(animalNames);
+  } catch (error) {
+    console.error('Error fetching animal names:', error);
+    res.status(500).json({ error: 'Error fetching animal names' });
   }
 });
 
 
-// Handle GET requests to fetch food records for vet Dashboard
-app.get('/food_records', (req, res) => {
-  // Fetch food consumption records from the database
-  // Replace this with your actual database query
-  const foodRecords = [
-    { date: '2024-05-05', animalName: 'Lion', foodType: 'Viande', foodQuantity: '2 kg' },
-    // Add more food records as needed
-  ];
-
-  // Send the food records as a JSON response
-  res.json(foodRecords);
-});
-
 // Handle POST request to add a comment on habitat for vet Dashboard
 app.post('/add_habitat_comment', async (req, res) => {
   try {
-    // Extract data from the request body
-    const { habitatName, habitatComment } = req.body;
+      const { username, habitatName, habitatComment, commentDate } = req.body;
+      
+      // Insert the data into the vetHabitatComment table
+      const query = 'INSERT INTO vetHabitatComment (username, habitat_name, vet_comment, date) VALUES ($1, $2, $3, $4)';
+      await pool.query(query, [username, habitatName, habitatComment, commentDate]);
 
-    // UNCOMMENT AFTER CREATING THE DATABASE ===============================
-    // Execute the INSERT query
-    // await pool.query(insertQuery, [habitatName, habitatComment]);
-
-    // Send a success response back to the client
-    res.status(200).json({ message: 'Habitat comment added successfully' });
+      res.status(201).redirect('/vetDashboard');
   } catch (error) {
-    // Handle errors
-    console.error('Error adding habitat comment:', error);
-    res.status(500).json({ error: 'An error occurred while adding habitat comment' });
+      console.error('Error adding habitat comment:', error);
+      res.status(500).send('Error adding habitat comment.');
   }
 });
 
