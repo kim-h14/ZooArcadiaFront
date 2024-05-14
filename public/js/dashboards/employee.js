@@ -22,13 +22,14 @@ async function fetchPendingReviews() {
     data.forEach(review => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
+        <td>${review.review_id}</td>
         <td>${review.client_name}</td>
         <td>${review.city}</td>
         <td>${review.email}</td>
         <td>${review.review_text}</td>
         <td>
-          <button onclick="approveReview()" class="btn btn-primary">Approuver</button>
-          <button onclick="rejectReview(${review.review_id})" class="btn btn-danger">Rejeter</button>
+          <button onclick="approveReview(this)" class="btn btn-primary">Approuver</button>
+          <button onclick="deleteReview(this)" class="btn btn-danger">Rejeter</button>
         </td>
       `;
       tbody.appendChild(tr);
@@ -44,49 +45,47 @@ $(document).ready(function() {
 // ================= Function to approve review =================
 function approveReview(button) {
   // Get the row containing the review
-  const row = this.closest('tr');
+  const row = $(button).closest('tr');
   // Extract the review ID from the row's data attribute
-  const reviewId = row.dataset.reviewId;
+  const reviewId = row.data('review-id');
 
-  // Send a POST request to your backend with the review ID
-  fetch(`/approveReview/${reviewId}`, {
-      method: 'POST',
-  }).then(response => {
-      if (response.ok) {
-          // Handle success (maybe update UI)
-      } else {
-          // Handle error
-      }
-  }).catch(error => {
-      // Handle network error
+  // Send a PUT request to your backend with the review ID
+  $.ajax({
+    url: '/approveReview',
+    type: 'PUT',
+    data: { id: reviewId }, // Include the review ID in the request data
+    success: function(response) {
+      console.log('Review approved successfully');
+      // Reload the page after the review has been approved
+      location.reload();
+    },
+    error: function(xhr, status, error) {
+      console.error('Error approving review:', error);
+    }
   });
 }
 
+
 // ======================== Function to reject review =================
-function rejectReview() {
-  // Assuming your API endpoint for rejecting reviews is /reject_review
-  const endpoint = '/reject_review';
-  
-  // Send the ID as Data
-    // /!/ TO BE MODIFIED WHEN DATABASE IS IMPLEMENTED
-  const reviewId = document.getElementById('reviewID').value;
-  
-  // Fetch POST request
-  fetch(endpoint, {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ reviewId: reviewId }) // Send review ID as JSON data
-  })
-  .then(response => {
-      if (!response.ok) {
-          throw new Error('Network response was not ok');
-      }
-      console.log('Review rejected!');
-  })
-  .catch(error => {
-      console.error('There was a problem with the fetch operation:', error);
+function deleteReview(button) {
+  // Get the row containing the review
+  const row = $(button).closest('tr');
+  // Extract the review ID from the row's data attribute
+  const reviewId = row.data('reviewId'); // Assuming the attribute is data-review-id
+
+  // Send a DELETE request to your backend with the review ID
+  $.ajax({
+    url: '/deleteReview',
+    type: 'DELETE',
+    data: { id: reviewId },
+    success: function(response) {
+      console.log('Review deleted successfully');
+      // Reload the page after the review has been deleted
+      location.reload();
+    },
+    error: function(xhr, status, error) {
+      console.error('Error deleting review:', error);
+    }
   });
 }
 

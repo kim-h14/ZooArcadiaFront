@@ -498,25 +498,34 @@ app.get('/pending_reviews', async (req, res) => {
 });
 
 // Handle POST requests to approve reviews for employee Dashboard
-app.post('/approveReview/:id', async (req, res) => {
-  const reviewId = req.params.id;
+app.put('/approveReview', async (req, res) => {
+  // Extract review ID from the request body
+  const reviewId = req.body.id; // Extract review ID from the request body
   try {
-      // Update the review in the existing table by setting the approval status to true
-      await pool.query('UPDATE review SET approved = true WHERE id = $1', [reviewId]);
-      res.sendStatus(200);
+    // Update the review in the existing table by setting the approval status to true
+    await pool.query('UPDATE review SET review_approved = true WHERE review_id = $1', [reviewId]);
+    res.sendStatus(200);
   } catch (error) {
-      console.error('Error approving review:', error);
-      res.status(500).send('Internal Server Error');
+    console.error('Error approving review:', error);
+    res.status(500).send('Internal Server Error');
   }
 });
 
-// Handle POST requests to reject reviews for employee Dashboard
-app.post('/reject_review', (req, res) => {
-  const reviewID = req.body.reviewID;
-
-  // /!/ UPDATE WHEN DATABASE HAS BEEN IMPLEMENTED
-  res.status(200).send('L\'avis a été rejeté avec succès.');
+// Handle DELETE requests to reject reviews for employee Dashboard
+app.delete('/deleteReview', async (req, res) => {
+  // Extract review ID from the request body
+  const reviewId = req.body.id; 
+  try {
+    // Delete the review from the database
+    await pool.query('DELETE FROM review WHERE review_id = $1', [reviewId]);
+    res.sendStatus(200);
+  } catch (error) {
+    console.error('Error deleting review:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
+
+
 
 // Handle POST requests to add foor record for employee Dashboard
 app.post('/add_food_record', async (req, res) => {
