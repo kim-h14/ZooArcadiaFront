@@ -1,10 +1,10 @@
 // Implement JS for reviews page
 
-const inputName = document.getElementById('firstName__reviews');
-const inputCity = document.getElementById('city__reviews');
-const inputEmail = document.getElementById('email__reviews');
-const inputMessage = document.getElementById('message__reviews');
-const btnSubmit = document.getElementById('reviews__button');
+const inputName = document.getElementById('clientName');
+const inputCity = document.getElementById('cityReview');
+const inputEmail = document.getElementById('emailReview');
+const inputMessage = document.getElementById('messageReview');
+const btnSubmit = document.getElementById('reviewButton');
 
 
 inputName.addEventListener("keyup", validateForm);
@@ -13,7 +13,7 @@ inputEmail.addEventListener("keyup", validateForm);
 inputMessage.addEventListener("keyup", validateForm);
 
 function validateForm() {
-  const nameOK = alidateRequired(inputName);
+  const nameOK = validateRequired(inputName);
   const cityOK = validateRequired(inputCity);
   const messageOK = validateRequired(inputMessage);
   const emailOK = validateEmail(inputEmail);

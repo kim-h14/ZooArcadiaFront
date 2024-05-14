@@ -441,16 +441,56 @@ app.delete('/delete_animal', (req, res) => {
   }
 });
 
-// Handle POST requests to add a new review for employee Dashboard
+// Handle POST requests to submit a new review to the employee Dashboard
+app.post('/submit_review', async (req, res) => {
+  try {
 
-// Handle GET requests to receive reviews for employee Dashboard
+    console.log(req.body);
+
+    // Extract review data from the request body
+    const { clientName, messageReview, cityReview, emailReview } = req.body;
+
+    // Insert the review into the database
+    const query = 'INSERT INTO review (client_name, review_text, city, email) VALUES ($1, $2, $3, $4)';
+    const values = [clientName, messageReview, cityReview, emailReview];
+    await pool.query(query, values);
+
+    // Send a success response
+    res.status(201).redirect('/');
+  } catch (error) {
+    // Handle errors
+    console.error('Error submitting review:', error);
+    res.status(500).send('Error submitting review.');
+  }
+});
+
+// Handle GET requests to receive pending reviews for employee Dashboard
+app.get('/pending_reviews', async (req, res) => {
+  try {
+    // Query the database to retrieve pending reviews data
+    const query = 'SELECT client_name, city, email, review_text, review_id FROM review WHERE review_approved IS NULL';
+    const { rows } = await pool.query(query);
+
+    // Send the retrieved data as a JSON response
+    res.status(200).json(rows);
+  } catch (error) {
+    // Handle errors
+    console.error('Error fetching pending reviews:', error);
+    res.status(500).json({ error: 'Error fetching pending reviews' });
+  }
+});
 
 // Handle POST requests to approve reviews for employee Dashboard
-app.post('/approve_review', (req, res) => {
-  const reviewID = req.body.reviewID;
-
-  // /!/ UPDATE WHEN DATABASE HAS BEEN IMPLEMENTED
-  res.status(200).send('L\'avis a été approuvé avec succès.');
+app.post('/approveReview/:id', async (req, res) => {
+  const reviewId = req.params.id;
+  try {
+      // Update the review in the existing table by setting the approval status to true
+      await pool.query('UPDATE review SET approved = true WHERE id = $1', [reviewId]);
+      res.sendStatus(200);
+  } catch (error) {
+      console.error('Error approving review:', error);
+      res.status(500).send('Internal Server Error');
+  }
 });
 
 // Handle POST requests to reject reviews for employee Dashboard

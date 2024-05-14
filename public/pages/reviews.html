@@ -39,16 +39,16 @@
 <article>
   <div class="reviews__container">
   <div class="container-fluid">
-    <form action="" class="reviews__form">
+    <form action="/submit_review" method="POST" class="reviews__form" >
       <div class="reviews__title">
         <h1>Déposer un avis sur notre zoo</h1>
         <hr>
       </div>
-      <input type="text" id="firstName__reviews" placeholder="Prénom" class="reviews__input" required>
-      <input type="text" id="city__reviews" placeholder="Ville" class="reviews__input" required>
-      <input type="email" id="email__reviews" placeholder="Email" class="reviews__input" required>
-      <textarea id="message__reviews" placeholder="Votre avis" class="reviews__messages" required></textarea>
-      <button type="submit" class="btn btn-primary" id="reviews__button">Envoyer</button>
+      <input type="text" id="clientName" name="clientName" placeholder="Prénom" class="reviews__input" required>
+      <input type="text" id="cityReview" name="cityReview" placeholder="Ville" class="reviews__input" required>
+      <input type="email" id="emailReview" name="emailReview" placeholder="Email" class="reviews__input" required>
+      <textarea id="messageReview" name="messageReview" placeholder="Votre avis" class="reviews__messages" required></textarea>
+      <button type="submit" class="btn btn-primary" id="reviewButton">Envoyer</button>
     </form>
   </div>
   </div>

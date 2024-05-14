@@ -1,31 +1,66 @@
-// ================= Function to approve review =================
-function approveReview() {
-  // API call to approve review
-  const endpoint = '/approve_review';
-
-  // Send the ID as Data 
-  // /!/ TO BE MODIFIED WHEN DATABASE IS IMPLEMENTED
-  const reviewID = document.getElementById('reviewID').value;
-
-  // Fetch API
-  fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ reviewID }),
-  })
-    .then((response) => {
+// ===================== function to fetch reviews and populate table =================
+async function fetchPendingReviews() {
+  try {
+    // Make a GET request to fetch pending reviews
+    const response = await fetch('/pending_reviews');
+    
+    // Check if the request was successful
     if (!response.ok) {
-      throw new Error('Network response was not ok');
+      throw new Error('Failed to fetch pending reviews');
+    }
+    
+    // Parse the JSON response
+    const data = await response.json();
+    
+    // Get the tbody element where we will append the rows
+    const tbody = document.querySelector('table tbody');
+    
+    // Clear existing rows
+    tbody.innerHTML = '';
+    
+    // Iterate over the data and create table rows
+    data.forEach(review => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${review.client_name}</td>
+        <td>${review.city}</td>
+        <td>${review.email}</td>
+        <td>${review.review_text}</td>
+        <td>
+          <button onclick="approveReview()" class="btn btn-primary">Approuver</button>
+          <button onclick="rejectReview(${review.review_id})" class="btn btn-danger">Rejeter</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  } catch (error) {
+    console.error('Error fetching pending reviews:', error);
   }
-  console.log('Review approved!');
-})
-.catch(error => {
-  console.error('There was a problem with the fetch operation:', error);
-});
-};
+}
 
+$(document).ready(function() {
+  fetchPendingReviews();
+});
+// ================= Function to approve review =================
+function approveReview(button) {
+  // Get the row containing the review
+  const row = this.closest('tr');
+  // Extract the review ID from the row's data attribute
+  const reviewId = row.dataset.reviewId;
+
+  // Send a POST request to your backend with the review ID
+  fetch(`/approveReview/${reviewId}`, {
+      method: 'POST',
+  }).then(response => {
+      if (response.ok) {
+          // Handle success (maybe update UI)
+      } else {
+          // Handle error
+      }
+  }).catch(error => {
+      // Handle network error
+  });
+}
 
 // ======================== Function to reject review =================
 function rejectReview() {
