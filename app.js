@@ -197,6 +197,7 @@ app.put('/update_staff', async (req, res) => {
   }
 });
 
+
 // Handle DELETE requests to delete a staff member for admin Dashboard
 app.delete('/delete_staff', async (req, res) => {
   const idStaff = req.query.idStaff;
@@ -252,25 +253,17 @@ app.get('/service', async (req, res) => {
 
 
 // Handle PUT requests to update a service for admin & employee Dashboards
-app.put('/update_service', async (req, res) => {
-  const idService = req.params.id;
-  const {serviceName, serviceDescription} = req.body;
+app.put('/updateService', async (req, res) => {
+  const serviceId = req.params.id;
+  const { serviceName, serviceDescription } = req.body;
 
   try {
-    // Update the service information inside the database
-             // /!/ DECOMMENT ONCE DATABASE HAS BEEN CREATED ====================
-
-    // const result = await pool.query(
-    //   'UPDATE services SET service_name = $1, service_description = $2 WHERE service_id = $3',
-    //   [serviceName, serviceDescription, serviceId]
-    // );
-
-    // Check if any rows were affected (service updated successfully)
-    console.log('Service updated:', { serviceName, serviceDescription });
-    res.status(200).json({ message: 'Service updated successfully' });
+    // Update the service in the existing table
+    await pool.query('UPDATE service SET service_name = $1, service_description = $2 WHERE service_id = $3', [serviceName, serviceDescription, serviceId]);
+    res.sendStatus(200);
   } catch (error) {
     console.error('Error updating service:', error);
-    res.status(500).json({ message: 'Error updating service' });
+    res.status(500).send('Internal Server Error');
   }
 });
 

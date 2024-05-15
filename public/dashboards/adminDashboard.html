@@ -56,7 +56,7 @@
                       <td>johndoe@example.com</td>
                       <td>Employé</td>
                       <td>
-                        <button id="modify_staff_${uniqueId}" class="btn btn-primary modify_staff" data-id="${uniqueId}">Modifier</button>
+                        <button id="modify_staff_${uniqueId}" class="btn btn-primary modify_staff" onclick="editStaff(`${uniqueId}`)" data-id="${uniqueId}">Modifier</button>
                         <button class="btn btn-danger delete_staff">Supprimer</button>
                       </td>
                   </tr>
@@ -123,11 +123,11 @@
                     </tr>
                 </thead>
                 <tbody id="serviceList">
-                    <tr>
+                    <tr data-service-id="1">
                         <td>Restaurants</td>
                         <td>Description du service 1</td>
                         <td>
-                            <button onclick="editService()" class="btn btn-primary">Modifier</button>
+                            <button onclick="editService(this)" class="btn btn-primary">Modifier</button>
                             <button onclick="deleteService()" class="btn btn-danger">Supprimer</button>
                         </td>
                     </tr>
