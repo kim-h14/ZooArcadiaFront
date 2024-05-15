@@ -36,10 +36,6 @@ window.onload = function() {
 };
 
 
-
-
-
-
 // ++++++++ "En savoir plus" button animation ++++++++
 $(document).ready(function() {
   $('.card__animal__btn').click(function() {
@@ -49,5 +45,34 @@ $(document).ready(function() {
       // Toggle the 'expanded' class on the card article
       var card = $(this).closest('.card__article');
       card.toggleClass('expanded');
+  });
+});
+
+
+// ============= Consultation of animal cards =============
+document.querySelectorAll('.card__article').forEach(article => {
+  article.addEventListener('click', function() {
+    const animalName = this.id; // Get the animal name from the id attribute
+    fetch('/animal/click', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ animal: animalName })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to update consultation count');
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Update the like counter or perform any other action as needed
+      const likeCounter = this.querySelector('.like-counter');
+      likeCounter.textContent = parseInt(likeCounter.textContent) + 1;
+    })
+    .catch(error => {
+      console.error('Error updating consultation count:', error);
+    });
   });
 });

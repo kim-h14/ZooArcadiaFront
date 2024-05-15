@@ -5,6 +5,7 @@ const path = require('path');
 const multer = require('multer');
 const bodyParser = require('body-parser');
 const { pool, connectDB } = require('./databases/pgDB');
+const {MongoClient, connectMongo} = require('./databases/mongo');
 
 
 const app = express();
@@ -12,6 +13,7 @@ const port = process.env.PORT || 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
 
 // Debugging middleware to log requested URLs
 app.use((req, res, next) => {
@@ -84,6 +86,22 @@ connectDB()
     process.exit(1); // Exit the application with a non-zero exit code
   });
 
+  connectMongo()
+  .then(() => {
+    // Database connection successful, continue with defining routes
+    console.log('Mongo connection successful');
+    
+    // Define route to check database connection
+    app.get('/check-db-connection', (req, res) => {
+      res.status(200).send('Database connection successful');
+    });
+  })
+  .catch((error) => {
+    // Database connection failed, log the error
+    console.error('Failed to connect to the database:', error);
+    process.exit(1); // Exit the application with a non-zero exit code
+  });
+
 // Route to check database connection
 app.get('/check-db-connection', async (req, res) => {
   try {
@@ -97,6 +115,7 @@ app.get('/check-db-connection', async (req, res) => {
       res.status(500).send('Error connecting to the database');
   }
 });
+
 
 // Define route handler for POST requests to /login
 app.post('/login', (req, res) => {
@@ -518,8 +537,6 @@ app.delete('/deleteReview', async (req, res) => {
   }
 });
 
-
-
 // Handle POST requests to add foor record for employee Dashboard
 app.post('/add_food_record', async (req, res) => {
   try {
@@ -631,6 +648,45 @@ app.get('/approved_reviews', async (req, res) => {
       res.status(500).json({ error: 'Error fetching approved reviews' });
   }
 });
+
+// Handle POST requests for animal consulations
+app.post('/animal/click', (req, res) => {
+  const animalName = req.body.animal;
+
+  MongoClient.connect(url, (err, client) => {
+    if (err) {
+      console.error('Failed to connect to database:', err);
+      res.status(500).json({ error: 'Failed to connect to database' });
+      return;
+    }
+
+    const db = client.db(dbName);
+    const collection = db.collection('animal_click');
+
+    collection.updateOne(
+      { "animal_name": animalName },
+      { $inc: { "consultation_count": 1 } }
+    )
+    .then(result => {
+      if (result.modifiedCount === 0) {
+        console.log('No document matched the query');
+        res.status(404).json({ error: 'Animal not found' });
+        return;
+      }
+      res.json({ message: 'Consultation count updated successfully' });
+    })
+    .catch(err => {
+      console.error('Error updating consultation count:', err);
+      res.status(500).json({ error: 'Failed to update consultation count' });
+    })
+    .finally(() => {
+      // Close the database connection
+      client.close();
+    });
+  });
+});
+
+
 
 
 // Define a route to serve index.html for all routes
