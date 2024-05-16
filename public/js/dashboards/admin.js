@@ -510,3 +510,50 @@ function resetFilters() {
   });
 }
 
+
+// Fetch data from MongoDB and render the graph
+async function fetchAnimalConsultationData() {
+  try {
+    const response = await fetch('/animal-consultations');
+    const data = await response.json();
+
+    const animals = [];
+    const consultationCounts = [];
+
+    // Extract animal names and consultation counts from the response
+    data.forEach(consultation => {
+      animals.push(consultation.animal);
+      consultationCounts.push(consultation.consultationCount);
+    });
+
+    // Render the graph using Chart.js
+    const ctx = document.getElementById('animalStatisticsChart').getContext('2d');
+    const animalStatisticsChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: animals,
+        datasets: [{
+          label: 'Consultation Count',
+          data: consultationCounts,
+          backgroundColor: 'rgba(54, 162, 235, 0.6)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching animal consultation data:', error);
+  }
+}
+
+// Call the function to fetch data and render the graph when the page loads
+window.onload = fetchAnimalConsultationData;

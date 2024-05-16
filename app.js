@@ -669,8 +669,19 @@ app.post('/animal-consultations', async (req, res) => {
   }
 });
 
+// Handle GET requests to fetch animal consultation data
+app.get('/animal-consultations', async (req, res) => {
+  try {
+    // Fetch all documents from the AnimalConsultation collection
+    const consultations = await AnimalConsultation.find();
 
-
+    // Send the consultations data as a JSON response
+    res.status(200).json(consultations);
+  } catch (error) {
+    console.error('Error fetching animal consultations:', error);
+    res.status(500).json({ error: 'Error fetching animal consultations' });
+  }
+});
 
 
 // Define a route to serve index.html for all routes
