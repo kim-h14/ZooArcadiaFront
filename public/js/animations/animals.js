@@ -50,29 +50,26 @@ $(document).ready(function() {
 
 
 // ============= Consultation of animal cards =============
-document.querySelectorAll('.card__article').forEach(article => {
-  article.addEventListener('click', function() {
-    const animalName = this.id; // Get the animal name from the id attribute
-    fetch('/animal/click', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ animal: animalName })
+// Define a function to send consultation registration request
+function registerConsultation(animalName) {
+  fetch('/animal-consultations', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      animal: animalName
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Failed to update consultation count');
-      }
-      return response.json();
-    })
-    .then(data => {
-      // Update the like counter or perform any other action as needed
-      const likeCounter = this.querySelector('.like-counter');
-      likeCounter.textContent = parseInt(likeCounter.textContent) + 1;
-    })
-    .catch(error => {
-      console.error('Error updating consultation count:', error);
-    });
-  });
-});
+  })
+  .then(response => {
+    if (response.ok) {
+      // Update like counter on successful registration
+      const likeCounter = document.querySelector(`#${animalName} .like-counter`);
+      const currentCount = parseInt(likeCounter.textContent);
+      likeCounter.textContent = currentCount + 1;
+    } else {
+      console.error('Failed to register consultation');
+    }
+  })
+  .catch(error => console.error('Error:', error));
+}

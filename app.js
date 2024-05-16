@@ -5,11 +5,19 @@ const path = require('path');
 const multer = require('multer');
 const bodyParser = require('body-parser');
 const { pool, connectDB } = require('./databases/pgDB');
-const {MongoClient, connectMongo} = require('./databases/mongo');
+const AnimalConsultation = require('./databases/animalConsultation'); 
+const mongoose = require('mongoose'); 
+
 
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Connect to MongoDB using Mongoose
+mongoose.connect('mongodb://localhost:27017/arcardia-consultation')
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('Error connecting to MongoDB:', err));
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -74,22 +82,6 @@ connectDB()
   .then(() => {
     // Database connection successful, continue with defining routes
     console.log('Database connection successful');
-    
-    // Define route to check database connection
-    app.get('/check-db-connection', (req, res) => {
-      res.status(200).send('Database connection successful');
-    });
-  })
-  .catch((error) => {
-    // Database connection failed, log the error
-    console.error('Failed to connect to the database:', error);
-    process.exit(1); // Exit the application with a non-zero exit code
-  });
-
-  connectMongo()
-  .then(() => {
-    // Database connection successful, continue with defining routes
-    console.log('Mongo connection successful');
     
     // Define route to check database connection
     app.get('/check-db-connection', (req, res) => {
@@ -649,42 +641,34 @@ app.get('/approved_reviews', async (req, res) => {
   }
 });
 
-// Handle POST requests for animal consulations
-app.post('/animal/click', (req, res) => {
-  const animalName = req.body.animal;
-
-  MongoClient.connect(url, (err, client) => {
-    if (err) {
-      console.error('Failed to connect to database:', err);
-      res.status(500).json({ error: 'Failed to connect to database' });
-      return;
+// Handle POST requests for animal consultations
+app.post('/animal-consultations', async (req, res) => {
+  try {
+    const { animal } = req.body;
+    // Find the document corresponding to the animal
+    const consultation = await AnimalConsultation.findOne({ animal });
+    if (consultation) {
+      // If the document exists, increment the consultation count
+      consultation.consultationCount += 1;
+      await consultation.save();
+      console.log('Updated consultation:', consultation);
+      res.status(200).json(consultation);
+    } else {
+      // If the document doesn't exist, create a new one with the initial count
+      const newConsultation = new AnimalConsultation({
+        animal,
+        consultationCount: 1
+      });
+      const savedConsultation = await newConsultation.save();
+      console.log('Saved consultation:', savedConsultation);
+      res.status(201).json(savedConsultation);
     }
-
-    const db = client.db(dbName);
-    const collection = db.collection('animal_click');
-
-    collection.updateOne(
-      { "animal_name": animalName },
-      { $inc: { "consultation_count": 1 } }
-    )
-    .then(result => {
-      if (result.modifiedCount === 0) {
-        console.log('No document matched the query');
-        res.status(404).json({ error: 'Animal not found' });
-        return;
-      }
-      res.json({ message: 'Consultation count updated successfully' });
-    })
-    .catch(err => {
-      console.error('Error updating consultation count:', err);
-      res.status(500).json({ error: 'Failed to update consultation count' });
-    })
-    .finally(() => {
-      // Close the database connection
-      client.close();
-    });
-  });
+  } catch (error) {
+    console.error('Error registering consultation:', error);
+    res.status(500).json({ error: 'Error registering consultation' });
+  }
 });
+
 
 
 
