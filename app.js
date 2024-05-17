@@ -464,6 +464,26 @@ app.get('/vet_reports', async (req, res) => {
   }
 });
 
+// Handle GET requests to fetch veterinarian names
+app.get('/vet_names', async (req, res) => {
+  try {
+    const query = 'SELECT username AS name FROM account WHERE role = $1';
+    const result = await pool.query(query, ['Vétérinaire']);
+    
+    // Check if the result is an array and map it properly
+    if (result.rows.length > 0) {
+      const veterinarians = result.rows.map(row => ({ name: row.name }));
+      res.status(200).json(veterinarians);
+    } else {
+      res.status(404).json({ error: 'No veterinarians found' });
+    }
+  } catch (error) {
+    console.error('Error fetching veterinarian names:', error);
+    res.status(500).json({ error: 'Error fetching veterinarian names' });
+  }
+});
+
+
 // Handle POST requests to submit a new review to the employee Dashboard
 app.post('/submit_review', async (req, res) => {
   try {

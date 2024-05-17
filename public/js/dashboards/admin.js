@@ -466,49 +466,63 @@ $(document).ready(function() {
 
 
 // ======== Functions for filters inside vet report table =========
-// Function to apply filters
-function applyFilters() {
-  // Get filter values
-  const filterDate = document.getElementById('filterDate').value;
-  const filterVeterinarian = document.getElementById('filterVeterinarian').value;
-  const filterAnimal = document.getElementById('filterAnimal').value;
+// Function to fetch and populate animal select dropdown
+function populateAnimalSelect() {
+  fetch('/animal_names')
+    .then(response => response.json())
+    .then(data => {
+      const select = document.getElementById('filterAnimal');
+      select.innerHTML = '<option value="">Tous les animaux</option>';
+      data.forEach(animalName => {
+        const option = document.createElement('option');
+        option.value = animalName;
+        option.textContent = animalName;
+        select.appendChild(option);
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching animal data:', error);
+    });
+}
 
-  // Get table rows
-  const rows = document.querySelectorAll('#vetReportTable tbody tr');
+// Populate animal select dropdown on page load
+populateAnimalSelect();
 
-  // Loop through each row
-  rows.forEach(row => {
-      const date = row.cells[0].textContent;
-      const veterinarian = row.cells[2].textContent;
-      const animal = row.cells[3].textContent;
-
-      // Check if the row matches the filters
-      const dateMatch = filterDate === '' || date === filterDate;
-      const veterinarianMatch = filterVeterinarian === '' || veterinarian === filterVeterinarian;
-      const animalMatch = filterAnimal === '' || animal === filterAnimal;
-
-      // Show or hide the row based on filter matches
-      if (dateMatch && veterinarianMatch && animalMatch) {
-          row.style.display = 'table-row'; // Show row
-      } else {
-          row.style.display = 'none'; // Hide row
-      }
+// Function to fetch and populate vet select dropdown
+function populateVeterinarianSelect() {
+  fetch('/vet_names')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log('Veterinarian data:', data);
+    if (Array.isArray(data)) {
+      const select = document.getElementById('filterVeterinarian');
+      select.innerHTML = '<option value="">Tous les vétérinaires</option>';
+      data.forEach(vet => {
+        const option = document.createElement('option');
+        option.value = vet.name;
+        option.textContent = vet.name;
+        select.appendChild(option);
+      });
+    } else {
+      console.error('Unexpected data format:', data);
+    }
+  })
+  .catch(error => {
+    console.error('Error fetching veterinarian data:', error);
   });
 }
 
-// Function to reset filters and show all rows
-function resetFilters() {
-  // Reset filter values
-  document.getElementById('filterDate').value = '';
-  document.getElementById('filterVeterinarian').value = '';
-  document.getElementById('filterAnimal').value = '';
+// Populate veterinarian select dropdown on page load
+populateVeterinarianSelect();
 
-  // Get all rows and show them
-  const rows = document.querySelectorAll('#vetReportTable tbody tr');
-  rows.forEach(row => {
-      row.style.display = 'table-row'; // Show row
-  });
-}
+
+
+
 
 
 // ============== Function to fetch animal consultations and populate the graph ===============
