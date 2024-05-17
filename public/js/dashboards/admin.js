@@ -520,8 +520,57 @@ function populateVeterinarianSelect() {
 // Populate veterinarian select dropdown on page load
 populateVeterinarianSelect();
 
+// Function to apply date filter
+function applyDateFilter() {
+  const date = document.getElementById('filterDate').value;
+  const rows = document.querySelectorAll('#vetReportTable tbody tr');
 
+  rows.forEach(row => {
+    const rowDate = row.querySelector('td:first-child').textContent;
+    if (date && rowDate !== date) {
+      row.style.display = 'none';
+    } else {
+      row.style.display = '';
+    }
+  });
+}
 
+// Function to apply vet filter
+function applyVetFilter() {
+  const selectedVet = document.getElementById('filterVeterinarian').value;
+  const rows = document.querySelectorAll('#vetReportTable tbody tr');
+
+  rows.forEach(row => {
+    const rowVet = row.querySelector('td:nth-child(2)').textContent;
+    if (selectedVet && rowVet !== selectedVet) {
+      row.style.display = 'none';
+    } else {
+      row.style.display = '';
+    }
+  });
+}
+
+// Function to apply animal filter
+function applyAnimalFilter() {
+  const selectedAnimal = document.getElementById('filterAnimal').value;
+  const rows = document.querySelectorAll('#vetReportTable tbody tr');
+
+  rows.forEach(row => {
+    const rowAnimal = row.querySelector('td:nth-child(3)').textContent;
+    if (selectedAnimal && rowAnimal !== selectedAnimal) {
+      row.style.display = 'none';
+    } else {
+      row.style.display = '';
+    }
+  });
+}
+
+// Function to apply all filters
+function applyFilters() {
+  applyDateFilter();
+  applyVetFilter();
+  applyAnimalFilter();
+}
 
 
 
