@@ -139,16 +139,26 @@ function fetchServices() {
 
     // Iterate through each service and append a row to the table
     data.forEach(function(service) {
-      $('#serviceTable tbody').append(`
-        <tr>
+      const row = $(`
+        <tr data-service-id="${service.service_id}">
           <td>${service.service_name}</td>
           <td>${service.service_description}</td>
           <td>
-            <button onclick="editService(this)" class="btn btn-primary" id="modify-service">Modifier</button>
-            <button onclick="deleteService()" class="btn btn-danger">Supprimer</button>
+            <button class="btn btn-primary modify-service">Modifier</button>
+            <button class="btn btn-danger delete-service">Supprimer</button>
           </td>
         </tr>
       `);
+      
+      // Attach event listeners to the buttons in this row
+      row.find('.modify-service').click(function() {
+        editService($(this)); // Pass the clicked button to editService function
+      });
+
+      row.find('.delete-service').click(deleteService); // Attach deleteService directly
+
+      // Append the row to the table
+      $('#serviceTable tbody').append(row);
     });
   }).fail(function(xhr, status, error) {
     console.error('Error fetching services:', error);
@@ -163,30 +173,54 @@ $(document).ready(function() {
 
 // =============== Function to handle modifications of services =============== 
 function editService(button) {
-  // Get the row containing the service
-  const row = $(button).closest('tr');
-  // Extract the service ID from the row's data attribute
-  const serviceId = row.data('service-id');
-  
-  // Prompt the user to enter new information for the service
-  const serviceName = prompt('Enter the new name for the service:');
-  const serviceDescription = prompt('Enter the new description for the service:');
+  const row = $(button).closest("tr"); // Get the parent row of the clicked button
+  const serviceName = row.find("td:eq(0)").text(); // Get service name from the first column
+  const serviceDescription = row.find("td:eq(1)").text(); // Get service description from the second column
 
-  // Send a PUT request to update the service
+  // Replace text with input fields for editing
+  row.find("td:eq(0)").html(`<input type="text" class="form-control" value="${serviceName}">`);
+  row.find("td:eq(1)").html(`<input type="text" class="form-control" value="${serviceDescription}">`);
+
+  // Replace "Modifier" button with "Save" and "Cancel" buttons
+  row.find("td:eq(2)").html(`
+      <button onclick="saveService(this)" class="btn btn-success">Sauvegarder</button>
+      <button onclick="cancelEdit(this)" class="btn btn-secondary">Annuler</button>
+  `);
+}
+
+// Function to save the edited service
+function saveService(button) {
+  const row = $(button).closest("tr"); // Get the parent row of the clicked button
+  const serviceId = row.data("service-id");
+  const serviceName = row.find("td:eq(0) input").val(); // Get edited service name
+  const serviceDescription = row.find("td:eq(1) input").val(); // Get edited service description
+
+  // Perform AJAX request to update the service
   $.ajax({
-    url: `/updateService`,
-    type: 'PUT',
-    data: { id: serviceId, serviceName, serviceDescription },
-    success: function(response) {
-      console.log('Service updated successfully');
-      // Reload the page after the service has been updated
-      location.reload();
-    },
-    error: function(xhr, status, error) {
-      console.error('Error updating service:', error);
-    }
+      url: `/updateService/${serviceId}`,
+      method: "PUT",
+      contentType: "application/json",
+      data: JSON.stringify({
+          serviceName: serviceName,
+          serviceDescription: serviceDescription
+      }),
+      success: function(response) {
+          console.log("Service updated successfully:", response);
+          // Refresh services table after update
+          fetchServices();
+      },
+      error: function(xhr, status, error) {
+          console.error("Error updating service:", error);
+      }
   });
 }
+
+// Function to cancel editing and revert changes
+function cancelEdit(button) {
+  const row = $(button).closest("tr"); // Get the parent row of the clicked button
+  fetchServices(); // Refresh services table to revert changes
+}
+
 
 
 // =============== Function to delete service ===============
@@ -350,9 +384,6 @@ $(document).ready(function() {
   fetchAnimals();
 });
 
-
-
-
 // ============== Function to modify an animal ===============
 function editAnimal() {
   // Get the animal data from the table row
@@ -465,7 +496,7 @@ $(document).ready(function() {
 });
 
 
-// ======== Functions for filters inside vet report table =========
+// ======================== Functions for filters inside vet report table =========
 // Function to fetch and populate animal select dropdown
 function populateAnimalSelect() {
   fetch('/animal_names')

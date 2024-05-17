@@ -266,7 +266,7 @@ app.get('/service', async (req, res) => {
 
 
 // Handle PUT requests to update a service for admin & employee Dashboards
-app.put('/updateService', async (req, res) => {
+app.put('/updateService/:id', async (req, res) => {
   const serviceId = req.params.id;
   const { serviceName, serviceDescription } = req.body;
 
