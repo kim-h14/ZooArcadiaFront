@@ -126,6 +126,7 @@ footer {
   margin-bottom: 2%;
 }
 
+
 // Carousel Styles for home page
 
 .image-wrapper {
@@ -202,6 +203,7 @@ footer {
 
 .review-section {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
@@ -734,6 +736,10 @@ article {
   align-items: center;
   padding-top: 10%;
   padding-bottom: 17%;
+}
+
+.review {
+  margin-bottom: 20px;
 }
 
 

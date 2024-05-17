@@ -12146,6 +12146,7 @@ footer {
 
 .review-section {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
@@ -12305,7 +12306,7 @@ footer {
   }
   100% {
     opacity: 0;
-    transform: translateY(-100vh) translateX(calc(-50% + 3.679272818vw)) rotate(1080deg);
+    transform: translateY(-100vh) translateX(calc(-50% + 12.8286317365vw)) rotate(1080deg);
   }
 }
 /* Apply flying animation to heart emojis */
@@ -12641,6 +12642,10 @@ article {
   align-items: center;
   padding-top: 10%;
   padding-bottom: 17%;
+}
+
+.review {
+  margin-bottom: 20px;
 }
 
 .reviews__title h1, .reviews__title .h1 {

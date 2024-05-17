@@ -42,6 +42,7 @@ async function fetchPendingReviews() {
 $(document).ready(function() {
   fetchPendingReviews();
 });
+
 // ================= Function to approve review =================
 function approveReview(button) {
   // Get the row containing the review
@@ -68,26 +69,24 @@ function approveReview(button) {
 
 // ======================== Function to reject review =================
 function deleteReview(button) {
-  // Get the row containing the review
-  const row = $(button).closest('tr');
-  // Extract the review ID from the row's data attribute
-  const reviewId = row.data('reviewId'); // Assuming the attribute is data-review-id
+  const row = button.closest('tr');
+  const reviewId = row.dataset.reviewId;
 
-  // Send a DELETE request to your backend with the review ID
   $.ajax({
-    url: '/deleteReview',
+    url: '/rejectReview', 
     type: 'DELETE',
+    contentType: 'application/json',
     data: { id: reviewId },
-    success: function(response) {
+    success: function(result) {
+      row.parentNode.removeChild(row);
       console.log('Review deleted successfully');
-      // Reload the page after the review has been deleted
-      location.reload();
     },
     error: function(xhr, status, error) {
       console.error('Error deleting review:', error);
     }
   });
 }
+
 
 // ===================== function to fetch services and populate table =================
 function fetchServices() {

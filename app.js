@@ -19,6 +19,8 @@ mongoose.connect('mongodb://localhost:27017/arcardia-consultation')
   .catch(err => console.error('Error connecting to MongoDB:', err));
 
 
+//Parse JSON bodies 
+app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -516,18 +518,21 @@ app.put('/approveReview', async (req, res) => {
 });
 
 // Handle DELETE requests to reject reviews for employee Dashboard
-app.delete('/deleteReview', async (req, res) => {
-  // Extract review ID from the request body
-  const reviewId = req.body.id; 
+app.delete('/rejectReview', async (req, res) => {
+  const reviewId = req.body.id;
   try {
-    // Delete the review from the database
-    await pool.query('DELETE FROM review WHERE review_id = $1', [reviewId]);
-    res.sendStatus(200);
+    const query = 'DELETE FROM review WHERE review_id = $1';
+    const result = await pool.query(query, [reviewId]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Review not found' });
+    }
+    res.status(200).json({ message: 'Review deleted successfully' });
   } catch (error) {
     console.error('Error deleting review:', error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).json({ error: 'Error deleting review' });
   }
 });
+
 
 // Handle POST requests to add foor record for employee Dashboard
 app.post('/add_food_record', async (req, res) => {

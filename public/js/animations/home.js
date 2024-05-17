@@ -65,22 +65,38 @@ function fetchAndInjectReviews() {
           // Clear existing content
           reviewSection.empty();
           
-          // Inject reviews into the review section
-          if (data.length > 0) {
-              data.forEach(function(review) {
-                  const reviewParagraph = $('<p>').text(review.review_text);
-                  const reviewAuthor = $('<p>').addClass('review-author').text(`- ${review.client_name}, ${review.city}`);
-                  reviewSection.append(reviewParagraph, reviewAuthor);
-                });
-          } else {
-              // If no reviews are available, display a message
-              const noReviewMessage = $('<p>').text('No reviews available.');
-              reviewSection.append(noReviewMessage);
+           // If there are reviews available
+           if (data.length > 0) {
+            let index = 0;
+
+            function displayNextReview() {
+              // Clear existing content
+              reviewSection.empty();
+
+              // Display the current review
+              const review = data[index];
+              const reviewParagraph = $('<p>').text(review.review_text);
+              const reviewAuthor = $('<p>').addClass('review-author').text(`- ${review.client_name}, ${review.city}`);
+              reviewSection.append(reviewParagraph, reviewAuthor);
+
+              // Increment index to move to the next review
+              index = (index + 1) % data.length;
+
+              // Schedule display of next review after 30 seconds
+              setTimeout(displayNextReview, 30000);
           }
-      })
-      .fail(function(jqXHR, textStatus, errorThrown) {
-          console.error('Error fetching and injecting reviews:', errorThrown);
-      });
+
+          // Start displaying reviews
+          displayNextReview();
+      } else {
+          // If no reviews are available, display a message
+          const noReviewMessage = $('<p>').text('No reviews available.');
+          reviewSection.empty().append(noReviewMessage);
+      }
+  })
+  .fail(function(jqXHR, textStatus, errorThrown) {
+      console.error('Error fetching and injecting reviews:', errorThrown);
+  });
 }
 
 $(document).ready(fetchAndInjectReviews);
