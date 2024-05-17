@@ -511,6 +511,7 @@ function resetFilters() {
 }
 
 
+// ============== Function to fetch animal consultations and populate the graph ===============
 // Fetch data from MongoDB and render the graph
 async function fetchAnimalConsultationData() {
   try {
@@ -533,7 +534,7 @@ async function fetchAnimalConsultationData() {
       data: {
         labels: animals,
         datasets: [{
-          label: 'Consultation Count',
+          label: 'Nombre de consultations',
           data: consultationCounts,
           backgroundColor: 'rgba(54, 162, 235, 0.6)',
           borderColor: 'rgba(54, 162, 235, 1)',
@@ -554,6 +555,7 @@ async function fetchAnimalConsultationData() {
     console.error('Error fetching animal consultation data:', error);
   }
 }
+
 
 // Call the function to fetch data and render the graph when the page loads
 window.onload = fetchAnimalConsultationData;

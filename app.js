@@ -580,9 +580,16 @@ app.post('/add_animal_report', async (req, res) => {
 // Handle GET requests to fetch food records for vet Dashboard
 app.get('/vet_food_records', async (req, res) => {
   try {
-    // Fetch food consumption records from the database
-    const query = 'SELECT date, animal_name, food_type, food_quantity FROM foodrecord';
-    const { rows } = await pool.query(query);
+    const animalName = req.query.animal;
+    let query = 'SELECT date, animal_name, food_type, food_quantity FROM foodrecord';
+    const queryParams = [];
+
+    if (animalName) {
+      query += ' WHERE animal_name = $1';
+      queryParams.push(animalName);
+    }
+
+    const { rows } = await pool.query(query, queryParams);
 
     // Send the fetched records as JSON response
     res.json(rows);

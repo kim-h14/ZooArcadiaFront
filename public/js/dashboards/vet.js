@@ -43,10 +43,30 @@ function filterByAnimal() {
 }
 
 // ===================== Function to fetch food records from the database =====================
-async function fetchFoodRecords() {
+// Function to fetch and populate animal select dropdown
+function populateAnimalSelect() {
+  fetch('/animal_names')
+    .then(response => response.json())
+    .then(data => {
+      const select = document.getElementById('animalSelect');
+      select.innerHTML = '<option value="">Tous les animaux</option>';
+      data.forEach(animalName => {
+        const option = document.createElement('option');
+        option.value = animalName;
+        option.textContent = animalName;
+        select.appendChild(option);
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching animal data:', error);
+    });
+}
+
+// Function to fetch and display food records
+async function fetchFoodRecords(animal = '') {
   try {
     // Fetch food consumption records from the server
-    const response = await fetch('/vet_food_records');
+    const response = await fetch(`/vet_food_records?animal=${encodeURIComponent(animal)}`);
     const records = await response.json();
 
     // Reference to the table body element
@@ -73,5 +93,18 @@ async function fetchFoodRecords() {
     console.error('Error fetching food records:', error);
   }
 }
-// Call the function to fetch food records when the page loads
+
+// Function to filter records by selected animal
+function filterByAnimal() {
+  const selectedAnimal = document.getElementById('animalSelect').value;
+  fetchFoodRecords(selectedAnimal);
+}
+
+// Populate animal select dropdown on page load
+populateAnimalSelect();
+
+// Fetch all food records on page load
 fetchFoodRecords();
+
+// Add event listener to filter records when animal is selected
+document.getElementById('animalSelect').addEventListener('change', filterByAnimal);

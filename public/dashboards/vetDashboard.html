@@ -53,11 +53,10 @@
               <p>Gestion de l'alimentation des animaux</p>
               <!-- Select element for choosing the animal -->
               <label for="animalSelect">Choisir l'animal:</label>
-              <select id="animalSelect" onchange="populateAnimalSelect()">
+              <select id="animalSelect" onchange="filterByAnimal()">
                   <option value="">Tous les animaux</option>
-                  <option value="Lion">Lion</option>
-                  <option value="Tigre">Tigre</option>
-                  <!-- Add more options for other animals -->
+                  <!-- Options will be dynamically populated by JavaScript -->
+
               </select>
               
               <!-- Table displaying existing food consumption records with options to filter -->
