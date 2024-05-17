@@ -262,11 +262,11 @@ function fetchHabitat() {
     // Iterate through each habitat and append a row to the table
     data.forEach(function(habitat) {
       $('#habitatTable tbody').append(`
-        <tr>
+      <tr data-habitat-id="${habitat.habitat_id}">
           <td>${habitat.habitat_name}</td>
           <td>${habitat.habitat_description}</td>
           <td>
-            <button onclick="editHabitat()" class="btn btn-primary" id="modify-staff">Modifier</button>
+            <button onclick="editHabitat(this)" class="btn btn-primary" id="modify-staff">Modifier</button>
             <button onclick="deleteHabitat()" class="btn btn-danger">Supprimer</button>
           </td>
         </tr>
@@ -282,45 +282,54 @@ $(document).ready(function() {
 
 
 // ============== Function to handle habitat modification ===============
-function editHabitat() {
-  // Get the habitat data from the table row
-  const row = document.getElementById(`habitat-${id}`);
-  const habitatName = row.cells[0].textContent;
-  const habitatDescription = row.cells[1].textContent;
+// Function to handle modifications of habitats
+function editHabitat(button) {
+  const row = $(button).closest("tr"); // Get the parent row of the clicked button
+  const habitatName = row.find("td:eq(0)").text(); // Get habitat name from the first column
+  const habitatDescription = row.find("td:eq(1)").text(); // Get habitat description from the second column
 
-  // Prompt the admin to enter the updated information
-  const newHabitatName = prompt("Entré le nouveau nom de l'habitat:", habitatName);
-  const newHabitatDescription = prompt("Entré la nouvelle description de l'habitat:", habitatDescription);
+  // Replace text with input fields for editing
+  row.find("td:eq(0)").html(`<input type="text" class="form-control" value="${habitatName}">`);
+  row.find("td:eq(1)").html(`<input type="text" class="form-control" value="${habitatDescription}">`);
 
-  // Create an object to store the updated habitat information
-  const updatedHabitat = {
-    habitatName: newHabitatName,
-    habitatDescription: newHabitatDescription
-  };
+  // Replace "Modifier" button with "Save" and "Cancel" buttons
+  row.find("td:eq(2)").html(`
+    <button onclick="saveHabitat(this)" class="btn btn-success">Sauvegarder</button>
+    <button onclick="cancelEditHabitat(this)" class="btn btn-secondary">Annuler</button>
+  `);
+}
 
-  // Send the updated habitat information to the server
-  fetch(`/update_habitat/${id}`, {
+// Function to save the edited habitat
+function saveHabitat(button) {
+  const row = $(button).closest("tr"); // Get the parent row of the clicked button
+  const habitatId = row.data("habitat-id");
+  const habitatName = row.find("td:eq(0) input").val(); // Get edited habitat name
+  const habitatDescription = row.find("td:eq(1) input").val(); // Get edited habitat description
+
+  // Perform AJAX request to update the habitat
+  $.ajax({
+    url: `/updateHabitat/${habitatId}`,
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
+    contentType: "application/json",
+    data: JSON.stringify({
+      habitatName: habitatName,
+      habitatDescription: habitatDescription
+    }),
+    success: function(response) {
+      console.log("Habitat updated successfully:", response);
+      // Refresh habitats table after update
+      fetchHabitat();
     },
-    body: JSON.stringify(updatedHabitat),
-  })
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error("Erreur lors de la mise à jour de l'habitat.");
+    error: function(xhr, status, error) {
+      console.error("Error updating habitat:", error);
     }
-    return response.json();
-  })
-  .then((data) => {
-    console.log("Les informations ont été mises à jour correctement.", data);
-    // Refresh the page to display the updated information
-    location.reload();
-  })
-  .catch((error) => {
-    console.error("Il y a eu une erreur lors de la mise à jour de l'habitat.", error);
-    alert("Il y a eu une erreur lors de la mise à jour de l'habitat.");
   });
+}
+
+// Function to cancel editing and revert changes
+function cancelEditHabitat(button) {
+  const row = $(button).closest("tr"); // Get the parent row of the clicked button
+  fetchHabitat(); // Refresh habitats table to revert changes
 }
 
 // ============== Function to delete habitat ===============

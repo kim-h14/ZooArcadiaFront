@@ -334,19 +334,18 @@ app.get('/habitat', async (req, res) => {
 });
 
 // Handle PUT requests to update a habitat for admin Dashboard
-app.put('/update_habitat', async (req, res) => {
+app.put('/updateHabitat/:id', async (req, res) => {
   const habitatId = req.params.id;
   const { habitatName, habitatDescription } = req.body;
 
   try {
-    // Log the submitted data for debugging
-    console.log('Submitted habitat data:', { habitatName, habitatDescription });
-
-    // Respond with a success message
-    res.status(200).send('Habitat mis à jour avec succès.');
+    // Update the service in the existing table
+    await pool.query('UPDATE habitat SET habitat_name = $1, habitat_description = $2 WHERE habitat_id = $3', [habitatName, habitatDescription, habitatId]);
+   res.sendStatus(200);
   } catch (error) {
-    console.error('Erreur lors de la mise à jour de l\'habitat:', error);
-    res.status(500).send('Erreur lors de la mise à jour de l\'habitat.');
+    // Send an error response
+    console.error('Error updating habitat:', error);
+    res.status(500).send('Internal Server Error');
   }
 });
 
