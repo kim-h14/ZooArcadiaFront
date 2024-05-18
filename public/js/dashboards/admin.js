@@ -328,8 +328,8 @@ function fetchAnimals() {
           <td class="animal-habitat">${animal.habitat_name}</td>
           <td>
             <button class="btn btn-primary" onclick="editAnimal(this)">Modifier</button>
-            <button class="btn btn-danger" onclick="deleteAnimal()">Supprimer</button>
-          </td>
+            <button onclick="deleteAnimal(${animal.animal_id})" class="btn btn-danger">Supprimer</button>
+            </td>
         </tr>
       `);
     });
@@ -394,34 +394,20 @@ $(document).ready(function() {
 });
 
 // ============== Function to delete animal ===============
-function deleteAnimal() {
-  // Get the table row containing the clicked "Delete" button
-  const row = event.target.closest("tr");
-
-  // Confirm with the admin before deleting the animal
-  if(confirm("Voulez-vous vraiment supprimer cet animal?")) {
-    // Send a DELETE request to delete the animal
-    fetch('/delete_animal', {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json"
+function deleteAnimal(animalId) {
+  // Show confirmation dialog
+  if (confirm("Êtes-vous sûr de vouloir supprimer cet animal ? Cette action ne peut être annulée.")) {
+    // Proceed with deletion
+    $.ajax({
+      url: '/delete_animal/' + animalId,
+      method: 'DELETE',
+      success: function(response) {
+        // Refresh the table after deleting the animal
+        fetchAnimals();  
       },
-      body: JSON.stringify({ animalId })
-    })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Erreur lors de la suppression de l'animal.");
+      error: function(xhr, status, error) {
+        console.error('Error deleting animal:', error);
       }
-      return response.json();
-    })
-    .then((data) => {
-      console.log("L'animal a été supprimé correctement.", data);
-      // Refresh the page to remove the deleted animal
-      location.reload();
-    })
-    .catch((error) => {
-      console.error("Il y a eu une erreur lors de la suppression de l'animal.", error);
-      alert("Il y a eu une erreur lors de la suppression de l'animal.");
     });
   }
 }

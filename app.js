@@ -412,19 +412,18 @@ app.put('/update_animal', async (req, res) => {
 });
 
 // Handle DELETE  requests to delete an animal for admin Dashboard
-app.delete('/delete_animal', (req, res) => {
-  // Extract data from the request body
-  const { animalId } = req.body;
-
+app.delete('/delete_animal/:id', async (req, res) => {
   try {
-    // Log the submitted data for debugging
-    console.log('Submitted animal ID:', animalId);
+    const animalId = req.params.id;
 
-    // Respond with a success message
-    res.status(200).send('Animal supprimé avec succès.');
+    // Delete the animal from the database
+    const query = 'DELETE FROM animal WHERE animal_id = $1';
+    await pool.query(query, [animalId]);
+
+    res.status(200).json({ message: 'Animal deleted successfully' });
   } catch (error) {
-    console.error('Erreur lors de la suppression de l\'animal:', error);
-    res.status(500).send('Erreur lors de la suppression de l\'animal.');
+    console.error('Error deleting animal:', error);
+    res.status(500).json({ error: 'Error deleting animal' });
   }
 });
 
@@ -534,6 +533,7 @@ app.delete('/deleteReview/:reviewId', async (req, res) => {
     res.status(500).send('Internal Server Error'); // Send an error response
   }
 });
+
 
 
 
