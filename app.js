@@ -266,20 +266,18 @@ app.put('/updateService/:id', async (req, res) => {
 });
 
 // Handle DELETE requests to delete a service for admin & employee Dashboards
-app.delete('/delete_service', async (req, res) => {
-  const serviceId = req.query.id;
-
+app.delete('/delete_service/:id', async (req, res) => {
   try {
-      // Delete service from database
-      // /!/ DECOMMENT ONCE DATABASE HAS BEEN CREATED =====================
-      // const result = await pool.query('DELETE FROM service WHERE id_service = $1', [serviceId]);
+    const serviceId = req.params.id;
 
-      // Check if the service was found and deleted
-    console.log('Successfully deleted service member with id:', serviceId);
-    res.status(200).send('Membre du service supprimé correctement.');
+    // Delete the service from the database
+    const query = 'DELETE FROM service WHERE service_id = $1';
+    await pool.query(query, [serviceId]);
+
+    res.status(200).json({ message: 'Service deleted successfully' });
   } catch (error) {
-      console.error('Error deleting service:', error);
-      res.status(500).json({ message: 'Error deleting service' });
+    console.error('Error deleting service:', error);
+    res.status(500).json({ error: 'Error deleting service' });
   }
 });
 
@@ -335,18 +333,18 @@ app.put('/updateHabitat/:id', async (req, res) => {
 });
 
 // Handle DELETE requests to delete a habitat for admin Dashboard
-app.delete('/delete_habitat', async (req, res) => {
-  const habitatId = req.body.habitatId;
-
+app.delete('/delete_habitat/:id', async (req, res) => {
   try {
-    // Log the submitted data for debugging
-    console.log('Submitted habitat ID:', habitatId);
+    const habitatId = req.params.id;
 
-    // Respond with a success message
-    res.status(200).send('Habitat supprimé avec succès.');
+    // Delete the habitat from the database
+    const query = 'DELETE FROM habitat WHERE habitat_id = $1';
+    await pool.query(query, [habitatId]);
+
+    res.status(200).json({ message: 'Habitat deleted successfully' });
   } catch (error) {
-    console.error('Erreur lors de la suppression de l\'habitat:', error);
-    res.status(500).send('Erreur lors de la suppression de l\'habitat.');
+    console.error('Error deleting habitat:', error);
+    res.status(500).json({ error: 'Error deleting habitat' });
   }
 });
 

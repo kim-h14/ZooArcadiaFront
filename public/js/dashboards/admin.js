@@ -118,8 +118,8 @@ function fetchServices() {
           <td>${service.service_description}</td>
           <td>
             <button class="btn btn-primary modify-service">Modifier</button>
-            <button class="btn btn-danger delete-service">Supprimer</button>
-          </td>
+            <button onclick="deleteService(${service.service_id})" class="btn btn-danger delete-service">Supprimer</button>
+            </td>
         </tr>
       `);
       
@@ -197,32 +197,21 @@ function cancelEdit(button) {
 
 
 // =============== Function to delete service ===============
-// Function to delete a service
-function deleteService() {
-  // Confirm with the user before deleting
-  if (confirm("Voulez-vous vraiment supprimer ce service ?")) {
-      // Send a DELETE request to the server
-      fetch('/delete_service', {
-          method: "DELETE",
-      })
-      .then((response) => {
-          if (!response.ok) {
-              throw new Error("Erreur lors de la suppression du service.");
-          }
-          return response.json();
-      })
-      .then((data) => {
-          console.log("Le service a été supprimé correctement.", data);
-          // Remove the service row from the table
-          const row = document.getElementById(`serviceRow_${serviceId}`);
-          if (row) {
-              row.remove();
-          }
-      })
-      .catch((error) => {
-          console.error("Il y a eu une erreur lors de la suppression du service.", error);
-          alert("Il y a eu une erreur lors de la suppression du service.");
-      });
+function deleteService(serviceId) {
+  // Show confirmation dialog
+  if (confirm("Êtes-vous sûr de vouloir supprimer ce service ? Cette action ne peut être annulée.")) {
+    // Proceed with deletion
+    $.ajax({
+      url: '/delete_service/' + serviceId,
+      method: 'DELETE',
+      success: function(response) {
+        // Refresh the table after deleting the service
+        fetchServices();  
+      },
+      error: function(xhr, status, error) {
+        console.error('Error deleting service:', error);
+      }
+    });
   }
 }
 
@@ -240,8 +229,8 @@ function fetchHabitat() {
           <td>${habitat.habitat_description}</td>
           <td>
             <button onclick="editHabitat(this)" class="btn btn-primary" id="modify-staff">Modifier</button>
-            <button onclick="deleteHabitat()" class="btn btn-danger">Supprimer</button>
-          </td>
+            <button onclick="deleteHabitat(${habitat.habitat_id})" class="btn btn-danger delete-habitat">Supprimer</button>
+            </td>
         </tr>
       `);
     });
@@ -306,33 +295,20 @@ function cancelEditHabitat(button) {
 }
 
 // ============== Function to delete habitat ===============
-function deleteHabitat() {
-  // Confirm with the user before deleting
-  if(confirm("Voulez-vous vraiment supprimer cet habitat ?")) {
-    const habitatRow = addEventListener.target.closest("tr");
-
-    // Send a DELETE request to the server
-    fetch('/delete_habitat', {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json"
+function deleteHabitat(habitatId) {
+  // Show confirmation dialog
+  if (confirm("Êtes-vous sûr de vouloir supprimer cet habitat ? Cette action ne peut être annulée.")) {
+    // Proceed with deletion
+    $.ajax({
+      url: '/delete_habitat/' + habitatId,
+      method: 'DELETE',
+      success: function(response) {
+        // Refresh the table after deleting the habitat
+        fetchHabitat();  
       },
-      body: JSON.stringify({ habitatId })
-    })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Erreur lors de la suppression de l'habitat.");
+      error: function(xhr, status, error) {
+        console.error('Error deleting habitat:', error);
       }
-      return response.json();
-    })
-    .then((data) => {
-      console.log("L'habitat a été supprimé correctement.", data);
-      // Refresh the page to remove the deleted habitat
-      location.reload();
-    })
-    .catch((error) => {
-      console.error("Il y a eu une erreur lors de la suppression de l'habitat.", error);
-      alert("Il y a eu une erreur lors de la suppression de l'habitat.");
     });
   }
 }
