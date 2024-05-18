@@ -509,7 +509,7 @@ app.get('/pending_reviews', async (req, res) => {
 // Handle POST requests to approve reviews for employee Dashboard
 app.put('/approveReview', async (req, res) => {
   // Extract review ID from the request body
-  const reviewId = req.body.id; // Extract review ID from the request body
+  const reviewId = req.body.id;
   try {
     // Update the review in the existing table by setting the approval status to true
     await pool.query('UPDATE review SET review_approved = true WHERE review_id = $1', [reviewId]);
@@ -521,20 +521,22 @@ app.put('/approveReview', async (req, res) => {
 });
 
 // Handle DELETE requests to reject reviews for employee Dashboard
-app.delete('/rejectReview', async (req, res) => {
-  const reviewId = req.body.id;
+app.delete('/deleteReview/:reviewId', async (req, res) => {
+  // Extract review ID from the URL parameter
+  const reviewId = req.params.reviewId;
+
+  console.log('Received delete request for review ID:', reviewId); // Log the review ID
+
   try {
-    const query = 'DELETE FROM review WHERE review_id = $1';
-    const result = await pool.query(query, [reviewId]);
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'Review not found' });
-    }
-    res.status(200).json({ message: 'Review deleted successfully' });
+    // Delete the review from the database
+    await pool.query('DELETE FROM review WHERE review_id = $1', [reviewId]);
+    res.sendStatus(200); // Send a success response
   } catch (error) {
     console.error('Error deleting review:', error);
-    res.status(500).json({ error: 'Error deleting review' });
+    res.status(500).send('Internal Server Error'); // Send an error response
   }
 });
+
 
 
 // Handle POST requests to add foor record for employee Dashboard

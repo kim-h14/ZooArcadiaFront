@@ -69,23 +69,27 @@ function approveReview(button) {
 
 // ======================== Function to reject review =================
 function deleteReview(button) {
-  const row = button.closest('tr');
-  const reviewId = row.dataset.reviewId;
+  // Get the row containing the review
+  const row = $(button).closest('tr');
+  // Extract the review ID from the first <td> of the row
+  const reviewId = $(row).find('td:first').text().trim();
+  console.log(reviewId);
 
+  // Send a DELETE request to your backend with the review ID
   $.ajax({
-    url: '/rejectReview', 
+    url: `/deleteReview/${reviewId}`, // Include the review ID in the URL
     type: 'DELETE',
-    contentType: 'application/json',
-    data: { id: reviewId },
-    success: function(result) {
-      row.parentNode.removeChild(row);
+    success: function(response) {
       console.log('Review deleted successfully');
+      // Remove the row from the table after the review has been deleted
+      row.remove();
     },
     error: function(xhr, status, error) {
       console.error('Error deleting review:', error);
     }
   });
 }
+
 
 
 // ===================== function to fetch services and populate table =================
