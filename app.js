@@ -197,18 +197,18 @@ app.put('/update_user', async (req, res) => {
 });
 
 // Handle DELETE requests to delete a staff member for admin Dashboard
-app.delete('/delete_staff', async (req, res) => {
-  const idStaff = req.query.idStaff;
+app.delete('/delete_user', async (req, res) => {
+  try {
+    const userId = req.body.userId;
 
-  try{
-    // Delete staff member from database
-     // /!/ DECOMMENT ONCE DATABASE HAS BEEN CREATED =====================
-    // const result = await pool.query('DELETE FROM staff WHERE id_staff = $1', [idStaff]);
-    console.log('Successfully deleted staff member with id:', idStaff);
-    res.status(200).send('Membre du staff supprimé correctement.');
+    // Delete the user from the database
+    const query = 'DELETE FROM account WHERE user_id = $1';
+    await pool.query(query, [userId]);
+
+    res.status(200).json({ message: 'User deleted successfully' });
   } catch (error) {
-    console.error('Il y a eu une erreur lors de la suppression du membre du staff.', error);
-    res.status(500).send('Erreur lors de la suppression du membre du staff.');
+    console.error('Error deleting user:', error);
+    res.status(500).json({ error: 'Error deleting user' });
   }
 });
 

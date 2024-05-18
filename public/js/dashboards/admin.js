@@ -13,7 +13,7 @@ function fetchAccounts() {
           <td>${account.role}</td>
           <td>
           <button onclick="editStaff(this, ${account.user_id})" class="btn btn-primary">Modifier</button>
-          <button onclick="deleteStaff()" class="btn btn-danger">Supprimer</button>
+          <button onclick="deleteStaff(${account.user_id})" class="btn btn-danger delete_staff">Supprimer</button>
           </td>
         </tr>
       `);
@@ -67,8 +67,9 @@ $('#editUserForm').on('submit', function(event) {
       role: role
     },
     success: function(response) {
-      fetchAccounts();  // Refresh the table after updating
-      cancelEdit();     // Hide the edit form
+      // Refresh the table after updating the user
+      fetchAccounts();  
+      cancelEdit();     
     },
     error: function(xhr, status, error) {
       console.error('Error updating user:', error);
@@ -82,44 +83,25 @@ $(document).ready(function() {
 });
 
 // ============= Function to handle staff deletions ===============
-function deleteStaff() {
-  // Get the row containing the clicked "Delete" button
-  let row = addEventListener.target.closest("tr");
-
-  // Extract the staff ID from the row
-  let idStaff = row.cells[0].textContent;
-
-  // Prompt the admin to confirm the deletion
-  let confirmation = confirm("Voulez-vous vraiment supprimer ce membre du staff ?");
-
-  // If the admin clicked "Cancel", exit the function
-  if (!confirmation) {
-    return;
+function deleteStaff(userId) {
+  // Show confirmation dialog
+  if (confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action ne peut pas être annulée.")) {
+    // Proceed with deletion
+    $.ajax({
+      url: '/delete_user',
+      method: 'DELETE',
+      data: {
+        userId: userId
+      },
+      success: function(response) {
+        // Refresh the table after deleting the user
+        fetchAccounts();  
+      },
+      error: function(xhr, status, error) {
+        console.error('Error deleting user:', error);
+      }
+    });
   }
-
-  // Send the staff ID to the server
-  fetch("delete_staff", {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ idStaff }),
-  })
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error("Erreur lors de la suppression du membre du staff.");
-    }
-    return response.json();
-  })
-  .then((data) => {
-    console.log("Le membre du staff a été supprimé correctement.", data);
-    // Refresh the page to remove the deleted staff member
-    location.reload();
-  })
-  .catch((error) => {
-    console.error("Il y a eu une erreur lors de la suppression du membre du staff.", error);
-    alert("Il y a eu une erreur lors de la suppression du membre du staff.");
-  });
 }
 
 // ================== Function to fetch services and populate the table ==================
