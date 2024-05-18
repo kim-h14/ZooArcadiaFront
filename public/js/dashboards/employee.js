@@ -90,99 +90,102 @@ function deleteReview(button) {
   });
 }
 
-
-
-// ===================== function to fetch services and populate table =================
+// ======================== Function to fetch services =================
 function fetchServices() {
-    $.get('/service', function(data) {
-      // Clear existing rows
-      $('#serviceTable tbody').empty();
-  
-      // Iterate through each service and append a row to the table
-      data.forEach(function(service) {
-        $('#serviceTable tbody').append(`
-          <tr>
-            <td>${service.service_name}</td>
-            <td>${service.service_description}</td>
-            <td>
-              <button onclick="editService()" class="btn btn-primary" id="modify-service">Modifier</button>
-              <button onclick="deleteService()" class="btn btn-danger">Supprimer</button>
-            </td>
-          </tr>
-        `);
-      });
-    }).fail(function(xhr, status, error) {
-      console.error('Error fetching services:', error);
+  $.get('/service', function(data) {
+    // Clear existing rows
+    $('#serviceTable tbody').empty();
+
+    // Iterate through each service and append a row to the table
+    data.forEach(function(service) {
+      const row = $(`
+        <tr data-service-id="${service.service_id}">
+          <td>${service.service_name}</td>
+          <td>${service.service_description}</td>
+          <td>
+            <button onclick="editService(${service.service_id})" class="btn btn-primary">Modifier</button>
+            <button onclick="deleteService(${service.service_id})" class="btn btn-danger">Supprimer</button>
+          </td>
+        </tr>
+      `);
+
+      // Append the row to the table
+      $('#serviceTable tbody').append(row);
     });
-  }
-  
-  // Call fetchServices() when the document is ready
-  $(document).ready(function() {
-    fetchServices();
-  });
-
-// ======================== Function to edit service =================
-function editService(serviceId) {
-  // Prompt the admin to enter new information for the service
-  const newServiceName = prompt("Entrer le nom du nouveau service:");
-  const newServiceDescription = prompt("Entrer la description du nouveau service:");
-
-  // Create an object with the updated service information
-  const updatedService = {
-      serviceName: newServiceName,
-      serviceDescription: newServiceDescription
-  };
-
-  // Send a PUT request to the server to update the service
-  fetch(`/update-service/${serviceId}`, {
-      method: 'PUT',
-      headers: {
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(updatedService)
-  })
-  .then(response => {
-      if (!response.ok) {
-          throw new Error('La mise à jour du service a échoué.');
-      }
-      return response.json();
-  })
-  .then(data => {
-      console.log('Le service a été mis à jour:', data);
-      // Optionally, display a success message or update the UI
-  })
-  .catch(error => {
-      console.error('Il y a eu une erreur lors de la mise à jour:', error);
-      // Optionally, display an error message to the user
+  }).fail(function(xhr, status, error) {
+    console.error('Error fetching services:', error);
   });
 }
 
+// Call fetchServices() when the document is ready
+$(document).ready(function() {
+  fetchServices();
+});
+
+// =================== Function to handle modifications of services ===================
+function editService(serviceId) {
+  // Get the row of the service being edited
+  const row = $(`#serviceTable tbody tr[data-service-id="${serviceId}"]`);
+  const serviceName = row.find("td:eq(0)").text(); // Get service name from the first column
+  const serviceDescription = row.find("td:eq(1)").text(); // Get service description from the second column
+
+  // Replace text with input fields for editing
+  row.find("td:eq(0)").html(`<input type="text" class="form-control" value="${serviceName}">`);
+  row.find("td:eq(1)").html(`<input type="text" class="form-control" value="${serviceDescription}">`);
+
+  // Replace "Modifier" button with "Save" and "Cancel" buttons
+  row.find("td:eq(2)").html(`
+    <button onclick="saveService(${serviceId})" class="btn btn-success">Sauvegarder</button>
+    <button onclick="cancelEdit(${serviceId})" class="btn btn-secondary">Annuler</button>
+  `);
+}
+
+// Function to save the edited service
+function saveService(serviceId) {
+  const row = $(`#serviceTable tbody tr[data-service-id="${serviceId}"]`);
+  const serviceName = row.find("td:eq(0) input").val(); // Get edited service name
+  const serviceDescription = row.find("td:eq(1) input").val(); // Get edited service description
+
+  // Perform AJAX request to update the service
+  $.ajax({
+    url: `/updateService/${serviceId}`,
+    method: "PUT",
+    contentType: "application/json",
+    data: JSON.stringify({
+      serviceName: serviceName,
+      serviceDescription: serviceDescription
+    }),
+    success: function(response) {
+      console.log("Service updated successfully:", response);
+      // Refresh services table after update
+      fetchServices();
+    },
+    error: function(xhr, status, error) {
+      console.error("Error updating service:", error);
+    }
+  });
+}
+
+// Function to cancel editing and revert changes
+function cancelEdit(serviceId) {
+  fetchServices(); // Refresh services table to revert changes
+}
+
 // =============== Function to delete service ===============
-// Function to delete a service
-function deleteService() {
-  // Confirm with the user before deleting
-  if (confirm("Voulez-vous vraiment supprimer ce service ?")) {
-      // Send a DELETE request to the server
-      fetch('/delete_service', {
-          method: "DELETE",
-      })
-      .then((response) => {
-          if (!response.ok) {
-              throw new Error("Erreur lors de la suppression du service.");
-          }
-          return response.json();
-      })
-      .then((data) => {
-          console.log("Le service a été supprimé correctement.", data);
-          // Remove the service row from the table
-          const row = document.getElementById(`serviceRow_${serviceId}`);
-          if (row) {
-              row.remove();
-          }
-      })
-      .catch((error) => {
-          console.error("Il y a eu une erreur lors de la suppression du service.", error);
-          alert("Il y a eu une erreur lors de la suppression du service.");
-      });
+function deleteService(serviceId) {
+  // Show confirmation dialog
+  if (confirm("Êtes-vous sûr de vouloir supprimer ce service ? Cette action ne peut être annulée.")) {
+    // Proceed with deletion
+    $.ajax({
+      url: '/delete_service/' + serviceId,
+      method: 'DELETE',
+      success: function(response) {
+        // Refresh the table after deleting the service
+        fetchServices();  
+      },
+      error: function(xhr, status, error) {
+        console.error('Error deleting service:', error);
+      }
+    });
   }
 }

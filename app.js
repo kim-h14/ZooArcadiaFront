@@ -250,7 +250,7 @@ app.get('/service', async (req, res) => {
 });
 
 
-// Handle PUT requests to update a service for admin & employee Dashboards
+// Handle PUT requests to update a service for admin Dashboards
 app.put('/updateService/:id', async (req, res) => {
   const serviceId = req.params.id;
   const { serviceName, serviceDescription } = req.body;
@@ -265,7 +265,7 @@ app.put('/updateService/:id', async (req, res) => {
   }
 });
 
-// Handle DELETE requests to delete a service for admin & employee Dashboards
+// Handle DELETE requests to delete a service for admin Dashboards
 app.delete('/delete_service/:id', async (req, res) => {
   try {
     const serviceId = req.params.id;
@@ -534,8 +534,36 @@ app.delete('/deleteReview/:reviewId', async (req, res) => {
   }
 });
 
+// Handle PUT requests to update a service for employee Dashboards
+app.put('/employee/updateService/:id', async (req, res) => {
+  const serviceId = req.params.id;
+  const { serviceName, serviceDescription } = req.body;
 
+  try {
+    // Update the service in the existing table
+    await pool.query('UPDATE service SET service_name = $1, service_description = $2 WHERE service_id = $3', [serviceName, serviceDescription, serviceId]);
+    res.sendStatus(200);
+  } catch (error) {
+    console.error('Error updating service:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
+// Handle DELETE requests to delete a service
+app.delete('/delete_service/:id', async (req, res) => {
+  try {
+    const serviceId = req.params.id;
+
+    // Delete the service from the database
+    const query = 'DELETE FROM service WHERE service_id = $1';
+    await pool.query(query, [serviceId]);
+
+    res.status(200).json({ message: 'Service deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting service:', error);
+    res.status(500).json({ error: 'Error deleting service' });
+  }
+});
 
 // Handle POST requests to add foor record for employee Dashboard
 app.post('/add_food_record', async (req, res) => {
