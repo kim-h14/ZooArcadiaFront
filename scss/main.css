@@ -12306,7 +12306,7 @@ footer {
   }
   100% {
     opacity: 0;
-    transform: translateY(-100vh) translateX(calc(-50% + 12.8286317365vw)) rotate(1080deg);
+    transform: translateY(-100vh) translateX(calc(-50% + 53.506517447vw)) rotate(1080deg);
   }
 }
 /* Apply flying animation to heart emojis */

@@ -170,46 +170,31 @@ app.get('/accounts', async (req, res) => {
 });
 
 // Handle PUT requests to update a staff member for admin Dashboard
-app.put('/update_staff', async (req, res) => {
-  const { user_id, username, password, role, email } = req.body;
-
+app.put('/update_user', async (req, res) => {
   try {
-      // Construct the parameterized SQL query
-      let query;
-      let values;
-      if (password) {
-        // If a new password is provided, include it in the update
-        query = `
-          UPDATE account 
-          SET username = $1, password = $2, role = $3, email = $4 
-          WHERE user_id = $5
-        `;
-        values = [username, password, role, email, user_id];
-      } else {
-        // If no new password is provided, exclude it from the update
-        query = `
-          UPDATE account 
-          SET username = $1, role = $2, email = $3 
-          WHERE user_id = $4
-        `;
-        values = [username, role, email, user_id];
-      }
+    const { userId, username, email, password, role } = req.body;
 
-      // Execute the query
-      const result = await pool.query(query, values);
+    let query;
+    let values;
 
-      // Check if the staff member was found and updated
-      if (result.rowCount === 1) {
-          res.status(200).json({ message: 'User updated successfully' });
-      } else {
-          res.status(404).json({ message: 'User not found' });
-      }
+    if (password) {
+      // Update user with password
+      query = 'UPDATE account SET username = $1, email = $2, password = $3, role = $4 WHERE user_id = $5';
+      values = [username, email, password, role, userId];
+    } else {
+      // Update user without changing password
+      query = 'UPDATE account SET username = $1, email = $2, role = $3 WHERE user_id = $4';
+      values = [username, email, role, userId];
+    }
+
+    await pool.query(query, values);
+
+    res.status(200).json({ message: 'User updated successfully' });
   } catch (error) {
-      console.error('Error updating user:', error);
-      res.status(500).json({ message: 'Error updating user' });
+    console.error('Error updating user:', error);
+    res.status(500).json({ error: 'Error updating user' });
   }
 });
-
 
 // Handle DELETE requests to delete a staff member for admin Dashboard
 app.delete('/delete_staff', async (req, res) => {
@@ -398,7 +383,7 @@ app.post('/create_animal', async (req, res) => {
 app.get('/animal', async (req, res) => {
   try {
     // Query to select all animals from the database
-    const query = 'SELECT animal_name, animal_species, habitat_name FROM animal';
+    const query = 'SELECT animal_id, animal_name, animal_species, habitat_name FROM animal';
 
     // Execute the query
     const { rows } = await pool.query(query);
@@ -413,19 +398,18 @@ app.get('/animal', async (req, res) => {
 
 
 // Handle PUT requests to update an animal for admin Dashboard
-app.put('/update_animal', (req, res) => {
-  // Extract data from the request body
-  const { animalId, animalName, animalSpecies, animalHabitat } = req.body;
-
+app.put('/update_animal', async (req, res) => {
   try {
-    // Log the submitted data for debugging
-    console.log('Submitted animal data:', { animalId, animalName, animalSpecies, animalHabitat });
+    const { animalId, animalName, animalSpecies, animalHabitat } = req.body;
 
-    // Respond with a success message
-    res.status(200).send('Animal mis à jour avec succès.');
+    const updateQuery = 'UPDATE animal SET animal_name = $1, animal_species = $2, habitat_name = $3 WHERE animal_id = $4';
+    const updateValues = [animalName, animalSpecies, animalHabitat, animalId];
+    await pool.query(updateQuery, updateValues);
+
+    res.status(200).json({ success: true });
   } catch (error) {
-    console.error('Erreur lors de la mise à jour de l\'animal:', error);
-    res.status(500).send('Erreur lors de la mise à jour de l\'animal.');
+    console.error('Error updating animal:', error);
+    res.status(500).json({ error: 'Error updating animal' });
   }
 });
 

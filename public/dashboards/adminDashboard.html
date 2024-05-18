@@ -51,12 +51,12 @@
               </thead>
               <tbody>
                   <!-- Rows of existing accounts will be dynamically added here -->
-                  <tr id="staff_row">
+                  <tr>
                       <td>JohnDoe</td>
                       <td>johndoe@example.com</td>
                       <td>Employé</td>
                       <td>
-                        <button id="modify_staff_${uniqueId}" class="btn btn-primary modify_staff" onclick="editStaff(`${uniqueId}`)" data-id="${uniqueId}">Modifier</button>
+                        <button class="btn btn-primary modify_staff">Modifier</button>
                         <button class="btn btn-danger delete_staff">Supprimer</button>
                       </td>
                   </tr>
@@ -79,8 +79,8 @@
             <input type="password" id="editPassword" name="password"><br>
             <label for="editRole">Rôle:</label><br>
             <select id="editRole" name="role" required>
-              <option value="employee">Employé</option>
-              <option value="vet">Vétérinaire</option>
+              <option value="Employé">Employé</option>
+              <option value="Vétérinaire">Vétérinaire</option>
             </select><br>
             <button type="submit" class="btn btn-primary">Enregistrer</button>
             <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Annuler</button>

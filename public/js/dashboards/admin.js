@@ -12,83 +12,74 @@ function fetchAccounts() {
           <td>${account.email}</td>
           <td>${account.role}</td>
           <td>
-            <button onclick="editStaff()" class="btn btn-primary" id="modify-staff">Modifier</button>
-            <button onclick="deleteStaff()" class="btn btn-danger">Supprimer</button>
+          <button onclick="editStaff(this, ${account.user_id})" class="btn btn-primary">Modifier</button>
+          <button onclick="deleteStaff()" class="btn btn-danger">Supprimer</button>
           </td>
         </tr>
       `);
     });
   });
 }
-// Call fetchAccouts() when the document is ready
-$(document).ready(function() {
-  fetchAccounts();
-});
 
 
 // ============= Function to handle staff modifications =============
-function editStaff(rowIndex) {
-  // Get the editForm element
-  const editForm = document.getElementById("editForm");
+function editStaff(button, userId) {
+  const row = $(button).closest('tr');
+  const username = row.find('td').eq(0).text();
+  const email = row.find('td').eq(1).text();
+  const role = row.find('td').eq(2).text();
 
-  // Set its display property to "block" to make it visible
-  editForm.style.display = "block";
+  // Populate the edit form with the current values
+  $('#editUserId').val(userId);
+  $('#editUsername').val(username);
+  $('#editEmail').val(email);
+  $('#editRole').val(role);
 
-  // Get the table row by its index
-  const row = document.getElementById("userTable").rows[rowIndex];
-
-  // Extract the user_id from the row
-  const user_id = row.cells[0].textContent;
-
-  // Populate the hidden input field with the user_id
-  document.getElementById("editUserId").value = user_id;
-
-  // Extract the staff information from the row
-  const username = row.cells[0].textContent;
-  const email = row.cells[1].textContent;
-  const role = row.cells[2].textContent;
-
-  // Populate the editUserForm fields with the extracted information
-  document.getElementById("editUsername").value = username;
-  document.getElementById("editEmail").value = email;
-  document.getElementById("editRole").value = role;
-
-  // Prompt for a new password
-  const newPassword = prompt("Enter the new password (leave blank to keep the current one):");
-  document.getElementById("editPassword").value = newPassword;
+  // Show the edit form
+  $('#editForm').show();
+  $('html, body').animate({
+    scrollTop: $("#editForm").offset().top
+  }, 1000);
 }
 
-// Function to handle form submission
-function submitForm() {
-  const editUserForm = document.getElementById("editUserForm");
-  const formData = new FormData(editUserForm);
-
-  // Convert formData to JSON
-  const jsonObject = {};
-  formData.forEach(function(value, key){
-      jsonObject[key] = value;
-  });
-
-  // Make the AJAX request to update the user data
-  axios.put("/update_staff", jsonObject)
-  .then(function (response) {
-    console.log(response.data);
-    alert("User updated successfully");
-    // Reload the page to reflect the changes
-    location.reload();
-  })
-  .catch(function (error) {
-    console.error(error);
-    alert("Error updating user.");
-  });
+function cancelEdit() {
+  $('#editForm').hide();
+  $('#editUserForm')[0].reset();
 }
 
-// Add event listener to the form submit button
-document.getElementById("editUserForm").addEventListener("submit", function(event){
+$('#editUserForm').on('submit', function(event) {
   event.preventDefault();
-  submitForm();
+
+  const userId = $('#editUserId').val();
+  const username = $('#editUsername').val();
+  const email = $('#editEmail').val();
+  const password = $('#editPassword').val();
+  const role = $('#editRole').val();
+
+  $.ajax({
+    url: '/update_user',
+    method: 'PUT',
+    data: {
+      userId: userId,
+      username: username,
+      email: email,
+      password: password,
+      role: role
+    },
+    success: function(response) {
+      fetchAccounts();  // Refresh the table after updating
+      cancelEdit();     // Hide the edit form
+    },
+    error: function(xhr, status, error) {
+      console.error('Error updating user:', error);
+    }
+  });
 });
 
+// Call fetchAccounts() when the document is ready
+$(document).ready(function() {
+  fetchAccounts();
+});
 
 // ============= Function to handle staff deletions ===============
 function deleteStaff() {
@@ -373,12 +364,12 @@ function fetchAnimals() {
     // Iterate through each animal and append a row to the table
     data.forEach(function(animal) {
       $('#animalTable tbody').append(`
-        <tr>
-          <td>${animal.animal_name}</td>
-          <td>${animal.animal_species}</td>
-          <td>${animal.habitat_name}</td>
+      <tr data-animal-id="${animal.animal_id}">
+          <td class="animal-name">${animal.animal_name}</td>
+          <td class="animal-species">${animal.animal_species}</td>
+          <td class="animal-habitat">${animal.habitat_name}</td>
           <td>
-            <button class="btn btn-primary" onclick="editAnimal()">Modifier</button>
+            <button class="btn btn-primary" onclick="editAnimal(this)">Modifier</button>
             <button class="btn btn-danger" onclick="deleteAnimal()">Supprimer</button>
           </td>
         </tr>
@@ -388,57 +379,61 @@ function fetchAnimals() {
     console.error('Error fetching animals:', error);  });
 }
 
+// ============== Function to modify an animal ===============
+function editAnimal(button) {
+  const row = $(button).closest('tr');
+  const animalId = row.data('animal-id');
+  const nameCell = row.find('.animal-name');
+  const speciesCell = row.find('.animal-species');
+  const habitatCell = row.find('.animal-habitat');
+
+  const name = nameCell.text();
+  const species = speciesCell.text();
+  const habitat = habitatCell.text();
+
+  nameCell.html(`<input type="text" value="${name}" class="form-control" />`);
+  speciesCell.html(`<input type="text" value="${species}" class="form-control" />`);
+  habitatCell.html(`
+    <select class="form-control">
+      <option value="Jungle" ${habitat === 'Jungle' ? 'selected' : ''}>Jungle</option>
+      <option value="Savane" ${habitat === 'Savane' ? 'selected' : ''}>Savane</option>
+      <option value="Marais" ${habitat === 'Marais' ? 'selected' : ''}>Marais</option>
+    </select>
+  `);
+
+  $(button).replaceWith(`<button class="btn btn-success" onclick="updateAnimal(this, ${animalId})">Confirmer</button>`);
+}
+
+
+// Function to update an animal
+function updateAnimal(button, animalId) {
+  const row = $(button).closest('tr');
+  const name = row.find('input').eq(0).val();
+  const species = row.find('input').eq(1).val();
+  const habitat = row.find('select').val();
+
+  $.ajax({
+    url: '/update_animal',
+    method: 'PUT',
+    data: {
+      animalId: animalId,
+      animalName: name,
+      animalSpecies: species,
+      animalHabitat: habitat
+    },
+    success: function(response) {
+      fetchAnimals();  // Refresh the table after updating
+    },
+    error: function(xhr, status, error) {
+      console.error('Error updating animal:', error);
+    }
+  });
+}
+
 // Call fetchAnimals() when the document is ready
 $(document).ready(function() {
   fetchAnimals();
 });
-
-// ============== Function to modify an animal ===============
-function editAnimal() {
-  // Get the animal data from the table row
-  const row = event.target.closest("tr");
-
-  // Extract the animal information from the row
-  const animalName = row.cells[0].textContent;
-  const animalSpecies = row.cells[1].textContent;
-  const animalHabitat = row.cells[2].textContent;
-
-  // Prompt the admin to enter the updated information
-  const newAnimalName = prompt("Entrez le nouveau nom de l'animal:", animalName);
-  const newAnimalSpecies = prompt("Entrez la nouvelle espèce de l'animal:", animalSpecies);
-  const newAnimalHabitat = prompt("Entrez le nouvel habitat de l'animal:", animalHabitat);
-
-  // Create an object to store the updated animal information
-  const updatedAnimal = {
-    animalName: newAnimalName,
-    animalSpecies: newAnimalSpecies,
-    animalHabitat: newAnimalHabitat
-  };
-
-  // Send PUT request to the server to update the animal
-  fetch(`/update_animal/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(updatedAnimal),
-  })
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error("Erreur lors de la mise à jour de l'animal.");
-    }
-    return response.json();
-  })
-  .then((data) => {
-    console.log("Les informations ont été mises à jour correctement.", data);
-    // Refresh the page to display the updated information
-    location.reload();
-  })
-  .catch((error) => {
-    console.error("Il y a eu une erreur lors de la mise à jour de l'animal.", error);
-    alert("Il y a eu une erreur lors de la mise à jour de l'animal.");
-  });
-}
 
 // ============== Function to delete animal ===============
 function deleteAnimal() {
