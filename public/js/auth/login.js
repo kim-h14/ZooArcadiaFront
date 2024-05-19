@@ -13,149 +13,114 @@ const btnSubmit = document.getElementById('login-btn');
 const loginEmailError = document.getElementById('loginEmailError');
 const loginPasswordError = document.getElementById('loginPasswordError');
 
-
 inputEmail.addEventListener("keyup", function() {
   console.log("Email input keyup event triggered");
+  validateEmail(inputEmail); // Validate email on each keyup event
 });
 inputPassword.addEventListener("keyup", function() {
   console.log("Password input keyup event triggered");
+  validatePassword(inputPassword); // Validate password on each keyup event
 });
 
-function validateForm() {
+// Validate form on submit
+btnSubmit.addEventListener("click", function(event) {
+  event.preventDefault();
+  validateForm();
+});
+
+async function validateForm() {
   console.log("validateForm function called");
-  const emailOK = validateEmail(inputEmail);
-  const passwordOK = validateRequired(inputPassword);
-  
-  if(emailOK && passwordOK) {
-    btnSubmit.disabled = false;
-    console.log("Email and password are valid");
-  }
-  else {
-    btnSubmit.disabled = true;
+  const emailValid = validateEmail(inputEmail);
+  const passwordValid = validatePassword(inputPassword);
+
+  if (emailValid && passwordValid) {
+    try {
+      const response = await login(); // Call login function to handle authentication
+      if (response.ok) {
+        const data = await response.json();
+        const token = data.token;
+        const role = data.role;
+        console.log("Token received:", token);
+        console.log("Role received:", role);
+        setToken(token); // Set token to cookie
+        window.location.replace(getDashboardURL(role)); // Redirect based on role
+      } else {
+        console.log("Invalid credentials!");
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+    }
+  } else {
     console.log("Email and/or password are invalid");
   }
 }
 
-function validateEmail(input){
-  console.log("validateEmail function called");
-  const emailRegEx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const userEmail = sanitizeHTML(input.value);
-  if(userEmail.match(emailRegEx)) {
-    // it's valid
-    console.log("Email is valid");
-    inputEmail.classList.add("is-valid");
-    inputEmail.classList.remove("is-invalid");
-    return true;
-  }
-  else {
-    // it's invalid
-    console.log("Email is invalid");
-    inputEmail.classList.remove("is-valid");
-    inputEmail.classList.add("is-invalid");
-    return false;
-  }
-}
-
-function validatePassword(input){
-  console.log("validatePassword function called");
-  const passwordRegEx = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/;
-  const passwordUser = sanitizeHTML(input.value);
-  if(passwordUser.match(passwordRegEx)) {
-    // it's valid
-    console.log("Password is valid");
-    inputPassword.classList.add("is-valid");
-    inputPassword.classList.remove("is-invalid");
-    return true;
-  }
-  else {
-    // it's invalid
-    console.log("Password is invalid");
-    inputPassword.classList.remove("is-valid");
-    inputPassword.classList.add("is-invalid");
-    return false;
-  }
-}
-
-
-
-function validateRequired(input){
-  console.log("validateRequired function called");
-  const userInput = sanitizeHTML(input.value);
-
-  if(input.value != "") {
-    // it's valid
-    input.classList.add("is-valid");
-    input.classList.remove("is-invalid");
-    return true;
-  }
-  else {
-    // it's invalid
-    input.classList.remove("is-valid");
-    input.classList.add("is-invalid");
-    return false;
-  }
-}
-
-// ========= Actual Login ==========
-btnSubmit.addEventListener("click", function(event) {
-  event.preventDefault();
-  checkCredentials();
-});
-
-async function checkCredentials() {
-  console.log("checkCredentials function called");
-
-  // Log the values of inputEmail and inputPassword
+async function login() {
+  console.log("login function called");
   const sanitizedEmail = sanitizeHTML(inputEmail.value);
   const sanitizedPassword = sanitizeHTML(inputPassword.value);
   console.log("Email:", sanitizedEmail);
   console.log("Password:", sanitizedPassword);
 
-  // Call validateEmail and validatePassword functions
-  const emailValid = validateEmail(inputEmail);
-  const passwordValid = validatePassword(inputPassword);
+  return fetch('/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      Email: sanitizedEmail,
+      Password: sanitizedPassword
+    })
+  });
+}
 
-  if (!emailValid || !passwordValid) {
-    console.log("Invalid email or password format");
-    return; // Exit function if email or password is invalid
+// Helper function to redirect to the dashboard based on role
+function getDashboardURL(role) {
+  switch (role) {
+    case 'admin':
+      return "/admindashboard";
+    case 'employee':
+      return "/employeeDashboard";
+    case 'veterinarian':
+      return "/veterinarianDashboard";
+    default:
+      console.log("Unknown role received");
+      return "/";
+  }
+}
+
+// Validate email format
+function validateEmail(input) {
+  console.log("validateEmail function called");
+  const emailRegEx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const userEmail = sanitizeHTML(input.value);
+  const isValid = emailRegEx.test(userEmail);
+
+  if (isValid) {
+    input.classList.add("is-valid");
+    input.classList.remove("is-invalid");
+  } else {
+    input.classList.remove("is-valid");
+    input.classList.add("is-invalid");
   }
 
-  try {
-    const response = await fetch('/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        Email: sanitizedEmail,
-        Password: sanitizedPassword
-      })
-    });
-    if (response.ok) {
-      // Handle the token and role received from the server
-      const token = result.token;
-      const role = result.role;
+  return isValid;
+}
 
-      console.log("Token received:", token);
-      console.log("Role received:", role);
+// Validate password format
+function validatePassword(input) {
+  console.log("validatePassword function called");
+  const passwordRegEx = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/;
+  const passwordUser = sanitizeHTML(input.value);
+  const isValid = passwordRegEx.test(passwordUser);
 
-      // Set the token in local storage or cookie
-      document.cookie = `token=${token}; path=/`;
-
-      // Redirect to the dashboard based on role
-      if (role === 'admin') {
-        window.location.replace("/admin/dashboard");
-      } else if (role === 'employe') {
-        window.location.replace("/employee/dashboard");
-      } else if (role === 'veterinaire') {
-        window.location.replace("/veterinarian/dashboard");
-      } else {
-        console.log("Unknown role received");
-      }
-    } else {
-      console.log("Invalid credentials!");
-    }
-  } catch (error) {
-    console.error('Error during login:', error);
+  if (isValid) {
+    input.classList.add("is-valid");
+    input.classList.remove("is-invalid");
+  } else {
+    input.classList.remove("is-valid");
+    input.classList.add("is-invalid");
   }
+
+  return isValid;
 }

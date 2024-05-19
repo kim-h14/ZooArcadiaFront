@@ -11,8 +11,6 @@ const bcrypt = require('bcrypt');
 const { body, validationResult } = require('express-validator');
 
 
-
-
 const app = express();
 const port = process.env.PORT || 3000;
 const saltRound = 10;
@@ -114,17 +112,15 @@ app.get('/check-db-connection', async (req, res) => {
   }
 });
 
-const roleCookieName = 'userRole';
-
-// Utility function to set cookie
 function setCookie(res, name, value, days) {
   const options = {
     maxAge: days * 24 * 60 * 60 * 1000,
-    httpOnly: true, // Ensures the cookie is sent only over HTTP(S), not client JavaScript
-    secure: process.env.NODE_ENV === 'production', // Ensures the cookie is sent only over HTTPS
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
   };
   res.cookie(name, value, options);
 }
+const roleCookieName = 'userRole';
 
 
 // Define route handler for POST requests to /login
@@ -133,7 +129,7 @@ app.post('/login', async (req, res) => {
 
   try {
     // Check if the provided credentials match the admin credentials
-    if (Email === "admin@example.com" && Password === "12345") {
+    if (Email === "admin@example.com" && Password === "AdminPassword1!") {
       // Generate JWT token for admin
       const token = jwt.sign({ email: Email, role: 'admin' }, 'your_secret_key');
 
@@ -141,7 +137,7 @@ app.post('/login', async (req, res) => {
       setCookie(res, roleCookieName, 'admin', 7);
 
       // Redirect admin to admin dashboard
-      return res.redirect("/admindashboard");
+      return res.status(200).json({ token, role: 'admin' });
     }
 
     // Query the database to find a matching user
@@ -157,20 +153,19 @@ app.post('/login', async (req, res) => {
 
       // Set role cookie for user
       let role = user.role;
-      if (role === 'Employé') role = 'employe';
-      if (role === 'Vétérinaire') role = 'veterinaire';
+      if (role === 'Employé') role = 'Employé';
+      if (role === 'Vétérinaire') role = 'Vétérinaire';
       setCookie(res, roleCookieName, role, 7);
 
       // Redirect based on role
-      if (role === 'Employé') {
-        // Redirect employee to employee dashboard
-        return res.redirect("/employeeDashboard");
+      if (role === 'admin') {
+        window.location.replace("/admindashboard");
+      } else if (role === 'employe') {
+        window.location.replace("/employeeDashboard");
       } else if (role === 'veterinaire') {
-        // Redirect veterinarian to veterinarian dashboard
-        return res.redirect("/vetDashboard");
+        window.location.replace("/veterinarianDashboard");
       } else {
-        // Unknown role, handle appropriately
-        return res.status(401).send('Unknown user role');
+        console.log("Unknown role received");
       }
     } else {
       // No matching user found, invalid credentials
