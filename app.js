@@ -7,11 +7,15 @@ const bodyParser = require('body-parser');
 const { pool, connectDB } = require('./databases/pgDB');
 const AnimalConsultation = require('./databases/animalConsultation'); 
 const mongoose = require('mongoose'); 
+const bcrypt = require('bcrypt');
+const { body, validationResult } = require('express-validator');
+
 
 
 
 const app = express();
 const port = process.env.PORT || 3000;
+const saltRound = 10;
 
 // Connect to MongoDB using Mongoose
 mongoose.connect('mongodb://localhost:27017/arcardia-consultation')
@@ -566,7 +570,16 @@ app.delete('/delete_service/:id', async (req, res) => {
 });
 
 // Handle POST requests to add foor record for employee Dashboard
-app.post('/add_food_record', async (req, res) => {
+// Sanitization rules for input fields
+const sanitizeInput = [
+  body('animalName').trim().escape(),
+  body('username').trim().escape(),
+  body('date').toDate(), // Convert to Date object
+  body('foodType').trim().escape(),
+  body('foodQuantity').toInt() // Convert to integer
+];
+
+app.post('/add_food_record', sanitizeInput, async (req, res) => {
   try {
     // Extract food consumption record data from the request body
     const { animalName, foodType, foodQuantity, username, date } = req.body;

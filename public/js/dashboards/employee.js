@@ -1,3 +1,10 @@
+// Function to sanitize HTML content
+function sanitizeHTML(html) {
+  const div = document.createElement('div');
+  div.textContent = html;
+  return div.innerHTML;
+}
+
 // ===================== function to fetch reviews and populate table =================
 async function fetchPendingReviews() {
   try {
@@ -48,7 +55,7 @@ function approveReview(button) {
   // Get the row containing the review
   const row = $(button).closest('tr');
   // Extract the review ID from the row's data attribute
-  const reviewId = row.data('review-id');
+  const reviewId = sanitizeHTML(row.data('review-id'));
 
   // Send a PUT request to your backend with the review ID
   $.ajax({
@@ -72,7 +79,7 @@ function deleteReview(button) {
   // Get the row containing the review
   const row = $(button).closest('tr');
   // Extract the review ID from the first <td> of the row
-  const reviewId = $(row).find('td:first').text().trim();
+  const reviewId = sanitizeHTML($(row).find('td:first').text().trim());
   console.log(reviewId);
 
   // Send a DELETE request to your backend with the review ID
@@ -99,9 +106,9 @@ function fetchServices() {
     // Iterate through each service and append a row to the table
     data.forEach(function(service) {
       const row = $(`
-        <tr data-service-id="${service.service_id}">
-          <td>${service.service_name}</td>
-          <td>${service.service_description}</td>
+        <tr data-service-id="${sanitizeHTML(service.service_id)}">
+          <td>${sanitizeHTML(service.service_name)}</td>
+          <td>${sanitizeHTML(service.service_description)}</td>
           <td>
             <button onclick="editService(${service.service_id})" class="btn btn-primary">Modifier</button>
             <button onclick="deleteService(${service.service_id})" class="btn btn-danger">Supprimer</button>
@@ -126,8 +133,8 @@ $(document).ready(function() {
 function editService(serviceId) {
   // Get the row of the service being edited
   const row = $(`#serviceTable tbody tr[data-service-id="${serviceId}"]`);
-  const serviceName = row.find("td:eq(0)").text(); // Get service name from the first column
-  const serviceDescription = row.find("td:eq(1)").text(); // Get service description from the second column
+  const serviceName = sanitizeHTML(row.find("td:eq(0)").text()); // Get service name from the first column
+  const serviceDescription = sanitizeHTML(row.find("td:eq(1)").text()); // Get service description from the second column
 
   // Replace text with input fields for editing
   row.find("td:eq(0)").html(`<input type="text" class="form-control" value="${serviceName}">`);
@@ -143,8 +150,8 @@ function editService(serviceId) {
 // Function to save the edited service
 function saveService(serviceId) {
   const row = $(`#serviceTable tbody tr[data-service-id="${serviceId}"]`);
-  const serviceName = row.find("td:eq(0) input").val(); // Get edited service name
-  const serviceDescription = row.find("td:eq(1) input").val(); // Get edited service description
+  const serviceName = sanitizeHTML(row.find("td:eq(0) input").val()); // Get edited service name
+  const serviceDescription = sanitizeHTML(row.find("td:eq(1) input").val()); // Get edited service description
 
   // Perform AJAX request to update the service
   $.ajax({
