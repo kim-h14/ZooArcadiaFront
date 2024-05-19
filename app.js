@@ -13,7 +13,7 @@ const { body, validationResult } = require('express-validator');
 
 const app = express();
 const port = process.env.PORT || 3000;
-const saltRound = 10;
+const saltRounds = 10;
 
 // Connect to MongoDB using Mongoose
 mongoose.connect('mongodb://localhost:27017/arcardia-consultation')
@@ -112,6 +112,7 @@ app.get('/check-db-connection', async (req, res) => {
   }
 });
 
+// Cookie setting by role
 function setCookie(res, name, value, days) {
   const options = {
     maxAge: days * 24 * 60 * 60 * 1000,
@@ -179,13 +180,15 @@ app.post('/create_staff', async (req, res) => {
       return res.status(400).json({ error: 'Username, email, password, and role are required' });
     }
 
-    // Insert the new staff member into the database 
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Insert the new staff member into the database with the hashed password
     const query = 'INSERT INTO account (username, email, password, role) VALUES ($1, $2, $3, $4) RETURNING *';
-    const values = [username, email, password, role];
+    const values = [username, email, hashedPassword, role];
     const result = await pool.query(query, values);
 
     // Respond with the newly created staff member
-    // res.status(201).json({ message: 'Le nouvel utilisateur a été créé.', data: result.rows[0] });
     res.send('<script>alert("Le nouvel utilisateur a été créé."); window.location.href = "/admindashboard";</script>');
   } catch (error) {
     console.error('Error creating staff member:', error);
