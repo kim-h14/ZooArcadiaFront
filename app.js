@@ -128,7 +128,7 @@ app.post('/login', async (req, res) => {
 
   try {
     // Check if the provided credentials match the admin credentials
-    if (Email === "admin@example.com" && Password === "AdminPassword1!") {
+    if (Email === process.env.ADMIN_EMAIL && Password === process.env.ADMIN_PASSWORD) {
       // Generate JWT token for admin
       const token = jwt.sign({ email: Email, role: 'admin' }, 'your_secret_key');
 
