@@ -1,3 +1,10 @@
+// Function to sanitize HTML content
+function sanitizeHTML(html) {
+  const div = document.createElement('div');
+  div.textContent = html;
+  return div.innerHTML;
+}
+
 // ============== Function to fetch accounts from the server and populate the table ===============
 function fetchAccounts() {
   $.get('/accounts', function(data) {
@@ -8,9 +15,9 @@ function fetchAccounts() {
     data.forEach(function(account) {
       $('#userTable tbody').append(`
         <tr>
-          <td>${account.username}</td>
-          <td>${account.email}</td>
-          <td>${account.role}</td>
+          <td>${sanitizeHTML(account.username)}</td>
+          <td>${sanitizeHTML(account.email)}</td>
+          <td>${sanitizeHTML(account.role)}</td>
           <td>
           <button onclick="editStaff(this, ${account.user_id})" class="btn btn-primary">Modifier</button>
           <button onclick="deleteStaff(${account.user_id})" class="btn btn-danger delete_staff">Supprimer</button>
@@ -25,9 +32,9 @@ function fetchAccounts() {
 // ============= Function to handle staff modifications =============
 function editStaff(button, userId) {
   const row = $(button).closest('tr');
-  const username = row.find('td').eq(0).text();
-  const email = row.find('td').eq(1).text();
-  const role = row.find('td').eq(2).text();
+  const username = sanitizeHTML(row.find('td').eq(0).text());
+  const email = sanitizeHTML(row.find('td').eq(1).text());
+  const role = sanitizeHTML(row.find('td').eq(2).text());
 
   // Populate the edit form with the current values
   $('#editUserId').val(userId);
@@ -51,10 +58,10 @@ $('#editUserForm').on('submit', function(event) {
   event.preventDefault();
 
   const userId = $('#editUserId').val();
-  const username = $('#editUsername').val();
-  const email = $('#editEmail').val();
-  const password = $('#editPassword').val();
-  const role = $('#editRole').val();
+  const username = sanitizeHTML($('#editUsername').val());
+  const email = sanitizeHTML($('#editEmail').val());
+  const password = sanitizeHTML($('#editPassword').val());
+  const role = sanitizeHTML($('#editRole').val());  
 
   $.ajax({
     url: '/update_user',
@@ -114,8 +121,8 @@ function fetchServices() {
     data.forEach(function(service) {
       const row = $(`
         <tr data-service-id="${service.service_id}">
-          <td>${service.service_name}</td>
-          <td>${service.service_description}</td>
+          <td>${sanitizeHTML(service.service_name)}</td>
+          <td>${sanitizeHTML(service.service_description)}</td>
           <td>
             <button class="btn btn-primary modify-service">Modifier</button>
             <button onclick="deleteService(${service.service_id})" class="btn btn-danger delete-service">Supprimer</button>
@@ -147,8 +154,8 @@ $(document).ready(function() {
 // =============== Function to handle modifications of services =============== 
 function editService(button) {
   const row = $(button).closest("tr"); // Get the parent row of the clicked button
-  const serviceName = row.find("td:eq(0)").text(); // Get service name from the first column
-  const serviceDescription = row.find("td:eq(1)").text(); // Get service description from the second column
+  const serviceName = sanitizeHTML(row.find("td:eq(0)").text()); // Get service name from the first column
+  const serviceDescription = sanitizeHTML(row.find("td:eq(1)").text()); // Get service description from the second column
 
   // Replace text with input fields for editing
   row.find("td:eq(0)").html(`<input type="text" class="form-control" value="${serviceName}">`);
@@ -165,8 +172,8 @@ function editService(button) {
 function saveService(button) {
   const row = $(button).closest("tr"); // Get the parent row of the clicked button
   const serviceId = row.data("service-id");
-  const serviceName = row.find("td:eq(0) input").val(); // Get edited service name
-  const serviceDescription = row.find("td:eq(1) input").val(); // Get edited service description
+  const serviceName = sanitizeHTML(row.find("td:eq(0) input").val()); // Get edited service name
+  const serviceDescription = sanitizeHTML(row.find("td:eq(1) input").val()); // Get edited service description
 
   // Perform AJAX request to update the service
   $.ajax({
@@ -225,8 +232,8 @@ function fetchHabitat() {
     data.forEach(function(habitat) {
       $('#habitatTable tbody').append(`
       <tr data-habitat-id="${habitat.habitat_id}">
-          <td>${habitat.habitat_name}</td>
-          <td>${habitat.habitat_description}</td>
+          <td>${sanitizeHTML(habitat.habitat_name)}</td>
+          <td>${sanitizeHTML(habitat.habitat_description)}</td>
           <td>
             <button onclick="editHabitat(this)" class="btn btn-primary" id="modify-staff">Modifier</button>
             <button onclick="deleteHabitat(${habitat.habitat_id})" class="btn btn-danger delete-habitat">Supprimer</button>
@@ -247,8 +254,8 @@ $(document).ready(function() {
 // Function to handle modifications of habitats
 function editHabitat(button) {
   const row = $(button).closest("tr"); // Get the parent row of the clicked button
-  const habitatName = row.find("td:eq(0)").text(); // Get habitat name from the first column
-  const habitatDescription = row.find("td:eq(1)").text(); // Get habitat description from the second column
+  const habitatName = sanitizeHTML(row.find("td:eq(0)").text()); // Get habitat name from the first column
+  const habitatDescription = sanitizeHTML(row.find("td:eq(1)").text()); // Get habitat description from the second column
 
   // Replace text with input fields for editing
   row.find("td:eq(0)").html(`<input type="text" class="form-control" value="${habitatName}">`);
@@ -265,8 +272,8 @@ function editHabitat(button) {
 function saveHabitat(button) {
   const row = $(button).closest("tr"); // Get the parent row of the clicked button
   const habitatId = row.data("habitat-id");
-  const habitatName = row.find("td:eq(0) input").val(); // Get edited habitat name
-  const habitatDescription = row.find("td:eq(1) input").val(); // Get edited habitat description
+  const habitatName = sanitizeHTML(row.find("td:eq(0) input").val()); // Get edited habitat name
+  const habitatDescription = sanitizeHTML(row.find("td:eq(1) input").val()); // Get edited habitat description
 
   // Perform AJAX request to update the habitat
   $.ajax({
@@ -323,9 +330,9 @@ function fetchAnimals() {
     data.forEach(function(animal) {
       $('#animalTable tbody').append(`
       <tr data-animal-id="${animal.animal_id}">
-          <td class="animal-name">${animal.animal_name}</td>
-          <td class="animal-species">${animal.animal_species}</td>
-          <td class="animal-habitat">${animal.habitat_name}</td>
+          <td class="animal-name">${sanitizeHTML(animal.animal_name)}</td>
+          <td class="animal-species">${sanitizeHTML(animal.animal_species)}</td>
+          <td class="animal-habitat">${sanitizeHTML(animal.habitat_name)}</td>
           <td>
             <button class="btn btn-primary" onclick="editAnimal(this)">Modifier</button>
             <button onclick="deleteAnimal(${animal.animal_id})" class="btn btn-danger">Supprimer</button>
@@ -341,17 +348,16 @@ function fetchAnimals() {
 function editAnimal(button) {
   const row = $(button).closest('tr');
   const animalId = row.data('animal-id');
-  const nameCell = row.find('.animal-name');
-  const speciesCell = row.find('.animal-species');
-  const habitatCell = row.find('.animal-habitat');
+ 
+  // Extracting text content from jQuery objects and sanitizing them
+  const name = sanitizeHTML(row.find('.animal-name').text());
+  const species = sanitizeHTML(row.find('.animal-species').text());
+  const habitat = sanitizeHTML(row.find('.animal-habitat').text());
 
-  const name = nameCell.text();
-  const species = speciesCell.text();
-  const habitat = habitatCell.text();
-
-  nameCell.html(`<input type="text" value="${name}" class="form-control" />`);
-  speciesCell.html(`<input type="text" value="${species}" class="form-control" />`);
-  habitatCell.html(`
+  // Replace cell contents with input fields for editing
+  row.find('.animal-name').html(`<input type="text" value="${name}" class="form-control" />`);
+  row.find('.animal-species').html(`<input type="text" value="${species}" class="form-control" />`);
+  row.find('.animal-habitat').html(`
     <select class="form-control">
       <option value="Jungle" ${habitat === 'Jungle' ? 'selected' : ''}>Jungle</option>
       <option value="Savane" ${habitat === 'Savane' ? 'selected' : ''}>Savane</option>
@@ -366,8 +372,8 @@ function editAnimal(button) {
 // Function to update an animal
 function updateAnimal(button, animalId) {
   const row = $(button).closest('tr');
-  const name = row.find('input').eq(0).val();
-  const species = row.find('input').eq(1).val();
+  const name = sanitizeHTML(row.find('input').eq(0).val());
+  const species = sanitizeHTML(row.find('input').eq(1).val());
   const habitat = row.find('select').val();
 
   $.ajax({
@@ -424,13 +430,20 @@ function fetchVetReports() {
       const date = new Date(vetReport.date);
       const formattedDate = date.toLocaleDateString('fr-FR');
 
+       // Sanitize dynamic content before inserting into HTML
+       const sanitizedDate = sanitizeHTML(formattedDate);
+       const sanitizedUsername = sanitizeHTML(vetReport.username);
+       const sanitizedAnimalName = sanitizeHTML(vetReport.animal_name);
+       const sanitizedAnimalState = sanitizeHTML(vetReport.animal_state);
+       const sanitizedDetailAnimalState = sanitizeHTML(vetReport.detail_animal_state);
+
       $('#vetReportTable tbody').append(`
         <tr>
-          <td>${formattedDate}</td>
-          <td>${vetReport.username}</td>
-          <td>${vetReport.animal_name}</td>
-          <td>${vetReport.animal_state}</td>
-          <td>${vetReport.detail_animal_state}</td>
+          <td>${sanitizedDate}</td>
+          <td>${sanitizedUsername}</td>
+          <td>${sanitizedAnimalName}</td>
+          <td>${sanitizedAnimalState}</td>
+          <td>${sanitizedDetailAnimalState}</td>
         </tr>
       `);
     });
@@ -454,8 +467,8 @@ function populateAnimalSelect() {
       select.innerHTML = '<option value="">Tous les animaux</option>';
       data.forEach(animalName => {
         const option = document.createElement('option');
-        option.value = animalName;
-        option.textContent = animalName;
+        option.value = sanitizeHTML(animalName);
+        option.textContent = sanitizeHTML(animalName);
         select.appendChild(option);
       });
     })
@@ -483,8 +496,8 @@ function populateVeterinarianSelect() {
       select.innerHTML = '<option value="">Tous les vétérinaires</option>';
       data.forEach(vet => {
         const option = document.createElement('option');
-        option.value = vet.name;
-        option.textContent = vet.name;
+        option.value = sanitizeHTML(vet.name);
+        option.textContent = sanitizeHTML(vet.name);
         select.appendChild(option);
       });
     } else {
@@ -505,7 +518,7 @@ function applyDateFilter() {
   const rows = document.querySelectorAll('#vetReportTable tbody tr');
 
   rows.forEach(row => {
-    const rowDate = row.querySelector('td:first-child').textContent;
+    const rowDate = sanitizeHTML(row.querySelector('td:first-child').textContent);
     if (date && rowDate !== date) {
       row.style.display = 'none';
     } else {
@@ -516,11 +529,11 @@ function applyDateFilter() {
 
 // Function to apply vet filter
 function applyVetFilter() {
-  const selectedVet = document.getElementById('filterVeterinarian').value;
+  const selectedVet = sanitizeHTML(document.getElementById('filterVeterinarian').value);
   const rows = document.querySelectorAll('#vetReportTable tbody tr');
 
   rows.forEach(row => {
-    const rowVet = row.querySelector('td:nth-child(2)').textContent;
+    const rowVet = sanitizeHTML(row.querySelector('td:nth-child(2)').textContent);
     if (selectedVet && rowVet !== selectedVet) {
       row.style.display = 'none';
     } else {
@@ -531,11 +544,11 @@ function applyVetFilter() {
 
 // Function to apply animal filter
 function applyAnimalFilter() {
-  const selectedAnimal = document.getElementById('filterAnimal').value;
+  const selectedAnimal = sanitizeHTML(document.getElementById('filterAnimal').value);
   const rows = document.querySelectorAll('#vetReportTable tbody tr');
 
   rows.forEach(row => {
-    const rowAnimal = row.querySelector('td:nth-child(3)').textContent;
+    const rowAnimal = sanitizeHTML(row.querySelector('td:nth-child(3)').textContent);
     if (selectedAnimal && rowAnimal !== selectedAnimal) {
       row.style.display = 'none';
     } else {
