@@ -122,7 +122,6 @@ function setCookie(res, name, value, days) {
 }
 const roleCookieName = 'userRole';
 
-
 // Define route handler for POST requests to /login
 app.post('/login', async (req, res) => {
   const { Email, Password } = req.body;
@@ -136,7 +135,7 @@ app.post('/login', async (req, res) => {
       // Set role cookie for admin
       setCookie(res, roleCookieName, 'admin', 7);
 
-      // Redirect admin to admin dashboard
+      // Respond with the token and role
       return res.status(200).json({ token, role: 'admin' });
     }
 
@@ -157,16 +156,8 @@ app.post('/login', async (req, res) => {
       if (role === 'Vétérinaire') role = 'Vétérinaire';
       setCookie(res, roleCookieName, role, 7);
 
-      // Redirect based on role
-      if (role === 'admin') {
-        window.location.replace("/admindashboard");
-      } else if (role === 'employe') {
-        window.location.replace("/employeeDashboard");
-      } else if (role === 'veterinaire') {
-        window.location.replace("/veterinarianDashboard");
-      } else {
-        console.log("Unknown role received");
-      }
+      // Respond with the token and role
+      return res.status(200).json({ token, role });
     } else {
       // No matching user found, invalid credentials
       return res.status(401).send('Invalid email or password');
@@ -176,6 +167,7 @@ app.post('/login', async (req, res) => {
     return res.status(500).send('Internal Server Error');
   }
 });
+
 
 // Handle POST requests to create a new staff member for admin Dashboard
 app.post('/create_staff', async (req, res) => {

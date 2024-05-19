@@ -40,10 +40,8 @@ async function validateForm() {
         const data = await response.json();
         const token = data.token;
         const role = data.role;
-        console.log("Token received:", token);
-        console.log("Role received:", role);
         setToken(token); // Set token to cookie
-        window.location.replace(getDashboardURL(role)); // Redirect based on role
+        redirectToDashboard(role); // Redirect based on role
       } else {
         console.log("Invalid credentials!");
       }
@@ -75,17 +73,20 @@ async function login() {
 }
 
 // Helper function to redirect to the dashboard based on role
-function getDashboardURL(role) {
+function redirectToDashboard(role) {
   switch (role) {
     case 'admin':
-      return "/admindashboard";
-    case 'employee':
-      return "/employeeDashboard";
-    case 'veterinarian':
-      return "/veterinarianDashboard";
+      window.location.replace("/admindashboard");
+      break;
+    case 'Employé':
+      window.location.replace("/employeeDashboard");
+      break;
+    case 'Vétérinaire':
+      window.location.replace("/vetDashboard");
+      break;
     default:
       console.log("Unknown role received");
-      return "/";
+      break;
   }
 }
 

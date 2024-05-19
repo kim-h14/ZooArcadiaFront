@@ -47,7 +47,7 @@ function logout() {
   eraseCookie(tokenCookieName);
   eraseCookie(roleCookieName);
   console.log("You have been logged out");
-  window.location.reload();
+  window.location.href = "/";
 }
 
 // ================== Authentication Status ==================
@@ -88,7 +88,7 @@ function showAndHideElementsForRoles(){
           element.classList.add("d-none");
         }
         break;
-      case "vet":
+      case "Vétérinaire":
         if(!userConnected || role !== "Vétérinaire"){
           element.classList.add("d-none");
         }
