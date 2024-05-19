@@ -12,7 +12,6 @@ const inputPassword = document.getElementById('loginPassword');
 const btnSubmit = document.getElementById('login-btn');
 const loginEmailError = document.getElementById('loginEmailError');
 const loginPasswordError = document.getElementById('loginPasswordError');
-// const logoutBtn = document.getElementById('logout-btn');
 
 
 inputEmail.addEventListener("keyup", function() {
@@ -97,12 +96,15 @@ function validateRequired(input){
   }
 }
 
-// ========= Simulate Login ==========
+// ========= Actual Login ==========
+btnSubmit.addEventListener("click", function(event) {
+  event.preventDefault();
+  checkCredentials();
+});
 
-btnSubmit.addEventListener("click", checkCredentials);
-
-function checkCredentials() {
+async function checkCredentials() {
   console.log("checkCredentials function called");
+
   // Log the values of inputEmail and inputPassword
   const sanitizedEmail = sanitizeHTML(inputEmail.value);
   const sanitizedPassword = sanitizeHTML(inputPassword.value);
@@ -118,25 +120,42 @@ function checkCredentials() {
     return; // Exit function if email or password is invalid
   }
 
-  // Here we should call the API to check the credentials in the database
-  // For now, we just simulate it
+  try {
+    const response = await fetch('/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        Email: sanitizedEmail,
+        Password: sanitizedPassword
+      })
+    });
+    if (response.ok) {
+      // Handle the token and role received from the server
+      const token = result.token;
+      const role = result.role;
 
-  if (sanitizedEmail === "test@mail.com" && sanitizedPassword === "Test1234!") {
-    // Success
-    alert("Login successful!");
+      console.log("Token received:", token);
+      console.log("Role received:", role);
 
-    // Get the token from the API
-    const token = "lkjsdngfljsqdnglkjsdbglkjqskjgkfjgbqslkfdgbskldfgdfgsdgf";
-    console.log("Token received:", token);
-    setToken(token);
-    // Save the token in the cookie storage
+      // Set the token in local storage or cookie
+      document.cookie = `token=${token}; path=/`;
 
-    setCookie(roleCookieName, "admin", 7);
-
-    // Redirect to dashboard
-    window.location.replace("/");
-  } else {
-    // Error
-    console.log("Invalid credentials!");
+      // Redirect to the dashboard based on role
+      if (role === 'admin') {
+        window.location.replace("/admin/dashboard");
+      } else if (role === 'employe') {
+        window.location.replace("/employee/dashboard");
+      } else if (role === 'veterinaire') {
+        window.location.replace("/veterinarian/dashboard");
+      } else {
+        console.log("Unknown role received");
+      }
+    } else {
+      console.log("Invalid credentials!");
+    }
+  } catch (error) {
+    console.error('Error during login:', error);
   }
 }

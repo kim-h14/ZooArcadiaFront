@@ -114,19 +114,71 @@ app.get('/check-db-connection', async (req, res) => {
   }
 });
 
+const roleCookieName = 'userRole';
+
+// Utility function to set cookie
+function setCookie(res, name, value, days) {
+  const options = {
+    maxAge: days * 24 * 60 * 60 * 1000,
+    httpOnly: true, // Ensures the cookie is sent only over HTTP(S), not client JavaScript
+    secure: process.env.NODE_ENV === 'production', // Ensures the cookie is sent only over HTTPS
+  };
+  res.cookie(name, value, options);
+}
+
 
 // Define route handler for POST requests to /login
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
   const { Email, Password } = req.body;
 
-  // TO BE REPLACED WITH ACTUAL VALIDATION WHEN TESTING IS DONE
-  if (Email === "test@mail.com" && Password === "Test1234!") {
-    // Success
-    const token = jwt.sign({ email: Email }, 'secret_key');
-    res.redirect("/");
-  } else {
-    // Invalid credentials
-    res.status(401).send('Invalid email or password');
+  try {
+    // Check if the provided credentials match the admin credentials
+    if (Email === "admin@example.com" && Password === "12345") {
+      // Generate JWT token for admin
+      const token = jwt.sign({ email: Email, role: 'admin' }, 'your_secret_key');
+
+      // Set role cookie for admin
+      setCookie(res, roleCookieName, 'admin', 7);
+
+      // Redirect admin to admin dashboard
+      return res.redirect("/admindashboard");
+    }
+
+    // Query the database to find a matching user
+    const query = 'SELECT user_id, role FROM account WHERE email = $1 AND password = $2';
+    const result = await pool.query(query, [Email, Password]);
+
+    // If a matching user is found
+    if (result.rows.length > 0) {
+      const user = result.rows[0];
+
+      // Generate JWT token for user
+      const token = jwt.sign({ user_id: user.user_id, email: Email }, 'your_secret_key');
+
+      // Set role cookie for user
+      let role = user.role;
+      if (role === 'Employé') role = 'employe';
+      if (role === 'Vétérinaire') role = 'veterinaire';
+      setCookie(res, roleCookieName, role, 7);
+
+      // Redirect based on role
+      if (role === 'Employé') {
+        // Redirect employee to employee dashboard
+        return res.redirect("/employeeDashboard");
+      } else if (role === 'veterinaire') {
+        // Redirect veterinarian to veterinarian dashboard
+        return res.redirect("/vetDashboard");
+      } else {
+        // Unknown role, handle appropriately
+        return res.status(401).send('Unknown user role');
+      }
+    } else {
+      // No matching user found, invalid credentials
+      return res.status(401).send('Invalid email or password');
+    }
+  } catch (error) {
+    console.error('Error authenticating user:', error);
+    return res.status(500).send('Internal Server Error');
   }
 });
 
