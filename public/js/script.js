@@ -139,3 +139,12 @@ function showAndHideElementsForRoles(){
     }
   })
 };
+
+
+// // Protection against XSS vulnerabilities
+// function sanitizeHTML(text) {
+//   const tempHTML = document.createElement('div');
+//   tempHTML.textContent = text;
+//   return tempHTML.innerHTML;
+// }
+// module.exports = sanitizeHTML;

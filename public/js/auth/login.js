@@ -1,5 +1,11 @@
-// Implement JS for login page
+// Function to sanitize HTML content
+function sanitizeHTML(html) {
+  const div = document.createElement('div');
+  div.textContent = html;
+  return div.innerHTML;
+}
 
+// Implement JS for login page
 //  ========= Form Validation ==========
 const inputEmail = document.getElementById('loginEmail');
 const inputPassword = document.getElementById('loginPassword');
@@ -34,7 +40,7 @@ function validateForm() {
 function validateEmail(input){
   console.log("validateEmail function called");
   const emailRegEx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const userEmail = input.value;
+  const userEmail = sanitizeHTML(input.value);
   if(userEmail.match(emailRegEx)) {
     // it's valid
     console.log("Email is valid");
@@ -54,7 +60,7 @@ function validateEmail(input){
 function validatePassword(input){
   console.log("validatePassword function called");
   const passwordRegEx = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/;
-  const passwordUser = input.value;
+  const passwordUser = sanitizeHTML(input.value);
   if(passwordUser.match(passwordRegEx)) {
     // it's valid
     console.log("Password is valid");
@@ -75,6 +81,8 @@ function validatePassword(input){
 
 function validateRequired(input){
   console.log("validateRequired function called");
+  const userInput = sanitizeHTML(input.value);
+
   if(input.value != "") {
     // it's valid
     input.classList.add("is-valid");
@@ -96,8 +104,10 @@ btnSubmit.addEventListener("click", checkCredentials);
 function checkCredentials() {
   console.log("checkCredentials function called");
   // Log the values of inputEmail and inputPassword
-  console.log("Email:", inputEmail.value);
-  console.log("Password:", inputPassword.value);
+  const sanitizedEmail = sanitizeHTML(inputEmail.value);
+  const sanitizedPassword = sanitizeHTML(inputPassword.value);
+  console.log("Email:", sanitizedEmail);
+  console.log("Password:", sanitizedPassword);
 
   // Call validateEmail and validatePassword functions
   const emailValid = validateEmail(inputEmail);
@@ -111,7 +121,7 @@ function checkCredentials() {
   // Here we should call the API to check the credentials in the database
   // For now, we just simulate it
 
-  if(inputEmail.value === "test@mail.com" && inputPassword.value === "Test1234!") {
+  if (sanitizedEmail === "test@mail.com" && sanitizedPassword === "Test1234!") {
     // Success
     alert("Login successful!");
 

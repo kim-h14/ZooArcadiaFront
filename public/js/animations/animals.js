@@ -73,3 +73,6 @@ function registerConsultation(animalName) {
   })
   .catch(error => console.error('Error:', error));
 }
+
+
+// 

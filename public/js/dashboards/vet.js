@@ -1,3 +1,10 @@
+// Function to sanitize HTML content
+function sanitizeHTML(html) {
+  const div = document.createElement('div');
+  div.textContent = html;
+  return div.innerHTML;
+}
+
 // ===================== Function to fetch animals from the database =====================
 function populateAnimalSelect() {
   fetch('/animal_names') 
@@ -6,9 +13,12 @@ function populateAnimalSelect() {
       const select = document.getElementById('animalSelect');
       select.innerHTML = '<option value="">Tous les animaux</option>';
       data.forEach(animalName => {
+        // Sanitize the HTML content
+        const sanitizedAnimalName = sanitizeHTML(animalName);
+
         const option = document.createElement('option');
-        option.value = animalName;
-        option.textContent = animalName;
+        option.value = sanitizedAnimalName;
+        option.textContent = sanitizedAnimalName;
         select.appendChild(option);
       });
       // Once the select is populated, filter the table based on the selected animal
@@ -21,7 +31,9 @@ function populateAnimalSelect() {
 
 // ===================== Function to filter the table by selected animal =====================
 function filterByAnimal() {
-  const selectedAnimal = document.getElementById('animalSelect').value;
+  const selectedAnimalElement = document.getElementById('animalSelect').value;
+  const selectedAnimal = sanitizeHTML(selectedAnimalElement.value);
+
   const table = document.getElementById('foodRecordTable');
   const rows = table.getElementsByTagName('tr');
 

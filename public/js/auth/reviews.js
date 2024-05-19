@@ -1,3 +1,10 @@
+// Function to sanitize HTML content
+function sanitizeHTML(html) {
+  const div = document.createElement('div');
+  div.textContent = html;
+  return div.innerHTML;
+}
+
 // Implement JS for reviews page
 
 const inputName = document.getElementById('clientName');
@@ -29,7 +36,7 @@ function validateForm() {
 function validateEmail(input){
   // Define a regular expression for email validation
   const emailRegEx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const userEmail = input.value;
+  const userEmail = sanitizeHTML(input.value);
   if(userEmail.match(emailRegEx)) {
     // it's valid
     inputEmail.classList.add("is-valid");
@@ -46,6 +53,7 @@ function validateEmail(input){
 
 
 function validateRequired(input){
+  const userInput = sanitizeHTML(input.value);
   if(input.value != "") {
     // it's valid
     input.classList.add("is-valid");

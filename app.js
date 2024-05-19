@@ -678,7 +678,9 @@ app.post('/add_habitat_comment', async (req, res) => {
       console.error('Error adding habitat comment:', error);
       res.status(500).send('Error adding habitat comment.');
   }
-});
+}
+);
+
 
 // Handle GET requests to fetch reviews from the database to appear on the homepage on loop
 app.get('/approved_reviews', async (req, res) => {
