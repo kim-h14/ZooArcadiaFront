@@ -140,33 +140,41 @@ app.post('/login', async (req, res) => {
       return res.status(200).json({ token, role: 'admin' });
     }
 
-    // Query the database to find a matching user
-    const query = 'SELECT user_id, role FROM account WHERE email = $1 AND password = $2';
-    const result = await pool.query(query, [Email, Password]);
+   // Query the database to find the user by email
+    const query = 'SELECT user_id, password, role FROM account WHERE email = $1';
+    const result = await pool.query(query, [Email]);
 
-    // If a matching user is found
-    if (result.rows.length > 0) {
-      const user = result.rows[0];
+   // If a matching user is found
+   if (result.rows.length > 0) {
+     const user = result.rows[0];
 
-      // Generate JWT token for user
-      const token = jwt.sign({ user_id: user.user_id, email: Email }, 'your_secret_key');
+     // Compare the provided password with the hashed password stored in the database
+     const passwordMatch = await bcrypt.compare(Password, user.password);
 
-      // Set role cookie for user
-      let role = user.role;
-      if (role === 'Employé') role = 'Employé';
-      if (role === 'Vétérinaire') role = 'Vétérinaire';
-      setCookie(res, roleCookieName, role, 7);
+     if (passwordMatch) {
+       // Generate JWT token for user
+       const token = jwt.sign({ user_id: user.user_id, email: Email }, 'your_secret_key');
 
-      // Respond with the token and role
-      return res.status(200).json({ token, role });
-    } else {
-      // No matching user found, invalid credentials
-      return res.status(401).send('Invalid email or password');
-    }
-  } catch (error) {
-    console.error('Error authenticating user:', error);
-    return res.status(500).send('Internal Server Error');
-  }
+       // Set role cookie for user
+       let role = user.role;
+       if (role === 'Employé') role = 'Employé';
+       if (role === 'Vétérinaire') role = 'Vétérinaire';
+       setCookie(res, roleCookieName, role, 7);
+
+       // Respond with the token and role
+       return res.status(200).json({ token, role });
+     } else {
+       // Invalid password
+       return res.status(401).send('Invalid email or password');
+     }
+   } else {
+     // No matching user found, invalid credentials
+     return res.status(401).send('Invalid email or password');
+   }
+ } catch (error) {
+   console.error('Error authenticating user:', error);
+   return res.status(500).send('Internal Server Error');
+ }
 });
 
 
