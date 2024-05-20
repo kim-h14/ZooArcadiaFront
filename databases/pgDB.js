@@ -6,7 +6,7 @@ const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
     database: 'ARCADIA_back',
-    password: 'Arcad!aZo0#',
+    password: process.env.DB_PASSWORD,
     port: 5432,
 });
 

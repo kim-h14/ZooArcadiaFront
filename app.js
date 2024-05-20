@@ -9,7 +9,13 @@ const AnimalConsultation = require('./databases/animalConsultation');
 const mongoose = require('mongoose'); 
 const bcrypt = require('bcrypt');
 const { body, validationResult } = require('express-validator');
+const dotenv = require('dotenv');
 
+// Load environment variables from secret.env
+dotenv.config({
+  path: path.resolve(__dirname, 'secret.env'),
+  allowEmptyValues: true
+});
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -129,7 +135,7 @@ app.post('/login', async (req, res) => {
 
   try {
     // Check if the provided credentials match the admin credentials
-    if (Email === 'admin@example.com' && Password === 'AdminPassword1!') {
+    if (Email === process.env.ADMIN_EMAIL && Password === process.env.ADMIN_PASSWORD) {
       // Generate JWT token for admin
       const token = jwt.sign({ email: Email, role: 'admin' }, 'your_secret_key');
 
