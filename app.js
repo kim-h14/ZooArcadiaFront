@@ -122,6 +122,7 @@ app.get('/check-db-connection', async (req, res) => {
 const authController = require('./controllers/authController');
 const staffController = require('./controllers/staffController');
 const serviceController = require('./controllers/serviceController');
+const habitatController = require('./controllers/habitatController');
 
 // Authentification route
 app.post('/login', authController.login);
@@ -146,76 +147,15 @@ app.delete('/delete_user/:id', staffController.deleteStaff);
 app.get('/service', checkRole, serviceController.getAllServices);
 app.post('/add_service', checkRole, serviceController.addService);
 app.put('/updateService/:id', checkRole, serviceController.updateService);
-
-// Handle DELETE requests to delete a service for admin Dashboards
 app.delete('/delete_service/:id', checkRole, serviceController.deleteService);
 
-// Handle POST requests to add a new habitat for admin Dashboard
-app.post('/create_habitat', async (req, res) => {
-  const { habitatName, habitatDescription} = req.body;
+// Habitat routes for admin and vet Dashboards
+app.get('/habitat', checkRole, habitatController.getAllHabitats);
+app.post('/create_habitat', checkRole, habitatController.addHabitat);
+app.put('/updateHabitat/:id', checkRole, habitatController.updateHabitat);
+app.delete('/delete_habitat/:id', checkRole, habitatController.deleteHabitat);
+app.post('/add_habitat_comment', checkRole, habitatController.addHabitatComment);
 
-  try {
-     // Insert the new service into the database
-     const query = 'INSERT INTO habitat (habitat_name, habitat_description) VALUES ($1, $2)';
-     const values = [habitatName, habitatDescription];
-     await pool.query(query, values);
-
-    // Respond with a success message
-    res.status(201).redirect('/admindashboard');
-  } catch (error) {
-    console.error('Erreur lors de l\'ajout de l\'habitat:', error);
-    res.status(500).send('Erreur lors de l\'ajout de l\'habitat.');
-  }
-});
-
-// Handle GET requests to fetch all habitats for admin Dashboard
-app.get('/habitat', async (req, res) => {
-  try {
-    // Query to select all habitats from the database
-    const query = 'SELECT * FROM habitat';
-
-    // Execute the query
-    const { rows } = await pool.query(query);
-
-    // Send the fetched data as JSON response
-    res.status(200).json(rows);
-  } catch (error) {
-    console.error('Error fetching habitats:', error);
-    res.status(500).json({ error: 'Error fetching habitats' });
-  }
-});
-
-// Handle PUT requests to update a habitat for admin Dashboard
-app.put('/updateHabitat/:id', async (req, res) => {
-  const habitatId = req.params.id;
-  const { habitatName, habitatDescription } = req.body;
-
-  try {
-    // Update the service in the existing table
-    await pool.query('UPDATE habitat SET habitat_name = $1, habitat_description = $2 WHERE habitat_id = $3', [habitatName, habitatDescription, habitatId]);
-   res.sendStatus(200);
-  } catch (error) {
-    // Send an error response
-    console.error('Error updating habitat:', error);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
-// Handle DELETE requests to delete a habitat for admin Dashboard
-app.delete('/delete_habitat/:id', async (req, res) => {
-  try {
-    const habitatId = req.params.id;
-
-    // Delete the habitat from the database
-    const query = 'DELETE FROM habitat WHERE habitat_id = $1';
-    await pool.query(query, [habitatId]);
-
-    res.status(200).json({ message: 'Habitat deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting habitat:', error);
-    res.status(500).json({ error: 'Error deleting habitat' });
-  }
-});
 
 // Handle POST requests to add a new animal for admin Dashboard
 app.post('/create_animal', async (req, res) => {
@@ -528,23 +468,6 @@ app.get('/animal_names', async (req, res) => {
   }
 });
 
-
-// Handle POST request to add a comment on habitat for vet Dashboard
-app.post('/add_habitat_comment', async (req, res) => {
-  try {
-      const { username, habitatName, habitatComment, commentDate } = req.body;
-      
-      // Insert the data into the vetHabitatComment table
-      const query = 'INSERT INTO vetHabitatComment (username, habitat_name, vet_comment, date) VALUES ($1, $2, $3, $4)';
-      await pool.query(query, [username, habitatName, habitatComment, commentDate]);
-
-      res.status(201).redirect('/vetDashboard');
-  } catch (error) {
-      console.error('Error adding habitat comment:', error);
-      res.status(500).send('Error adding habitat comment.');
-  }
-}
-);
 
 
 // Handle GET requests to fetch reviews from the database to appear on the homepage on loop
