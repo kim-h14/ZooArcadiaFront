@@ -71,6 +71,9 @@ const deleteHabitat = async (req, res) => {
 const addHabitatComment = async (req, res) => {
   try {
     const { username, habitatName, habitatComment, commentDate } = req.body;
+
+    // Log received data to inspect
+    console.log('Received Data:', { username, habitatName, habitatComment, commentDate });
     
     // Insert the data into the vetHabitatComment table
     const query = 'INSERT INTO vetHabitatComment (username, habitat_name, vet_comment, date) VALUES ($1, $2, $3, $4)';

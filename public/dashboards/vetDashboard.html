@@ -97,7 +97,7 @@
               <div class="col">
                 <div class="form-container">
                   <!-- Form to add comments on habitats -->
-                  <form id="vet_habitat-comments" action="/add_habitat_comment" method="POST">
+                  <form id="vet_habitat-comments">
                   <label for="habitatName">Nom de l'habitat:</label>
                     <select class="form-control" id="habitatName" name="habitatName" required>
                       <option value="">Sélectionner le nom de l'habitat</option>
@@ -107,7 +107,9 @@
                     </select>     
 
                   <label for="username">Nom d'utilisateur:</label>
-                  <input type="text" class="form-control" id="username" name="username" required>
+                  <select type="text" class="form-control" id="filterVeterinarian" name="username" required>
+                    <option value="">Sélectionner le nom d'utilisateur</option>
+                  </select>
 
                   <label for="habitatComment">Commentaire:</label>
                   <textarea class="form-control" id="habitatComment" name="habitatComment" rows="3" required></textarea>
