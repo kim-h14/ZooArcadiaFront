@@ -26,12 +26,6 @@ const getAllFoodRecords = async (req, res) => {
 // Function for the employee to log a food record 
 
 const addFoodRecord = async (req, res) => {
-  // Validate and sanitize input
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   const { animalName, foodType, foodQuantity, username, date } = req.body;
   try {
     const query = 'INSERT INTO foodrecord (animal_name, username, date, food_type, food_quantity) VALUES ($1, $2, $3, $4, $5)';
