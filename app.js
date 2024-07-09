@@ -124,6 +124,7 @@ const staffController = require('./controllers/staffController');
 const serviceController = require('./controllers/serviceController');
 const habitatController = require('./controllers/habitatController');
 const animalController = require('./controllers/animalController');
+const reviewController = require('./controllers/reviewController');
 
 // Authentification route
 app.post('/login', authController.login);
@@ -164,112 +165,12 @@ app.post('/create_animal', checkRole, animalController.addAnimal);
 app.put('/update_animal', checkRole, animalController.updateAnimal);
 app.delete('/delete_animal/:id', checkRole, animalController.deleteAnimal);
 
-// Handle GET requests to fetch the vet reports
-app.get('/vet_reports', async (req, res) => {
-  try {
-    // Query to select all vet reports from the database
-    const query = 'SELECT * FROM vetreport';
-
-    // Execute the query
-    const { rows } = await pool.query(query);
-
-    // Send the fetched data as JSON response
-    res.status(200).json(rows);
-  } catch (error) {
-    console.error('Error fetching vet reports:', error);
-    res.status(500).json({ error: 'Error fetching vet reports' });
-  }
-});
-
-// Handle GET requests to fetch veterinarian names
-app.get('/vet_names', async (req, res) => {
-  try {
-    const query = 'SELECT username AS name FROM account WHERE role = $1';
-    const result = await pool.query(query, ['Vétérinaire']);
-    
-    // Check if the result is an array and map it properly
-    if (result.rows.length > 0) {
-      const veterinarians = result.rows.map(row => ({ name: row.name }));
-      res.status(200).json(veterinarians);
-    } else {
-      res.status(404).json({ error: 'No veterinarians found' });
-    }
-  } catch (error) {
-    console.error('Error fetching veterinarian names:', error);
-    res.status(500).json({ error: 'Error fetching veterinarian names' });
-  }
-});
-
-
-// Handle POST requests to submit a new review to the employee Dashboard
-app.post('/submit_review', async (req, res) => {
-  try {
-
-    console.log(req.body);
-
-    // Extract review data from the request body
-    const { clientName, messageReview, cityReview, emailReview } = req.body;
-
-    // Insert the review into the database
-    const query = 'INSERT INTO review (client_name, review_text, city, email) VALUES ($1, $2, $3, $4)';
-    const values = [clientName, messageReview, cityReview, emailReview];
-    await pool.query(query, values);
-
-    // Send a success response
-    res.status(201).redirect('/');
-  } catch (error) {
-    // Handle errors
-    console.error('Error submitting review:', error);
-    res.status(500).send('Error submitting review.');
-  }
-});
-
-// Handle GET requests to receive pending reviews for employee Dashboard
-app.get('/pending_reviews', async (req, res) => {
-  try {
-    // Query the database to retrieve pending reviews data
-    const query = 'SELECT client_name, city, email, review_text, review_id FROM review WHERE review_approved IS NULL';
-    const { rows } = await pool.query(query);
-
-    // Send the retrieved data as a JSON response
-    res.status(200).json(rows);
-  } catch (error) {
-    // Handle errors
-    console.error('Error fetching pending reviews:', error);
-    res.status(500).json({ error: 'Error fetching pending reviews' });
-  }
-});
-
-// Handle POST requests to approve reviews for employee Dashboard
-app.put('/approveReview', async (req, res) => {
-  // Extract review ID from the request body
-  const reviewId = req.body.id;
-  try {
-    // Update the review in the existing table by setting the approval status to true
-    await pool.query('UPDATE review SET review_approved = true WHERE review_id = $1', [reviewId]);
-    res.sendStatus(200);
-  } catch (error) {
-    console.error('Error approving review:', error);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
-// Handle DELETE requests to reject reviews for employee Dashboard
-app.delete('/deleteReview/:reviewId', async (req, res) => {
-  // Extract review ID from the URL parameter
-  const reviewId = req.params.reviewId;
-
-  console.log('Received delete request for review ID:', reviewId); // Log the review ID
-
-  try {
-    // Delete the review from the database
-    await pool.query('DELETE FROM review WHERE review_id = $1', [reviewId]);
-    res.sendStatus(200); // Send a success response
-  } catch (error) {
-    console.error('Error deleting review:', error);
-    res.status(500).send('Internal Server Error'); // Send an error response
-  }
-});
+// Review routes for employee dashboard
+app.post('/submit_review', reviewController.submitReview);
+app.get('/pending_reviews', reviewController.getPendingReviews);
+app.put('/approveReview/:id', reviewController.approveReview);
+app.delete('/deleteReview/:reviewId', reviewController.deleteReview);
+app.get('/approved_reviews', reviewController.publishReview);
 
 // Handle PUT requests to update a service for employee Dashboards
 app.put('/employee/updateService/:id', async (req, res) => {
@@ -397,23 +298,43 @@ app.get('/animal_names', async (req, res) => {
 });
 
 
-
-// Handle GET requests to fetch reviews from the database to appear on the homepage on loop
-app.get('/approved_reviews', async (req, res) => {
+// Handle GET requests to fetch the vet reports
+app.get('/vet_reports', async (req, res) => {
   try {
-      // Query to select approved reviews from the database
-      const query = 'SELECT * FROM review WHERE review_approved = true';
+    // Query to select all vet reports from the database
+    const query = 'SELECT * FROM vetreport';
 
-      // Execute the query
-      const { rows } = await pool.query(query);
+    // Execute the query
+    const { rows } = await pool.query(query);
 
-      // Send the fetched data as JSON response
-      res.status(200).json(rows);
+    // Send the fetched data as JSON response
+    res.status(200).json(rows);
   } catch (error) {
-      console.error('Error fetching approved reviews:', error);
-      res.status(500).json({ error: 'Error fetching approved reviews' });
+    console.error('Error fetching vet reports:', error);
+    res.status(500).json({ error: 'Error fetching vet reports' });
   }
 });
+
+// Handle GET requests to fetch veterinarian names
+app.get('/vet_names', async (req, res) => {
+  try {
+    const query = 'SELECT username AS name FROM account WHERE role = $1';
+    const result = await pool.query(query, ['Vétérinaire']);
+    
+    // Check if the result is an array and map it properly
+    if (result.rows.length > 0) {
+      const veterinarians = result.rows.map(row => ({ name: row.name }));
+      res.status(200).json(veterinarians);
+    } else {
+      res.status(404).json({ error: 'No veterinarians found' });
+    }
+  } catch (error) {
+    console.error('Error fetching veterinarian names:', error);
+    res.status(500).json({ error: 'Error fetching veterinarian names' });
+  }
+});
+
+
 
 // Handle POST requests for animal consultations
 app.post('/animal-consultations', async (req, res) => {
