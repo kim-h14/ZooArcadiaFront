@@ -125,6 +125,7 @@ const serviceController = require('./controllers/serviceController');
 const habitatController = require('./controllers/habitatController');
 const animalController = require('./controllers/animalController');
 const reviewController = require('./controllers/reviewController');
+const foodRecordController = require("./controllers/foodRecordController");
 
 // Authentification route
 app.post('/login', authController.login);
@@ -172,39 +173,10 @@ app.put('/approveReview/:id', reviewController.approveReview);
 app.delete('/deleteReview/:reviewId', reviewController.deleteReview);
 app.get('/approved_reviews', reviewController.publishReview);
 
-// Handle PUT requests to update a service for employee Dashboards
-app.put('/employee/updateService/:id', async (req, res) => {
-  const serviceId = req.params.id;
-  const { serviceName, serviceDescription } = req.body;
+// Food record routes for employee and vet Dashboards
+app.get('/vet_food_records', foodRecordController.getAllFoodRecords);
 
-  try {
-    // Update the service in the existing table
-    await pool.query('UPDATE service SET service_name = $1, service_description = $2 WHERE service_id = $3', [serviceName, serviceDescription, serviceId]);
-    res.sendStatus(200);
-  } catch (error) {
-    console.error('Error updating service:', error);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
-// Handle DELETE requests to delete a service
-app.delete('/delete_service/:id', async (req, res) => {
-  try {
-    const serviceId = req.params.id;
-
-    // Delete the service from the database
-    const query = 'DELETE FROM service WHERE service_id = $1';
-    await pool.query(query, [serviceId]);
-
-    res.status(200).json({ message: 'Service deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting service:', error);
-    res.status(500).json({ error: 'Error deleting service' });
-  }
-});
-
-// Handle POST requests to add foor record for employee Dashboard
-// Sanitization rules for input fields
+// Sanitization rules for input fields for food records
 const sanitizeInput = [
   body('animalName').trim().escape(),
   body('username').trim().escape(),
@@ -213,29 +185,40 @@ const sanitizeInput = [
   body('foodQuantity').toInt() // Convert to integer
 ];
 
-app.post('/add_food_record', sanitizeInput, async (req, res) => {
-  try {
-    // Extract food consumption record data from the request body
-    const { animalName, foodType, foodQuantity, username, date } = req.body;
+app.post('/add_food_record', sanitizeInput, foodRecordController.addFoodRecord);
 
-    // UNCOMMENT AFTER HANDLING AUTHENTIFICATION PER USER ===============================
-    // Extract the username from the authenticated user 
-    // const username = req.user.username;
 
-    // Insert the new food consumption record into the database
-    // WILL NEED TO ADD THE USERNAME TO THE QUERRY ===============================
-    const query = 'INSERT INTO foodrecord (animal_name, username, date,food_type, food_quantity) VALUES ($1, $2, $3, $4, $5)';
-    const values = [animalName, username, date, foodType, foodQuantity,];
-    await pool.query(query, values);
 
-    // Send a success response
-    res.status(201).redirect('/employeeDashboard');
-  } catch (error) {
-    // Handle errors
-    console.error('Erreur lors de l\'ajout de l\'enregistrement alimentaire:', error);
-    res.status(500).json({ error: 'Erreur lors de l\'ajout de l\'enregistrement alimentaire' });
-  }
-});
+// // Handle PUT requests to update a service for employee Dashboards
+// app.put('/employee/updateService/:id', async (req, res) => {
+//   const serviceId = req.params.id;
+//   const { serviceName, serviceDescription } = req.body;
+
+//   try {
+//     // Update the service in the existing table
+//     await pool.query('UPDATE service SET service_name = $1, service_description = $2 WHERE service_id = $3', [serviceName, serviceDescription, serviceId]);
+//     res.sendStatus(200);
+//   } catch (error) {
+//     console.error('Error updating service:', error);
+//     res.status(500).send('Internal Server Error');
+//   }
+// });
+
+// // Handle DELETE requests to delete a service
+// app.delete('/delete_service/:id', async (req, res) => {
+//   try {
+//     const serviceId = req.params.id;
+
+//     // Delete the service from the database
+//     const query = 'DELETE FROM service WHERE service_id = $1';
+//     await pool.query(query, [serviceId]);
+
+//     res.status(200).json({ message: 'Service deleted successfully' });
+//   } catch (error) {
+//     console.error('Error deleting service:', error);
+//     res.status(500).json({ error: 'Error deleting service' });
+//   }
+// });
 
 // Handle POST request to add report on animals for vet Dashboard
 app.post('/add_animal_report', async (req, res) => {
@@ -260,28 +243,6 @@ app.post('/add_animal_report', async (req, res) => {
   }
 });
 
-// Handle GET requests to fetch food records for vet Dashboard
-app.get('/vet_food_records', async (req, res) => {
-  try {
-    const animalName = req.query.animal;
-    let query = 'SELECT date, animal_name, food_type, food_quantity FROM foodrecord';
-    const queryParams = [];
-
-    if (animalName) {
-      query += ' WHERE animal_name = $1';
-      queryParams.push(animalName);
-    }
-
-    const { rows } = await pool.query(query, queryParams);
-
-    // Send the fetched records as JSON response
-    res.json(rows);
-  } catch (error) {
-    // Handle errors
-    console.error('Error fetching food records:', error);
-    res.status(500).json({ error: 'Error fetching food records' });
-  }
-});
 
 // Handle GET requests to fetch animal names from the server and populate the drop down list in food records for vet Dashboard
 app.get('/animal_names', async (req, res) => {
