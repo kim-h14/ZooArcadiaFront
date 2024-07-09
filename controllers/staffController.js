@@ -108,11 +108,31 @@ const getVetNames = async (req, res) => {
   }
 };
 
+// Function to get vet names in dropdowns
+const getEmployeeNames = async (req, res) => {
+  try {
+    const query = 'SELECT username AS name FROM account WHERE role = $1';
+    const result = await pool.query(query, ['Employé']);
+    
+    // Check if the result is an array and map it properly
+    if (result.rows.length > 0) {
+      const employees = result.rows.map(row => ({ name: row.name }));
+      res.status(200).json(employees);
+    } else {
+      res.status(404).json({ error: 'No employee found' });
+    }
+  } catch (error) {
+    console.error('Error fetching employee names:', error);
+    res.status(500).json({ error: 'Error fetching employee names' });
+  }
+};
+
 
 module.exports = {
   getAllStaff,
   addStaff,
   updateStaff,
   deleteStaff,
-  getVetNames
+  getVetNames,
+  getEmployeeNames
 }

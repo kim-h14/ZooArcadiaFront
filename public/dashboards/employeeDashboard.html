@@ -20,8 +20,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr data-review-id="1">
-                                            <td>1</td>
+                                        <tr data-review-id="1">                                            <td>1</td>
                                             <td>John Doe</td>
                                             <td>Paris</td>
                                             <td>johndoe@test.com</td>
@@ -83,10 +82,20 @@
                     <h4>Consommation de la nourriture</h4>
                     <form id="foodRecordForm" action="/add_food_record" method="POST">
                         <label for="animalName">Nom de l'animal:</label>
-                        <input type="text" class="form-control" id="animalName" name="animalName" required>
+                        <select class="form-control" id="filterAnimal" name="animalName" required>
+                            <option value="">Tous les animaux</option>
+                            <option value="Biscotto">Biscotto</option>
+                            <option value="Flash">Flash</option>
+                            <!-- Add more options for other animals -->
+                        </select>
 
                         <label for="username">Nom utilisateur:</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
+                        <select class="form-control" id="filterEmployee" name="animalName" required>
+                            <option value="">Selectionnez votre nom</option>
+                            <option value="Bernard">Bernard</option>
+                            <option value="Pierre">Pierre</option>
+                            <!-- Add more options for other employee -->
+                        </select>
 
                         <label for="date">Date d'alimentation:</label>
                         <input type="date" class="form-control" id="date" name="date" required>

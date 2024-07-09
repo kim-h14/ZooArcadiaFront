@@ -54,12 +54,16 @@ $(document).ready(function() {
 function approveReview(button) {
   // Get the row containing the review
   const row = $(button).closest('tr');
-  // Extract the review ID from the row's data attribute
-  const reviewId = sanitizeHTML(row.data('review-id'));
+  // Extract the review ID from the first <td> of the row
+  const reviewId = sanitizeHTML($(row).find('td:first').text().trim());
+  console.log(reviewId);
+
+
+  console.log('Review ID:', reviewId);
 
   // Send a PUT request to your backend with the review ID
   $.ajax({
-    url: '/approveReview',
+    url: `/approveReview/${reviewId}`,
     type: 'PUT',
     data: { id: reviewId }, // Include the review ID in the request data
     success: function(response) {
@@ -196,3 +200,59 @@ function deleteService(serviceId) {
     });
   }
 }
+
+
+// Function to fetch and populate animal select dropdown
+function populateAnimalSelect() {
+  fetch('/animal_names')
+    .then(response => response.json())
+    .then(data => {
+      const select = document.getElementById('filterAnimal');
+      select.innerHTML = '<option value="">Tous les animaux</option>';
+      data.forEach(animalName => {
+        const option = document.createElement('option');
+        option.value = sanitizeHTML(animalName);
+        option.textContent = sanitizeHTML(animalName);
+        select.appendChild(option);
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching animal data:', error);
+    });
+}
+
+// Populate animal select dropdown on page load
+populateAnimalSelect();
+
+
+
+// Function to fetch and populate the employee select dropdown
+function populateEmployeeSelect() {
+  fetchPendingReviews('/employee_names')
+    .then(response => {
+      if (!response) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Employee data:', data);
+      if (Array.isArray(data)) {
+        const select = document.getElementById('filterEmployee');
+        select.innerHTML = '<option value="">Selectioner votre nom</option>';
+        data.forEach(employee => {
+          const option = document.createElement('option');
+          option.value = sanitizeHTML(employee.name);
+          option.textContent = sanitizeHTML(employee.name);
+          select.appendChild(option);
+        });
+      } else {
+        console.error('Unexpected data format:', data);
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching employee data:', error);
+    });
+}
+
+populateEmployeeSelect()

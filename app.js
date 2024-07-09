@@ -132,49 +132,40 @@ const consultation = require('./controllers/animalConsultationController');
 // Authentification route
 app.post('/login', authController.login);
 
-// Middleware to check role of the user to display appropriate info
-const checkRole = (req, res, next) => {
-  const userRole = req.user.role;
-  if (userRole === 'admin' || userRole === 'Employé' || userRole === 'Vétérinaire') {
-    next();
-  } else {
-    res.status(403).send("Vous n'êtes pas autorisé à accéder à cette ressource");
-  }
-};
-
 // Staff routes for admin Dashboard
 app.get('/accounts', staffController.getAllStaff);
 app.post('/create_staff', staffController.addStaff);
 app.put('/update_user/:id', staffController.updateStaff);
 app.delete('/delete_user/:id', staffController.deleteStaff);
 app.get('/vet_names', staffController.getVetNames);
+app.get('/employee_names', staffController.getEmployeeNames);
 
 
 // Service routes for admin and employee Dashboards
-app.get('/service', checkRole, serviceController.getAllServices);
-app.post('/add_service', checkRole, serviceController.addService);
-app.put('/updateService/:id', checkRole, serviceController.updateService);
-app.delete('/delete_service/:id', checkRole, serviceController.deleteService);
+app.get('/service', serviceController.getAllServices);
+app.post('/add_service', serviceController.addService);
+app.put('/updateService/:id', serviceController.updateService);
+app.delete('/delete_service/:id', serviceController.deleteService);
 
 // Habitat routes for admin and vet Dashboards
-app.get('/habitat', checkRole, habitatController.getAllHabitats);
-app.post('/create_habitat', checkRole, habitatController.addHabitat);
-app.put('/updateHabitat/:id', checkRole, habitatController.updateHabitat);
-app.delete('/delete_habitat/:id', checkRole, habitatController.deleteHabitat);
-app.post('/add_habitat_comment', checkRole, habitatController.addHabitatComment);
+app.get('/habitat', habitatController.getAllHabitats);
+app.post('/create_habitat', habitatController.addHabitat);
+app.put('/updateHabitat/:id', habitatController.updateHabitat);
+app.delete('/delete_habitat/:id', habitatController.deleteHabitat);
+app.post('/add_habitat_comment', habitatController.addHabitatComment);
 
 
 // Animal routes for admin and vet Dashboards
-app.get('/animal', checkRole, animalController.getAllAnimals);
-app.post('/create_animal', checkRole, animalController.addAnimal);
-app.put('/update_animal', checkRole, animalController.updateAnimal);
-app.delete('/delete_animal/:id', checkRole, animalController.deleteAnimal);
+app.get('/animal', animalController.getAllAnimals);
+app.post('/create_animal', animalController.addAnimal);
+app.put('/update_animal', animalController.updateAnimal);
+app.delete('/delete_animal/:id', animalController.deleteAnimal);
 app.get('/animal_names', animalController.getAnimalNames);
 
 // Review routes for employee dashboard
 app.post('/submit_review', reviewController.submitReview);
 app.get('/pending_reviews', reviewController.getPendingReviews);
-app.put('/approveReview/:id', reviewController.approveReview);
+app.put('/approveReview/:reviewId', reviewController.approveReview);
 app.delete('/deleteReview/:reviewId', reviewController.deleteReview);
 app.get('/approved_reviews', reviewController.publishReview);
 
@@ -192,45 +183,12 @@ const sanitizeInput = [
 app.post('/add_food_record', sanitizeInput, foodRecordController.addFoodRecord);
 
 // Report routes for vet and admindashboards
-app.post('/add_animal_report', checkRole, reportController.addReport);
+app.post('/add_animal_report', reportController.addReport);
 app.get('/vet_reports', reportController.getAllReports);
 
 // Animal consultation routes for admin dashboard
 app.post('/animal-consultations', consultation.recordConsultation);
 app.get('/animal-consultations', consultation.getAllConsultation);
-
-
-
-// // Handle PUT requests to update a service for employee Dashboards
-// app.put('/employee/updateService/:id', async (req, res) => {
-//   const serviceId = req.params.id;
-//   const { serviceName, serviceDescription } = req.body;
-
-//   try {
-//     // Update the service in the existing table
-//     await pool.query('UPDATE service SET service_name = $1, service_description = $2 WHERE service_id = $3', [serviceName, serviceDescription, serviceId]);
-//     res.sendStatus(200);
-//   } catch (error) {
-//     console.error('Error updating service:', error);
-//     res.status(500).send('Internal Server Error');
-//   }
-// });
-
-// // Handle DELETE requests to delete a service
-// app.delete('/delete_service/:id', async (req, res) => {
-//   try {
-//     const serviceId = req.params.id;
-
-//     // Delete the service from the database
-//     const query = 'DELETE FROM service WHERE service_id = $1';
-//     await pool.query(query, [serviceId]);
-
-//     res.status(200).json({ message: 'Service deleted successfully' });
-//   } catch (error) {
-//     console.error('Error deleting service:', error);
-//     res.status(500).json({ error: 'Error deleting service' });
-//   }
-// });
 
 
 // Define a route to serve index.html for all routes
