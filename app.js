@@ -166,6 +166,7 @@ app.get('/animal', checkRole, animalController.getAllAnimals);
 app.post('/create_animal', checkRole, animalController.addAnimal);
 app.put('/update_animal', checkRole, animalController.updateAnimal);
 app.delete('/delete_animal/:id', checkRole, animalController.deleteAnimal);
+app.get('/animal_names', animalController.getAnimalNames);
 
 // Review routes for employee dashboard
 app.post('/submit_review', reviewController.submitReview);
@@ -224,22 +225,7 @@ app.get('/vet_reports', reportController.getAllReports);
 // });
 
 
-// Handle GET requests to fetch animal names from the server and populate the drop down list in food records for vet Dashboard
-app.get('/animal_names', async (req, res) => {
-  try {
-    const query = 'SELECT animal_name FROM animal';
-    const { rows } = await pool.query(query);
-    const animalNames = rows.map(row => row.animal_name);
-    console.log('Animal names:', animalNames); // log animal names
-    res.json(animalNames);
-  } catch (error) {
-    console.error('Error fetching animal names:', error);
-    res.status(500).json({ error: 'Error fetching animal names' });
-  }
-});
-
-
-// Handle GET requests to fetch veterinarian names
+// Handle GET requests to fetch veterinarian names on admin dashboard
 app.get('/vet_names', async (req, res) => {
   try {
     const query = 'SELECT username AS name FROM account WHERE role = $1';

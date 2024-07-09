@@ -78,9 +78,24 @@ const deleteAnimal = async (req, res) => {
   }
 };
 
+// Function to get animal names in dropdowns
+const getAnimalNames = async (req, res) => {
+  try {
+    const query = 'SELECT animal_name FROM animal';
+    const { rows } = await pool.query(query);
+    const animalNames = rows.map(row => row.animal_name);
+    console.log('Animal names:', animalNames); // log animal names
+    res.json(animalNames);
+  } catch (error) {
+    console.error('Error fetching animal names:', error);
+    res.status(500).json({ error: 'Error fetching animal names' });
+  }
+};
+
 module.exports = {
   getAllAnimals,
   addAnimal,
   updateAnimal,
   deleteAnimal,
+  getAnimalNames,
 };
