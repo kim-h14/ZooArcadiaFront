@@ -9,7 +9,7 @@ const { pool, connectDB } = require('./databases/pgDB');
 const AnimalConsultation = require('./databases/animalConsultation'); 
 const mongoose = require('mongoose'); 
 const bcrypt = require('bcrypt');
-const { body, validationResult } = require('express-validator');
+const { body, validationResult, check } = require('express-validator');
 const dotenv = require('dotenv');
 
 // Load environment variables from secret.env
@@ -121,86 +121,34 @@ app.get('/check-db-connection', async (req, res) => {
 // Controllers required for routing and endpoints
 const authController = require('./controllers/authController');
 const staffController = require('./controllers/staffController');
+const serviceController = require('./controllers/serviceController');
 
 // Authentification route
 app.post('/login', authController.login);
 
-
+// Middleware to check role of the user to display appropriate info
+const checkRole = (req, res, next) => {
+  const userRole = req.user.role;
+  if (userRole === 'admin' || userRole === 'Employé' || userRole === 'Vétérinaire') {
+    next();
+  } else {
+    res.status(403).send("Vous n'êtes pas autorisé à accéder à cette ressource");
+  }
+};
 
 // Staff routes for admin Dashboard
 app.get('/accounts', staffController.getAllStaff);
 app.post('/create_staff', staffController.addStaff);
-app.put('/update_user', staffController.updateStaff);
-app.delete('/delete_user', staffController.deleteStaff);
+app.put('/update_user/:id', staffController.updateStaff);
+app.delete('/delete_user/:id', staffController.deleteStaff);
 
-// Handle POST requests to add a new service for admin Dashboard
-app.post('/add_service', async (req, res) => {
-  try {
-    // Extract service data from the request body
-    const { serviceName, serviceDescription } = req.body;
-
-    // Insert the new service into the database
-    const query = 'INSERT INTO service (service_name, service_description) VALUES ($1, $2)';
-    const values = [serviceName, serviceDescription];
-    await pool.query(query, values);
-
-    // Send a success response
-    res.status(201).redirect('/admindashboard');
-  } catch (error) {
-    // Handle errors
-    console.error('Erreur lors de l\'ajout du service:', error);
-    res.status(500).send('Erreur lors de l\'ajout du service.');
-  }
-});
-
-// Handle GET requests to fetch all services for admin & employee Dashboards
-app.get('/service', async (req, res) => {
-  try {
-    // Query to select all services from the database
-    const query = 'SELECT * FROM service';
-
-    // Execute the query
-    const { rows } = await pool.query(query);
-
-    // Send the fetched data as JSON response
-    res.status(200).json(rows);
-  } catch (error) {
-    console.error('Error fetching services:', error);
-    res.status(500).json({ error: 'Error fetching services' });
-  }
-});
-
-
-// Handle PUT requests to update a service for admin Dashboards
-app.put('/updateService/:id', async (req, res) => {
-  const serviceId = req.params.id;
-  const { serviceName, serviceDescription } = req.body;
-
-  try {
-    // Update the service in the existing table
-    await pool.query('UPDATE service SET service_name = $1, service_description = $2 WHERE service_id = $3', [serviceName, serviceDescription, serviceId]);
-    res.sendStatus(200);
-  } catch (error) {
-    console.error('Error updating service:', error);
-    res.status(500).send('Internal Server Error');
-  }
-});
+// Service routes for admin and employee Dashboards
+app.get('/service', checkRole, serviceController.getAllServices);
+app.post('/add_service', checkRole, serviceController.addService);
+app.put('/updateService/:id', checkRole, serviceController.updateService);
 
 // Handle DELETE requests to delete a service for admin Dashboards
-app.delete('/delete_service/:id', async (req, res) => {
-  try {
-    const serviceId = req.params.id;
-
-    // Delete the service from the database
-    const query = 'DELETE FROM service WHERE service_id = $1';
-    await pool.query(query, [serviceId]);
-
-    res.status(200).json({ message: 'Service deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting service:', error);
-    res.status(500).json({ error: 'Error deleting service' });
-  }
-});
+app.delete('/delete_service/:id', checkRole, serviceController.deleteService);
 
 // Handle POST requests to add a new habitat for admin Dashboard
 app.post('/create_habitat', async (req, res) => {
