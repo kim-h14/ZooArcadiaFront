@@ -118,98 +118,20 @@ app.get('/check-db-connection', async (req, res) => {
   }
 });
 
-// Define route handler for POST requests to /login
+// Controllers required for routing and endpoints
 const authController = require('./controllers/authController');
+const staffController = require('./controllers/staffController');
+
+// Authentification route
 app.post('/login', authController.login);
 
 
-// Handle POST requests to create a new staff member for admin Dashboard
-app.post('/create_staff', async (req, res) => {
-  try {
-    const { username, email, password, role } = req.body;
 
-    // Check if required fields are provided
-    if (!username || !email || !password || !role) {
-      return res.status(400).json({ error: 'Username, email, password, and role are required' });
-    }
-
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    // Insert the new staff member into the database with the hashed password
-    const query = 'INSERT INTO account (username, email, password, role) VALUES ($1, $2, $3, $4) RETURNING *';
-    const values = [username, email, hashedPassword, role];
-    const result = await pool.query(query, values);
-
-    // Respond with the newly created staff member
-    res.send('<script>alert("Le nouvel utilisateur a été créé."); window.location.href = "/admindashboard";</script>');
-  } catch (error) {
-    console.error('Error creating staff member:', error);
-    res.status(500).json({ error: 'Error creating staff member' });
-  }
-});
-
-// Handle GET requests to fetch all staff members for admin Dashboard
-app.get('/accounts', async (req, res) => {
-  try {
-      // Query to select all accounts from the database
-      const query = 'SELECT * FROM account';
-
-      // Execute the query
-      const { rows } = await pool.query(query);
-
-      console.log('Fetched accounts:', rows);
-
-      // Send the fetched data as JSON response
-      res.status(200).json(rows);
-  } catch (error) {
-      console.error('Error fetching accounts:', error);
-      res.status(500).json({ error: 'Error fetching accounts' });
-  }
-});
-
-// Handle PUT requests to update a staff member for admin Dashboard
-app.put('/update_user', async (req, res) => {
-  try {
-    const { userId, username, email, password, role } = req.body;
-
-    let query;
-    let values;
-
-    if (password) {
-      // Update user with password
-      query = 'UPDATE account SET username = $1, email = $2, password = $3, role = $4 WHERE user_id = $5';
-      values = [username, email, password, role, userId];
-    } else {
-      // Update user without changing password
-      query = 'UPDATE account SET username = $1, email = $2, role = $3 WHERE user_id = $4';
-      values = [username, email, role, userId];
-    }
-
-    await pool.query(query, values);
-
-    res.status(200).json({ message: 'User updated successfully' });
-  } catch (error) {
-    console.error('Error updating user:', error);
-    res.status(500).json({ error: 'Error updating user' });
-  }
-});
-
-// Handle DELETE requests to delete a staff member for admin Dashboard
-app.delete('/delete_user', async (req, res) => {
-  try {
-    const userId = req.body.userId;
-
-    // Delete the user from the database
-    const query = 'DELETE FROM account WHERE user_id = $1';
-    await pool.query(query, [userId]);
-
-    res.status(200).json({ message: 'User deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting user:', error);
-    res.status(500).json({ error: 'Error deleting user' });
-  }
-});
+// Staff routes for admin Dashboard
+app.get('/accounts', staffController.getAllStaff);
+app.post('/create_staff', staffController.addStaff);
+app.put('/update_user', staffController.updateStaff);
+app.delete('/delete_user', staffController.deleteStaff);
 
 // Handle POST requests to add a new service for admin Dashboard
 app.post('/add_service', async (req, res) => {
