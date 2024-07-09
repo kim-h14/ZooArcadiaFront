@@ -126,6 +126,7 @@ const habitatController = require('./controllers/habitatController');
 const animalController = require('./controllers/animalController');
 const reviewController = require('./controllers/reviewController');
 const foodRecordController = require("./controllers/foodRecordController");
+const reportController = require('./controllers/reportController');
 
 // Authentification route
 app.post('/login', authController.login);
@@ -184,9 +185,11 @@ const sanitizeInput = [
   body('foodType').trim().escape(),
   body('foodQuantity').toInt() // Convert to integer
 ];
-
 app.post('/add_food_record', sanitizeInput, foodRecordController.addFoodRecord);
 
+// Report routes for vet and admindashboards
+app.post('/add_animal_report', checkRole, reportController.addReport);
+app.get('/vet_reports', reportController.getAllReports);
 
 
 // // Handle PUT requests to update a service for employee Dashboards
@@ -220,29 +223,6 @@ app.post('/add_food_record', sanitizeInput, foodRecordController.addFoodRecord);
 //   }
 // });
 
-// Handle POST request to add report on animals for vet Dashboard
-app.post('/add_animal_report', async (req, res) => {
-  try {
-    // Extract form data from the request body
-    const { animalName, username, animalState, foodType, foodQuantity, reportDate, DetailedAnimalState } = req.body;
-
-    // Insert the report into the database
-    const query = `
-      INSERT INTO vetreport (animal_name, username, date, animal_state, food_type, food_quantity, detail_animal_state)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
-    `;
-    const values = [animalName, username, reportDate, animalState, foodType, foodQuantity, DetailedAnimalState];
-    await pool.query(query, values);
-
-    // Send a success response
-    res.status(201).redirect('/vetDashboard');
-  } catch (error) {
-    // Handle errors
-    console.error('Error adding animal report:', error);
-    res.status(500).send('Error adding animal report.');
-  }
-});
-
 
 // Handle GET requests to fetch animal names from the server and populate the drop down list in food records for vet Dashboard
 app.get('/animal_names', async (req, res) => {
@@ -250,7 +230,7 @@ app.get('/animal_names', async (req, res) => {
     const query = 'SELECT animal_name FROM animal';
     const { rows } = await pool.query(query);
     const animalNames = rows.map(row => row.animal_name);
-    console.log('Animal names:', animalNames); // Add this line to log animal names
+    console.log('Animal names:', animalNames); // log animal names
     res.json(animalNames);
   } catch (error) {
     console.error('Error fetching animal names:', error);
@@ -258,23 +238,6 @@ app.get('/animal_names', async (req, res) => {
   }
 });
 
-
-// Handle GET requests to fetch the vet reports
-app.get('/vet_reports', async (req, res) => {
-  try {
-    // Query to select all vet reports from the database
-    const query = 'SELECT * FROM vetreport';
-
-    // Execute the query
-    const { rows } = await pool.query(query);
-
-    // Send the fetched data as JSON response
-    res.status(200).json(rows);
-  } catch (error) {
-    console.error('Error fetching vet reports:', error);
-    res.status(500).json({ error: 'Error fetching vet reports' });
-  }
-});
 
 // Handle GET requests to fetch veterinarian names
 app.get('/vet_names', async (req, res) => {
