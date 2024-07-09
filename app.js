@@ -127,6 +127,7 @@ const animalController = require('./controllers/animalController');
 const reviewController = require('./controllers/reviewController');
 const foodRecordController = require("./controllers/foodRecordController");
 const reportController = require('./controllers/reportController');
+const consultation = require('./controllers/animalConsultationController');
 
 // Authentification route
 app.post('/login', authController.login);
@@ -194,6 +195,11 @@ app.post('/add_food_record', sanitizeInput, foodRecordController.addFoodRecord);
 app.post('/add_animal_report', checkRole, reportController.addReport);
 app.get('/vet_reports', reportController.getAllReports);
 
+// Animal consultation routes for admin dashboard
+app.post('/animal-consultations', consultation.recordConsultation);
+app.get('/animal-consultations', consultation.getAllConsultation);
+
+
 
 // // Handle PUT requests to update a service for employee Dashboards
 // app.put('/employee/updateService/:id', async (req, res) => {
@@ -225,50 +231,6 @@ app.get('/vet_reports', reportController.getAllReports);
 //     res.status(500).json({ error: 'Error deleting service' });
 //   }
 // });
-
-
-
-// Handle POST requests for animal consultations
-app.post('/animal-consultations', async (req, res) => {
-  try {
-    const { animal } = req.body;
-    // Find the document corresponding to the animal
-    const consultation = await AnimalConsultation.findOne({ animal });
-    if (consultation) {
-      // If the document exists, increment the consultation count
-      consultation.consultationCount += 1;
-      await consultation.save();
-      console.log('Updated consultation:', consultation);
-      res.status(200).json(consultation);
-    } else {
-      // If the document doesn't exist, create a new one with the initial count
-      const newConsultation = new AnimalConsultation({
-        animal,
-        consultationCount: 1
-      });
-      const savedConsultation = await newConsultation.save();
-      console.log('Saved consultation:', savedConsultation);
-      res.status(201).json(savedConsultation);
-    }
-  } catch (error) {
-    console.error('Error registering consultation:', error);
-    res.status(500).json({ error: 'Error registering consultation' });
-  }
-});
-
-// Handle GET requests to fetch animal consultation data
-app.get('/animal-consultations', async (req, res) => {
-  try {
-    // Fetch all documents from the AnimalConsultation collection
-    const consultations = await AnimalConsultation.find();
-
-    // Send the consultations data as a JSON response
-    res.status(200).json(consultations);
-  } catch (error) {
-    console.error('Error fetching animal consultations:', error);
-    res.status(500).json({ error: 'Error fetching animal consultations' });
-  }
-});
 
 
 // Define a route to serve index.html for all routes
