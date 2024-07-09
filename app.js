@@ -146,6 +146,8 @@ app.get('/accounts', staffController.getAllStaff);
 app.post('/create_staff', staffController.addStaff);
 app.put('/update_user/:id', staffController.updateStaff);
 app.delete('/delete_user/:id', staffController.deleteStaff);
+app.get('/vet_names', staffController.getVetNames);
+
 
 // Service routes for admin and employee Dashboards
 app.get('/service', checkRole, serviceController.getAllServices);
@@ -223,26 +225,6 @@ app.get('/vet_reports', reportController.getAllReports);
 //     res.status(500).json({ error: 'Error deleting service' });
 //   }
 // });
-
-
-// Handle GET requests to fetch veterinarian names on admin dashboard
-app.get('/vet_names', async (req, res) => {
-  try {
-    const query = 'SELECT username AS name FROM account WHERE role = $1';
-    const result = await pool.query(query, ['Vétérinaire']);
-    
-    // Check if the result is an array and map it properly
-    if (result.rows.length > 0) {
-      const veterinarians = result.rows.map(row => ({ name: row.name }));
-      res.status(200).json(veterinarians);
-    } else {
-      res.status(404).json({ error: 'No veterinarians found' });
-    }
-  } catch (error) {
-    console.error('Error fetching veterinarian names:', error);
-    res.status(500).json({ error: 'Error fetching veterinarian names' });
-  }
-});
 
 
 
