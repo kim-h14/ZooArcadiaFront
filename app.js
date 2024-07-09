@@ -123,6 +123,7 @@ const authController = require('./controllers/authController');
 const staffController = require('./controllers/staffController');
 const serviceController = require('./controllers/serviceController');
 const habitatController = require('./controllers/habitatController');
+const animalController = require('./controllers/animalController');
 
 // Authentification route
 app.post('/login', authController.login);
@@ -157,84 +158,11 @@ app.delete('/delete_habitat/:id', checkRole, habitatController.deleteHabitat);
 app.post('/add_habitat_comment', checkRole, habitatController.addHabitatComment);
 
 
-// Handle POST requests to add a new animal for admin Dashboard
-app.post('/create_animal', async (req, res) => {
-  try {
-    // Extract animal data from the request body
-    const { animalName, animalSpecies, animalHabitat } = req.body;
-
-    // Check if the provided habitat exists in the habitat table
-    const habitatQuery = 'SELECT habitat_name FROM habitat WHERE habitat_name = $1';
-    const habitatResult = await pool.query(habitatQuery, [animalHabitat]);
-
-    if (habitatResult.rows.length === 0) {
-      // If the habitat doesn't exist, send an error response
-      return res.status(400).json({ error: 'Habitat not found' });
-    }
-
-    // Insert the new animal into the database
-    const insertQuery = 'INSERT INTO animal (animal_name, animal_species, habitat_name) VALUES ($1, $2, $3)';
-    const insertValues = [animalName, animalSpecies, animalHabitat];
-    await pool.query(insertQuery, insertValues);
-
-    // Send a success response
-    res.status(201).redirect('/admindashboard');
-  } catch (error) {
-    // Handle errors
-    console.error('Erreur lors de l\'ajout de l\'animal:', error);
-    res.status(500).json({ error: 'Erreur lors de l\'ajout de l\'animal' });
-  }
-});
-
-// Handle GET requests to fetch all animals for admin Dashboard
-app.get('/animal', async (req, res) => {
-  try {
-    // Query to select all animals from the database
-    const query = 'SELECT animal_id, animal_name, animal_species, habitat_name FROM animal';
-
-    // Execute the query
-    const { rows } = await pool.query(query);
-
-    // Send the fetched data as JSON response
-    res.status(200).json(rows);
-  } catch (error) {
-    console.error('Error fetching animals:', error);
-    res.status(500).json({ error: 'Error fetching animals' });
-  }
-});
-
-
-// Handle PUT requests to update an animal for admin Dashboard
-app.put('/update_animal', async (req, res) => {
-  try {
-    const { animalId, animalName, animalSpecies, animalHabitat } = req.body;
-
-    const updateQuery = 'UPDATE animal SET animal_name = $1, animal_species = $2, habitat_name = $3 WHERE animal_id = $4';
-    const updateValues = [animalName, animalSpecies, animalHabitat, animalId];
-    await pool.query(updateQuery, updateValues);
-
-    res.status(200).json({ success: true });
-  } catch (error) {
-    console.error('Error updating animal:', error);
-    res.status(500).json({ error: 'Error updating animal' });
-  }
-});
-
-// Handle DELETE  requests to delete an animal for admin Dashboard
-app.delete('/delete_animal/:id', async (req, res) => {
-  try {
-    const animalId = req.params.id;
-
-    // Delete the animal from the database
-    const query = 'DELETE FROM animal WHERE animal_id = $1';
-    await pool.query(query, [animalId]);
-
-    res.status(200).json({ message: 'Animal deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting animal:', error);
-    res.status(500).json({ error: 'Error deleting animal' });
-  }
-});
+// Animal routes for admin and vet Dashboards
+app.get('/animal', checkRole, animalController.getAllAnimals);
+app.post('/create_animal', checkRole, animalController.addAnimal);
+app.put('/update_animal', checkRole, animalController.updateAnimal);
+app.delete('/delete_animal/:id', checkRole, animalController.deleteAnimal);
 
 // Handle GET requests to fetch the vet reports
 app.get('/vet_reports', async (req, res) => {
