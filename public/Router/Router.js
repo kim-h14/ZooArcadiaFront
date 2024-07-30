@@ -24,8 +24,10 @@ const getRouteByUrl = (url) => {
 // Function to load page content
 const loadPageContent = async () => {
   const path = window.location.pathname;
+  console.log(`Fetching route for path: ${path}`);
   // get the route from the URL
   const actualRoute = getRouteByUrl(path);
+  console.log(`Actual route:`, actualRoute);
 
   // Check if the user is authorized to access the page
   const allRightsArray = actualRoute.authorize;
