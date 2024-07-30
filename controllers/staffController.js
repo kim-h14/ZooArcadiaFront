@@ -1,4 +1,7 @@
 const { pool } = require('../databases/pgDB');
+const bcrypt = require('bcrypt');
+
+const saltRounds = 10;
 
 // Function to get all staff members for admin dashboard
 const getAllStaff = async (req, res) => {
