@@ -59,8 +59,10 @@ const updateStaff = async (req, res) => {
 
     if (password) {
       // Update user with password
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+      
       query = 'UPDATE account SET username = $1, email = $2, password = $3, role = $4 WHERE user_id = $5';
-      values = [username, email, password, role, userId];
+      values = [username, email, hashedPassword, role, userId];
     } else {
       // Update user without changing password
       query = 'UPDATE account SET username = $1, email = $2, role = $3 WHERE user_id = $4';

@@ -95,7 +95,7 @@ function deleteStaff(userId) {
   if (confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action ne peut pas être annulée.")) {
     // Proceed with deletion
     $.ajax({
-      url: '/delete_user',
+      url: '/delete_user/:id',
       method: 'DELETE',
       data: {
         userId: userId
