@@ -64,7 +64,7 @@ $('#editUserForm').on('submit', function(event) {
   const role = sanitizeHTML($('#editRole').val());  
 
   $.ajax({
-    url: '/update_user',
+    url: '/update_user/:id',
     method: 'PUT',
     data: {
       userId: userId,
