@@ -4,7 +4,7 @@ const { pool } = require('../databases/pgDB');
 const getAllFoodRecords = async (req, res) => {
   try {
     const animalName = req.query.animal;
-    let query = 'SELECT date, animal_name, foodType, foodQuantity FROM foodrecord';
+    let query = 'SELECT date, animal_name, username, foodType, foodQuantity FROM foodrecord';
     const queryParams = [];
 
     if (animalName) {
