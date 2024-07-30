@@ -39,14 +39,12 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // Serve static files from the root directory
 app.use(express.static(path.join(__dirname, '/public')));
-
-// Serve static files from the public directory
-app.use(express.static(path.join(__dirname, '/public', '/pages')));
-
-// Serve static files from the dashbaord directory
-app.use(express.static(path.join(__dirname, '/public', '/dashboards')));
 
 // Serve static files from the node_modules directory
 app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
