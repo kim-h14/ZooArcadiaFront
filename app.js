@@ -192,16 +192,20 @@ app.get('/animal-consultations', consultation.getAllConsultation);
 
 
 // Define a route to serve index.html for all routes
-app.get('*', (req, res) => {
-  // Read the content of index.html
-  fs.readFile(path.join(__dirname, '/public', '/index.html'), 'utf8', (err, indexContent) => {
-    if (err) {
-      return res.status(500).send('Error reading index.html');
-    }
+// app.get('*', (req, res) => {
+//   // Read the content of index.html
+//   fs.readFile(path.join(__dirname, '/public', '/index.html'), 'utf8', (err, indexContent) => {
+//     if (err) {
+//       return res.status(500).send('Error reading index.html');
+//     }
 
-    // Send index.html as response for all routes
-    res.send(indexContent);
-  });
+//     // Send index.html as response for all routes
+//     res.send(indexContent);
+//   });
+// });
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 module.exports = app;
