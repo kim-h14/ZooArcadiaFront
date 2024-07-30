@@ -42,6 +42,12 @@ app.use((req, res, next) => {
 // Serve static files from the root directory
 app.use(express.static(path.join(__dirname, '/public')));
 
+// // Serve static files from the public directory
+app.use(express.static(path.join(__dirname, '/public', '/pages')));
+
+// // Serve static files from the dashbaord directory
+app.use(express.static(path.join(__dirname, '/public', '/dashboards')));
+
 // Serve static files from the node_modules directory
 app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
