@@ -32,13 +32,9 @@ const recordConsultation = async (req, res) => {
 // Function to display animal consultation data on admin dashboard
 const getAllConsultation = async (req, res) => {
   try {
-    // Fetch all documents from the AnimalConsultation collection
     const consultations = await animalConsultation.find();
-
-    // Send the consultations data as a JSON response
     res.status(200).json(consultations);
   } catch (error) {
-    console.error('Error fetching animal consultations:', error);
     res.status(500).json({ error: 'Error fetching animal consultations' });
   }
 };
