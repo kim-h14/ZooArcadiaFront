@@ -227,32 +227,31 @@ populateAnimalSelect();
 
 
 // Function to fetch and populate the employee select dropdown
-function populateEmployeeSelect() {
-  fetchPendingReviews('/employee_names')
-    .then(response => {
-      if (!response) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Employee data:', data);
-      if (Array.isArray(data)) {
-        const select = document.getElementById('filterEmployee');
-        select.innerHTML = '<option value="">Selectioner votre nom</option>';
-        data.forEach(employee => {
-          const option = document.createElement('option');
-          option.value = sanitizeHTML(employee.name);
-          option.textContent = sanitizeHTML(employee.name);
-          select.appendChild(option);
-        });
-      } else {
-        console.error('Unexpected data format:', data);
-      }
-    })
-    .catch(error => {
-      console.error('Error fetching employee data:', error);
-    });
+async function populateEmployeeSelect() {
+  try {
+    const response = await fetch('/employee_names');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    console.log('Employee data:', data);
+    
+    if (Array.isArray(data)) {
+      const select = document.getElementById('filterEmployee');
+      select.innerHTML = '<option value="">Selectionnez votre nom</option>';
+      data.forEach(employee => {
+        const option = document.createElement('option');
+        option.value = sanitizeHTML(employee.name);
+        option.textContent = sanitizeHTML(employee.name);
+        select.appendChild(option);
+      });
+    } else {
+      console.error('Unexpected data format:', data);
+    }
+  } catch (error) {
+    console.error('Error fetching employee data:', error);
+  }
 }
 
-populateEmployeeSelect()
+// Call the function to populate the employee select dropdown on page load
+populateEmployeeSelect();
