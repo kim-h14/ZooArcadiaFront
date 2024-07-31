@@ -97,8 +97,8 @@ async function fetchFoodRecords(animal = '') {
         <td>${formattedDate}</td>
         <td>${record.animal_name}</td>
         <td>${record.username}</td>
-        <td>${record.foodType}</td>
-        <td>${record.foodQuantity}</td>
+        <td>${record.foodtype}</td>
+        <td>${record.foodquantity}</td>
       `;
       tbody.appendChild(row);
     });
