@@ -39,8 +39,43 @@ const getAllConsultation = async (req, res) => {
   }
 };
 
+// Function to get like count for a specific animal
+const getLikeCount = async (req, res) => {
+  const { animal } = req.params;
+  try {
+    const consultation = await AnimalConsultation.findOne({ animal });
+    if (consultation) {
+      res.status(200).json({ count: consultation.consultationCount });
+    } else {
+      res.status(404).json({ error: 'Animal not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching like count' });
+  }
+};
+
+// Function to increment like count for a specific animal
+const incrementLikeCount = async (req, res) => {
+  const { animal } = req.params;
+  try {
+    const consultation = await AnimalConsultation.findOne({ animal });
+    if (consultation) {
+      consultation.consultationCount += 1;
+      await consultation.save();
+      res.status(200).json({ count: consultation.consultationCount });
+    } else {
+      res.status(404).json({ error: 'Animal not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Error updating like count' });
+  }
+};
+
+
 
 module.exports = {
   recordConsultation,
-  getAllConsultation
+  getAllConsultation,
+  getLikeCount,
+  incrementLikeCount
 };

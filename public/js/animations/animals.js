@@ -1,7 +1,5 @@
 // ======= ANIMATIONS =======
 
-// ++++++++ <3 button animation and counter ++++++++
-// Check if the page is fully loaded
 window.onload = function() {
   console.log("Page fully loaded");
 
@@ -11,7 +9,19 @@ window.onload = function() {
   const likeCounter = document.querySelector(".like-counter");
   console.log(likeCounter); // Check if the like counter is correctly selected
 
-  let likeCount = 0;
+  const animalName = document.querySelector(".card__animal__title").textContent.trim(); // Assuming the animal name is used as the identifier
+
+  // Fetch initial like count
+  fetch(`/animal-consultations/${animalName}/like-count`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.count !== undefined) {
+        likeCounter.textContent = data.count;
+      }
+    })
+    .catch(error => console.error('Error fetching like count:', error));
+
+  let likeCount = parseInt(likeCounter.textContent, 10) || 0;
 
   heartIcon.addEventListener("click", function(event) {
       console.log("Heart icon clicked"); // Check if the heart icon click event is triggered
@@ -20,6 +30,16 @@ window.onload = function() {
       likeCount++;
       likeCounter.textContent = likeCount;
       likeCounter.style.display = "inline";
+
+      // Update the like count on the server
+      fetch(`/animal-consultations/${animalName}/like-count`, { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+          if (data.count !== undefined) {
+            likeCounter.textContent = data.count;
+          }
+        })
+        .catch(error => console.error('Error updating like count:', error));
 
       // Create flying heart emoji
       const flyingHeart = document.createElement("span");
@@ -34,6 +54,7 @@ window.onload = function() {
       });
   });
 };
+
 
 
 // ++++++++ "En savoir plus" button animation ++++++++

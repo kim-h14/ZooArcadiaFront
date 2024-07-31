@@ -193,6 +193,8 @@ app.get('/vet_reports', reportController.getAllReports);
 // Animal consultation routes for admin dashboard
 app.post('/animal-consultations', consultation.recordConsultation);
 app.get('/animal-consultations', consultation.getAllConsultation);
+app.get('animal-consultations/:animal/like-count', consultation.getLikeCount);
+app.post('/animal-consultations/:animal/like-count', consultation.incrementLikeCount);
 
 
 // Define a route to serve index.html for all routes
