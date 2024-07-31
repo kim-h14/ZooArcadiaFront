@@ -13,6 +13,7 @@ const getAllFoodRecords = async (req, res) => {
     }
 
     const { rows } = await pool.query(query, queryParams);
+    console.log('fetching food records:', rows);
 
     // Send the fetched records as JSON response
     res.json(rows);
