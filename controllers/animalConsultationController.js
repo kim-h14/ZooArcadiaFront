@@ -43,7 +43,7 @@ const getAllConsultation = async (req, res) => {
 const getLikeCount = async (req, res) => {
   const { animal } = req.params;
   try {
-    const consultation = await AnimalConsultation.findOne({ animal });
+    const consultation = await animalConsultation.findOne({ animal });
     if (consultation) {
       res.status(200).json({ count: consultation.consultationCount });
     } else {
@@ -58,7 +58,7 @@ const getLikeCount = async (req, res) => {
 const incrementLikeCount = async (req, res) => {
   const { animal } = req.params;
   try {
-    const consultation = await AnimalConsultation.findOne({ animal });
+    const consultation = await animalConsultation.findOne({ animal });
     if (consultation) {
       consultation.consultationCount += 1;
       await consultation.save();
