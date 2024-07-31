@@ -25,7 +25,10 @@ const port = process.env.PORT || 3000;
 const uri = process.env.MONGODB_URI;
 mongoose.connect(uri)
   .then(() => console.log('MongoDB connected...'))
-  .catch(err => console.log(err));
+  .catch(err => {
+    console.error('MongoDB connection error:', err.message);
+    console.error('Stack trace:', err.stack);
+  });
 
 
 //Parse JSON bodies 
@@ -193,17 +196,6 @@ app.get('/animal-consultations', consultation.getAllConsultation);
 
 
 // Define a route to serve index.html for all routes
-// app.get('*', (req, res) => {
-//   // Read the content of index.html
-//   fs.readFile(path.join(__dirname, '/public', '/index.html'), 'utf8', (err, indexContent) => {
-//     if (err) {
-//       return res.status(500).send('Error reading index.html');
-//     }
-
-//     // Send index.html as response for all routes
-//     res.send(indexContent);
-//   });
-// });
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
